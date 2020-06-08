@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Brandon Verzuu</title>
+    <link>/</link>
+    <description>Recent content on Brandon Verzuu</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
+    <lastBuildDate>Fri, 05 Jun 2020 17:02:19 +0200</lastBuildDate>
+    
+	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>About</title>
+      <link>/about/</link>
+      <pubDate>Fri, 05 Jun 2020 17:32:30 +0200</pubDate>
+      
+      <guid>/about/</guid>
+      <description>By actively taking part within the software development sector I strive to become a motivational speaker. Mainly focussed on:
+ creating a process towards consistent understanding of any subject the importance and impact of people on software development projects  I want to be able to have a way of sharing everything I have learned about the topics I encounter, everything I find interesting all the while having my own place to share this from.</description>
+    </item>
+    
+    <item>
+      <title>Why create a personal website?</title>
+      <link>/posts/first-post/</link>
+      <pubDate>Fri, 05 Jun 2020 17:02:19 +0200</pubDate>
+      
+      <guid>/posts/first-post/</guid>
+      <description>I used to have a personal webpage containing nothing more than the content of the about page. In order to have a place where I can write content of whatever comes to mind I decided to go with my own platform. This minimal approach lets me focus on content rather then get distracted by all the possibilities other platforms out there have to offer.
+So what can we expect on here?</description>
+    </item>
+    
+  </channel>
+</rss>
