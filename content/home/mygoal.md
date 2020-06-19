@@ -1,7 +1,7 @@
 ---
 title: "My goal"
 draft: false
-weight: 1
+weight: -3
 ---
 
 By actively taking part within the software development sector I strive to eventually become a motivational speaker. 

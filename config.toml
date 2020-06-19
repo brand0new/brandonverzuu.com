@@ -52,14 +52,18 @@ DefaultContentLanguage           = "en"                         # Default langua
         icon_pack = "fab"
 
 # If you don't want to use the default menu, you can define one by yourself
-# [[menu.main]]
-#     name    = "Home"
-#     url     = "/"
-#     weight  = 0
-# [[menu.main]]
-#     name    = "Blog"
-#     url     = "/blog/"
-#     weight  = 5
+[[menu.main]]
+     name    = "Home"
+     url     = "/"
+     weight  = 5
+[[menu.main]]
+     name    = "Blog"
+     url     = "/blog/"
+     weight  = 0
+[[menu.main]]
+     name    = "Contact"
+     url     = "/#contact"
+     weight  = 0
 
 # We only use tag as a taxonomies
 # You can add more by yourself
@@ -72,7 +76,7 @@ DefaultContentLanguage           = "en"                         # Default langua
         languageCode     = "en-us"
         contentDir       = "content/"
         weight           = 0
-        title            = "Introduction"
+        title            = "Brandon Verzuu"
         [languages.en.params]
             description  = "Website Description"   # Max 160 characters show in search results
             # footerText   = ""                      # Text to override default footer text (markdown allowed)

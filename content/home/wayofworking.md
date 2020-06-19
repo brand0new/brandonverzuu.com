@@ -1,7 +1,7 @@
 ---
 title: "Way of working"
 draft: false
-weight: 2
+weight: -2
 ---
 
 Having a purpose is something I hold dearly.
