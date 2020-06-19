@@ -1,8 +1,8 @@
 baseURL                          = "brandonverzuu.com/"  # Your domain name. Must end with "/"
 theme                            = "introduction"
-DefaultContentLanguage           = "en"                         # Default language for multilingual sites
-# disqusshortname                 = ""                       # https://gohugo.io/content-management/comments
-# googleAnalytics                 = ""                       # https://gohugo.io/templates/internal/#google-analytics
+DefaultContentLanguage           = "en"                             # Default language for multilingual sites
+# disqusshortname                 = ""                              # https://gohugo.io/content-management/comments
+ googleAnalytics                 = "UA-170084016-1"                 # https://gohugo.io/templates/internal/#google-analytics
 
 [params]
     themeStyle                   = "light"                 # Choose "light" or "dark"
@@ -80,3 +80,7 @@ DefaultContentLanguage           = "en"                         # Default langua
         [languages.en.params]
             description  = "Website Description"   # Max 160 characters show in search results
             # footerText   = ""                      # Text to override default footer text (markdown allowed)
+[deployment]
+    [[deployment.targets]]
+    name = "aws"
+    URL = "s3://brandonverzuu.com?region=eu-central-1"
