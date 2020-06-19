@@ -1,18 +1,18 @@
-baseURL                          = "brandonverzuu.com/"  # Your domain name. Must end with "/"
+baseURL                          = "brandonverzuu.com/"         # Your domain name. Must end with "/"
 theme                            = "introduction"
 DefaultContentLanguage           = "en"                         # Default language for multilingual sites
-# disqusshortname                 = ""                       # https://gohugo.io/content-management/comments
-# googleAnalytics                 = ""                       # https://gohugo.io/templates/internal/#google-analytics
+# disqusshortname                = ""                           # https://gohugo.io/content-management/comments
+googleAnalytics                  = "UA-170093025-1"             # https://gohugo.io/templates/internal/#google-analytics
 
 [params]
-    themeStyle                   = "light"                 # Choose "light" or "dark"
-    favicon                      = "/images/favicon.ico"          # Path to favicon file
-    showRSSButton                = false                   # Show rss button in navigation
-    fadeIn                       = false                    # Turn on/off the fade-in effect
-    fadeInIndex                  = true                   # Turn on/off the fade-in effect on the index page even if fade-in was otherwise turned off
+    themeStyle                   = "light"                      # Choose "light" or "dark"
+    favicon                      = "/images/favicon.ico"        # Path to favicon file
+    showRSSButton                = false                        # Show rss button in navigation
+    fadeIn                       = false                        # Turn on/off the fade-in effect
+    fadeInIndex                  = true                         # Turn on/off the fade-in effect on the index page even if fade-in was otherwise turned off
     dateFormat                   = "Jan 2, 2006"
-    email                        = "brandonverzuu@gmail.com"   # E-mail address for contact section
-    # customCSS                    = ["foo.css"]             # Include custom css files placed under assets/
+    email                        = "brandonverzuu@gmail.com"    # E-mail address for contact section
+    # customCSS                    = ["foo.css"]                # Include custom css files placed under assets/
 
     # Configure the home page
     [params.home]
@@ -21,12 +21,12 @@ DefaultContentLanguage           = "en"                         # Default langua
         showAllPosts             = false                   # Set true to list all posts on home page, or set false to link to separate blog list page
         numberOfProjectsToShow   = 3                       # Maximum number of projects to show on home page. Unset or comment out to show all projects
 
-        localTime                = true                    # Show your current local time in contact section
-        timeZone                 = "Europe/Amsterdam"      # Your timezone as in the TZ* column of this list: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
-        timeFormat               = "HH:mm"                # https://momentjs.com/docs/#/displaying/format/
+        localTime                = true                     # Show your current local time in contact section
+        timeZone                 = "Europe/Amsterdam"       # Your timezone as in the TZ* column of this list: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+        timeFormat               = "HH:mm"                  # https://momentjs.com/docs/#/displaying/format/
         
     [params.projects]
-        useTwoColumns            = false                   # Use a layout with two columns instead of three
+        useTwoColumns            = false                    # Use a layout with two columns instead of three
 
     # Share buttons on blog post pages
     [params.share]
@@ -72,7 +72,7 @@ DefaultContentLanguage           = "en"                         # Default langua
         languageCode     = "en-us"
         contentDir       = "content/"
         weight           = 0
-        title            = "Introduction"
+        title            = "Brandon Verzuu"
         [languages.en.params]
             description  = "Website Description"   # Max 160 characters show in search results
             # footerText   = ""                      # Text to override default footer text (markdown allowed)
