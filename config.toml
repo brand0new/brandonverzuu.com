@@ -30,8 +30,8 @@ DefaultContentLanguage           = "en"                             # Default la
 
     # Share buttons on blog post pages
     [params.share]
-        twitter                  = true
-        facebook                 = true
+        twitter                  = false
+        facebook                 = false
         googlePlus               = false
         pinterest                = false
 
