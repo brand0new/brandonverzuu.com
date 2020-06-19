@@ -78,7 +78,7 @@ DefaultContentLanguage           = "en"                             # Default la
         weight           = 0
         title            = "Brandon Verzuu"
         [languages.en.params]
-            description  = "Website Description"   # Max 160 characters show in search results
+            description  = "A personal website to be used as portfolio and a place where I can post blogs"   # Max 160 characters show in search results
             # footerText   = ""                      # Text to override default footer text (markdown allowed)
 [deployment]
     [[deployment.targets]]
