@@ -1,8 +1,8 @@
-baseURL                          = "brandonverzuu.com/"         # Your domain name. Must end with "/"
+baseURL                          = "/"  # Your domain name. Must end with "/"
 theme                            = "introduction"
-DefaultContentLanguage           = "en"                         # Default language for multilingual sites
-# disqusshortname                = ""                           # https://gohugo.io/content-management/comments
-googleAnalytics                  = "UA-170093025-1"             # https://gohugo.io/templates/internal/#google-analytics
+DefaultContentLanguage           = "en"                             # Default language for multilingual sites
+# disqusshortname                 = ""                              # https://gohugo.io/content-management/comments
+ googleAnalytics                 = "UA-170084016-1"                 # https://gohugo.io/templates/internal/#google-analytics
 
 [params]
     themeStyle                   = "light"                      # Choose "light" or "dark"
@@ -30,8 +30,8 @@ googleAnalytics                  = "UA-170093025-1"             # https://gohugo
 
     # Share buttons on blog post pages
     [params.share]
-        twitter                  = true
-        facebook                 = true
+        twitter                  = false
+        facebook                 = false
         googlePlus               = false
         pinterest                = false
 
@@ -52,14 +52,18 @@ googleAnalytics                  = "UA-170093025-1"             # https://gohugo
         icon_pack = "fab"
 
 # If you don't want to use the default menu, you can define one by yourself
-# [[menu.main]]
-#     name    = "Home"
-#     url     = "/"
-#     weight  = 0
-# [[menu.main]]
-#     name    = "Blog"
-#     url     = "/blog/"
-#     weight  = 5
+[[menu.main]]
+     name    = "Home"
+     url     = "/"
+     weight  = 5
+[[menu.main]]
+     name    = "Blog"
+     url     = "/blog/"
+     weight  = 0
+[[menu.main]]
+     name    = "Contact"
+     url     = "/#contact"
+     weight  = 0
 
 # We only use tag as a taxonomies
 # You can add more by yourself
@@ -74,5 +78,9 @@ googleAnalytics                  = "UA-170093025-1"             # https://gohugo
         weight           = 0
         title            = "Brandon Verzuu"
         [languages.en.params]
-            description  = "Website Description"   # Max 160 characters show in search results
+            description  = "A personal website to be used as portfolio and a place where I can post blogs"   # Max 160 characters show in search results
             # footerText   = ""                      # Text to override default footer text (markdown allowed)
+[deployment]
+    [[deployment.targets]]
+    name = "aws"
+    URL = "s3://brandonverzuu.com?region=eu-central-1"

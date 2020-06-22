@@ -1,6 +1,6 @@
 ---
 title: "Contact"
-draft: true
+draft: false
 weight: 0
 ---
 

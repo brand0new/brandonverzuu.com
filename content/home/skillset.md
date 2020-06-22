@@ -1,7 +1,7 @@
 ---
 title: "Skill set"
 draft: false
-weight: 3
+weight: -1
 ---
 
 Due to the different projects I encountered, I had to deal with a lot of different people, tooling, programming languages, processes etc.
