@@ -61,7 +61,7 @@ Regardless of your position or role within the development process, you're creat
 
 Make sure to ask yourself the question whether or not you're being pushed forward plagued by assumptions, metrics and deadlines instead of **being guided by the challenge to determine and solve the actual problems of the customer**.
 
-Take into account the human part of the development; **do you know if the problem you think you're solving is close to the actual problem?**. This will serve you greatly in the long run.
+Take into account the human part of the development; **do you know if the problem you think you're solving, is even close to the actual problem?**. This will serve you greatly in the long run.
 
 ## Spaces of problems and solutions
 
