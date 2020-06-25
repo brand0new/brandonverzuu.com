@@ -1,7 +1,7 @@
 ---
 title: "The Serverless Site My Customer Needed"
-date: 2020-06-12T09:17:52+02:00
-draft: true
+date: 2020-06-25T20:00:00+02:00
+draft: false
 ---
 
 Not long ago I published a new version of my website that no longer used a HTML one-page template. I had written both HTML and CSS files myself and I quickly felt content. The site displayed really summarized "about me" information with some contact details.
@@ -38,13 +38,13 @@ The late 1960's are the origin of the **Wicked Problems**  firstly mentioned by 
 
 [^1]: [C. West Churchman, "Wicked Problems," Management Science, (December 1967), vol. 4, no.14, B-141-42](https://bit.ly/37Tu1dt)
 
-That roughly translates to: Wicked problems are unclear how they should be solved, a lot of people are involved but they don't agree with each other and it's unknown what is and isn't relevant... It's actually quite a mess.
+That roughly translates to: *Wicked problems are unclear in the way how they should be solved, a lot of people are involved but they don't agree with each other and it's unknown what is and isn't relevant... It's actually quite a mess*.
 
-Rittel claimed that although these problems are so complex, they have a underlying pattern consisting of two phases: **problem definition** and **problem solution**. He pleaded for the importance of human experience and perception in design as opposed to others in this period.
+Rittel claimed that although these problems are so complex, they have a underlying pattern consisting of two phases: **problem definition** and **problem solution**. He pleaded for the importance of human experience and perception in design as opposed to others in this period. This is were the **problem space** and **solution space** phases are derived from in diagrams about design thinking.
 
 This sparked the interest of many since it strives to solve a problem that's relevant throughout different industries because of its abstract nature. Causing designers and other highly creative people to become subjects of studies in order to determine how they would come up with ideas and solutions. This research led to the use of creative thinking techniques like brainstorming across other professions as we know and use today.
 
-A lot more happened in the years that came but in the 1992 Richard Buchanan published **"Wicked Problems in Design Thinking"** in which he portrait design and its role in solving problems. Stating[^2]:
+After this periode a lot more happened on which I could elaborate more, but one of the key events related to design thinking was the 1992 publication of Richard Buchanan's **"Wicked Problems in Design Thinking"** in which he portrait design and its role in solving problems. Stating[^2]:
 
 > "The subject matter of design is potentially *universal* in scope,
 because design thinking may be applied to any area of human experience"
@@ -57,7 +57,7 @@ You might be wondering why I'm lecturing you on the history of design. But the c
 
 The emphasis is more and more put on **time-to-market**, **reducing lead times**, **delivering on more new features** and other metrics. Sure, times have changed and technology enables us to deliver on these promises. But it beckons the question whether or not these demands are slowly and steadily crossing a line causing a shift of focus in software development towards metrics, leading to disconnection from human aspects.
 
-Regardless of your position or role within the development process, you're probably creating something to be used by humans in one way or another. Whether its a mission statement, a performance report, a piece of software or even test documentation.
+Regardless of your position or role within the development process, you're creating something to be used by humans in one way or another. Whether its a mission statement, a performance report, a piece of software or even test documentation.
 
 Make sure to ask yourself the question whether or not you're being pushed forward plagued by assumptions, metrics and deadlines instead of **being guided by the challenge to determine and solve the actual problems of the customer**.
 
