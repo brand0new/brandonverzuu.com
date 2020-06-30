@@ -12,6 +12,16 @@
     
     
     <item>
+      <title>The Serverless Site My Customer Needed</title>
+      <link>/blog/the-serverless-site-my-customer-needed/</link>
+      <pubDate>Thu, 25 Jun 2020 20:00:00 +0200</pubDate>
+      
+      <guid>/blog/the-serverless-site-my-customer-needed/</guid>
+      <description>Not long ago I published a new version of my website that no longer used a HTML one-page template. I had written both HTML and CSS files myself and I quickly felt content. The site displayed summarized &amp;ldquo;about me&amp;rdquo; information with some contact details.
+Almost immediately after I put the website live, I asked myself: &amp;ldquo;What if I wanted to share content?&amp;quot;. Surely I could use an existing platform to scribble down my thoughts, but could it be possible to put this content on my site without a hassle and without worrying about maintaining components like a Content Management System (CMS) or even the webserver itself?</description>
+    </item>
+    
+    <item>
       <title>Why create a personal website?</title>
       <link>/blog/first-post/</link>
       <pubDate>Fri, 05 Jun 2020 17:02:19 +0200</pubDate>

@@ -4,17 +4,17 @@ date: 2020-06-25T20:00:00+02:00
 draft: false
 ---
 
-Not long ago I published a new version of my website that no longer used a HTML one-page template. I had written both HTML and CSS files myself and I quickly felt content. The site displayed really summarized "about me" information with some contact details.
+Not long ago I published a new version of my website that no longer used a HTML one-page template. I had written both HTML and CSS files myself and I quickly felt content. The site displayed summarized "about me" information with some contact details.
 
-Almost immediately after I put the website live, I asked myself: *"What if I'd wanted to share content?"*. Surely I could use an existing platform to scribble down my thoughts, but could it be possible to put this content on my site without a hassle and without worrying about maintaining components like a Content Management System (CMS) or even the webserver itself?
+Almost immediately after I put the website live, I asked myself: *"What if I wanted to share content?"*. Surely I could use an existing platform to scribble down my thoughts, but could it be possible to put this content on my site without a hassle and without worrying about maintaining components like a Content Management System (CMS) or even the webserver itself?
 
 So yeah, I meant myself when writing about "my customer" and yes, I think that's disgusting too. But hear me out.
 
-The point is; **I delivered a product without actually understanding and/or observing what the customer needed.** If I'd just sat down for longer then 20 minutes and drafted up some ideas maybe I could've avoided this. Right? I see this phenomenon happening around me all the time. Sadly I even contribute to it more then I'd like to commit. So this made me wonder:
+The point is; **I delivered a product without actually understanding and/or observing what the customer needed.** If I would have sat down for longer then 20 minutes and drafted up some ideas maybe I could've avoided this. Right? I see this phenomenon happening around me all the time. Sadly I even contribut to it more then I'd like to commit. So this made me wonder:
 
-> *Can I be more mindful in my development process? And if so, could I find a solution that actually fulfils my needs?*
+> *Can I be more mindful in my development process? And if so, could I find a solution that actually fulfills my needs?*
 
-In order to answer this question I got urged myself to delve into the origin of design thinking. And boy did I fall down the rabbit hole. 
+In order to answer this question I got urged myself to delve into the origin of design thinking. And boy, did I fall down the rabbit hole.
 
 *If you don't feel like finding out more about the history of design and how it got into software development, you'd better skip to the part where I talk about the development of my site.*
 
@@ -28,9 +28,9 @@ The design thinking movement, like many trends before, has made its delayed way 
 
 Though it originates from something much more elaborate:
 
-As far as I could trace back, it started in when 1964 Ken Garland published **["The First Things First" manifesto](https://bit.ly/2BzkSdK)** as response to the ever increasing pressure on designers to contribute to the production of mainstream advertising. Depriving the concept of design from its essence by moving it from being centered around humans to instead be driven by corporate goals and metrics. Designers have fought to prevent their craftsmanship from sliding into this inhuman oblivion ever since.
+As far as I could trace back, it started in 1964 when Ken Garland published **["The First Things First" manifesto](https://bit.ly/2BzkSdK)** as response to the ever increasing pressure on designers to contribute to the production of mainstream advertising. Depriving the concept of design from its essence by moving it from being centered around humans to instead be driven by corporate goals and metrics. Designers have fought to prevent their craftsmanship from sliding into this inhuman oblivion ever since.
 
-The developing technology didn't help either as it introduced increasingly more complex problems at the time. In attempt to solve these problems people tried to turn to design, as a method of solving problems, and turn it into a form of science.
+The developing technology didn't help either as it introduced increasingly more complex problems at the time. In attempt to solve these problems people tried to turn to design, as a method of solving problems, into a form of science.
 
 The late 1960's are the origin of the **Wicked Problems**  firstly mentioned by Horst Rittel, a design theorist and professor at the Ulm School of Design in Germany. He stated that these wicked problems are a[^1]:
 
@@ -42,7 +42,7 @@ That roughly translates to: *Wicked problems are unclear in the way how they sho
 
 Rittel claimed that although these problems are so complex, they have a underlying pattern consisting of two phases: **problem definition** and **problem solution**. He pleaded for the importance of human experience and perception in design as opposed to others in this period. This is were the **problem space** and **solution space** phases are derived from in diagrams about design thinking.
 
-This sparked the interest of many since it strives to solve a problem that's relevant throughout different industries because of its abstract nature. Causing designers and other highly creative people to become subjects of studies in order to determine how they would come up with ideas and solutions. This research led to the use of creative thinking techniques like brainstorming across other professions as we know and use today.
+This sparked the interest of many, since it strives to solve a problem that's relevant throughout different industries because of its abstract nature. Causing designers and other highly creative people to become subjects of studies in order to determine how they would come up with ideas and solutions. This research led to the use of creative thinking techniques like brainstorming across other professions as we know and use today.
 
 After this periode a lot more happened on which I could elaborate more, but one of the key events related to design thinking was the 1992 publication of Richard Buchanan's **"Wicked Problems in Design Thinking"** in which he portrait design and its role in solving problems. Stating[^2]:
 
@@ -75,13 +75,13 @@ I've spent a couple of days drafting out ideas, listing constraints and hardship
 
 - **Simple**: Since I only want to post an occasional blog and some personal information there is no need for an elaborate CMS or fancy features. This will not only enable the effortless principle but will reduce distraction while writing by unnecessary features.
 
-- **Durable**: Both in infrastructure and related costs I want the most ideal match between the features I need and the related costs. Static web content shouldn't be needing a 24/7 up and running webserver when there is no traffic. To reduce my (digital) footprint and also my costs.
+- **Sustainable**: Both in infrastructure and related costs I want the most ideal match between the features I need and the related costs. Static web content shouldn't be needing a 24/7 up and running webserver when there is no traffic. To reduce my (digital) footprint and also my costs.
 
 As a solution I decided to go with:
 
-- **[AWS Static Storage Server (S3)](https://aws.amazon.com/s3/)**: the static storage service from Amazon offers a lot within the free tier. Using this service eliminates the need to maintain my own server. It is also accessible from almost every where using the AWS-CLI or online console.
+- **[AWS Static Storage Server (S3)](https://aws.amazon.com/s3/)**: the static storage service from Amazon offers a lot within the free tier. Using this service eliminates the need to maintain my own server. It is also accessible from almost everywhere using the AWS-CLI or online console.
 
-- **[AWS Route53](https://aws.amazon.com/route53/)**: since I decided to go with the S3 service I wanted to use the AWS Domain Name Service as well. This way I would have everything in one place with no need to do custom DNS configuration and at the same time reducing somewhat of the hassle of configuring the S3 service to work with my domain name.
+- **[AWS Route53](https://aws.amazon.com/route53/)**: since I decided to go with the S3 service I wanted to use the AWS Domain Name Service as well. This way I would have everything in one place with no need to do custom DNS configuration and at the same time reducing the hassle of configuring the S3 service to work with my domain name.
 
 - **[GitHub](https://github.com/)**: instead of versioning my content within a CSM, which I'd have to practice, I can store it within GitHub. Making me able to use a tool of which I already have some know-how.
 
@@ -89,12 +89,12 @@ As a solution I decided to go with:
 
 - **[Markdown](https://www.markdownguide.org/)**: one that seems rather peculiar, but I prefer writing my content in a simple text editor so I'll be less likely to be distracted by styling and formatting. Markdown restricts its users in this by offering a simple syntax for only the essentials.
 
-Everything you see on the site is actually written in .md files and HUGO does the rest. There are multiple SSG alternatives but I went with HUGO because of the low rendering times when opening HTML files so visitors have the quickest load times I could offer out of the box. I had a blast "creating" my website this time because everything just seemed to "click" once I have found something that aligned with the principles I created based on my needs.
+Everything you see on the site is actually written in .md files and HUGO does the rest. There are multiple SSG alternatives but I went with HUGO because of the low rendering times when opening HTML files so visitors have the quickest load times I could offer out of the box. This made developing the site much more effortless since I could change everything on the fly. I had a blast "creating" my website this time because everything just seemed to "click" once I have found something that aligned with the principles I created based on my needs.
 
 Curious about the content of the website? Checkout my repository for the site on [GitHub](https://github.com/brand0new/brandonverzuu.com).
 
-At the time of writing I've already changed my theme twice because of accessibility and readability. So am I ever done with my site?
+At the time of writing I've already changed my theme twice because of accessibility and readability. So will I ever be done with my site?
 
 I guess that's the beauty of this way of developing.
 
-Laying out design principles which I incorporate throughout the development process, from tool and language selection all the way to implementation and styling. Combined with the effort to try and reduce constraints and hardships as much as possible enabling me to focus on experimentation, prototyping and testing to find the solution that I needed.
+Laying out design principles which I incorporate throughout the development process, from tool and language selection all the way to implementation and styling. This, combined with the effort to try and reduce constraints and hardships as much as possible. Enabled me to focus on experimentation, prototyping and testing to find the solution that I needed.
