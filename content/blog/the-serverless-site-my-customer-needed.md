@@ -8,7 +8,7 @@ Not long ago I published a new version of my website that no longer used a HTML 
 
 Almost immediately after I put the website live, I asked myself: *"What if I wanted to share content?"*. Surely I could use an existing platform to scribble down my thoughts, but could it be possible to put this content on my site without a hassle and without worrying about maintaining components like a Content Management System (CMS) or even the webserver itself?
 
-So yeah, I meant myself when writing about "my customer" and yes, I think that's disgusting too. But hear me out.
+So yeah, I meant myself when writing about "my customer" and yes, I think that's disgusting too. But hear me out. <!--more-->
 
 The point is; **I delivered a product without actually understanding and/or observing what the customer needed.** If I would have sat down for longer then 20 minutes and drafted up some ideas maybe I could've avoided this. Right? I see this phenomenon happening around me all the time. Sadly I even contribut to it more then I'd like to commit. So this made me wonder:
 
