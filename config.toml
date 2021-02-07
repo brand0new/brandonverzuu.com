@@ -1,85 +1,72 @@
-baseURL                          = "/"  # Your domain name. Must end with "/"
-theme                            = "introduction"
-DefaultContentLanguage           = "en"                             # Default language for multilingual sites
-# disqusshortname                 = ""                              # https://gohugo.io/content-management/comments
- googleAnalytics                 = "UA-170084016-1"                 # https://gohugo.io/templates/internal/#google-analytics
+# DO NOT REMOVE THIS
+theme = "hugo-theme-codex" 
 
+# Override these settings with your own
+title = "Brandon Verzuu"
+languageCode = "en-us"
+baseURL = "https://brandonverzuu.com/"
+copyright = "© {year}"
+
+# Add your Disqus shortname here.
+# disqusShortname = ""
+
+# Add your Google Analytics identifier: UA-XXXXXXXX-X
+# googleAnalytics = "" 
+
+# Optional params
 [params]
-    themeStyle                   = "light"                      # Choose "light" or "dark"
-    favicon                      = "/images/favicon.ico"        # Path to favicon file
-    showRSSButton                = false                        # Show rss button in navigation
-    fadeIn                       = false                        # Turn on/off the fade-in effect
-    fadeInIndex                  = true                         # Turn on/off the fade-in effect on the index page even if fade-in was otherwise turned off
-    dateFormat                   = "Jan 2, 2006"
-    email                        = "brandonverzuu@gmail.com"    # E-mail address for contact section
-    # customCSS                    = ["foo.css"]                # Include custom css files placed under assets/
+  # Follow the Hugo date/time format reference here: 
+  # https://gohugo.io/functions/format/#gos-layout-string
+  dateFormat = "Jan 2 2006"
 
-    # Configure the home page
-    [params.home]
-        introHeight              = "fullheight"            # Input either "medium" or "large" or "fullheight"
-        showLatest               = true                    # Show latest blog post summary
-        showAllPosts             = false                   # Set true to list all posts on home page, or set false to link to separate blog list page
-        numberOfProjectsToShow   = 3                       # Maximum number of projects to show on home page. Unset or comment out to show all projects
+  # Links to your social accounts, comment/uncomment as needed. Icons will be displayed for those specified.
+  twitter = "https://twitter.com/brandonverzuu"
+  github = "https://github.com/brand0new"
+  # email = "mailto:<your email>"
+  # mastodon = "https://mastodon.social/@nickname"
+  # facebook = "https://facebook.com/<your handle>"
+  # gitlab = "https://gitlab.com/<your handle>"
+  # instagram = "https://instagram.com/<your handle>"
+  linkedin = "https://linkedin.com/brandonverzuu"
+  # youtube = "https://www.youtube.com/channel/<your channel>"
+  
+  # Titles for your icons (shown as tooltips), and also their display order.
+  # Currently, these icons are supported: 
+  #   "Twitter", "GitHub", "Email", "Mastodon", "Facebook", "GitLab", "Instagram", "LinkedIn", "YouTube"
+  iconOrder = ["Twitter", "GitHub", "LinkedIn"]
 
-        localTime                = true                     # Show your current local time in contact section
-        timeZone                 = "Europe/Amsterdam"       # Your timezone as in the TZ* column of this list: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
-        timeFormat               = "HH:mm"                  # https://momentjs.com/docs/#/displaying/format/
-        
-    [params.projects]
-        useTwoColumns            = false                    # Use a layout with two columns instead of three
+  # Metadata for Twitter cards, defaults to params.twitter
+  # twitterSite = "@<your handle>"
+  # twitterAuthor = "@<your handle>"
 
-    # Share buttons on blog post pages
-    [params.share]
-        twitter                  = false
-        facebook                 = false
-        googlePlus               = false
-        pinterest                = false
+  # Set to true to display page title in table of contents in blog posts.
+  showPageTitleInTOC = false
 
-    # Social icons appear in introduction and contact section. Add as many more as you like.
-    # Icon pack "fab" includes social network icons, see: https://fontawesome.com/icons?d=gallery&s=brands&m=free
-    # Icon pack "fas" includes solid style icons, see: https://fontawesome.com/icons?d=gallery&s=solid&m=free
-    [[params.social]]
-        url   = "https://linkedin.com/brandonverzuu"
-        icon  = "linkedin-in" # icon name without the 'fa-'
-        icon_pack = "fab"
-    [[params.social]]
-        url = "mailto:brandonverzuu@gmail.com"  # For a direct email link, use "mailto:test@example.org".
-        icon = "paper-plane" # icon name without the 'fa-'
-        icon_pack = "fas"
-    [[params.social]]
-        url   = "https://github.com/brand0new"
-        icon  = "github" # icon name without the 'fa-'
-        icon_pack = "fab"
+# This disables Hugo's default syntax highlighting in favor
+# of prismjs. If you wish to use Hugo's default syntax highlighting
+# over prismjs, remove this. You will also need to remove the prismjs
+# vendor script in layouts/blog/single.html.
+[markup]
+  [markup.highlight]
+    codeFences = false
+    
+  # Set to false to disallow raw HTML in markdown files
+  [markup.goldmark.renderer]
+      unsafe = true
 
-# If you don't want to use the default menu, you can define one by yourself
+# Controls the navigation
 [[menu.main]]
-     name    = "Home"
-     url     = "/"
-     weight  = 5
-[[menu.main]]
-     name    = "Blog"
-     url     = "/blog/"
-     weight  = 0
-[[menu.main]]
-     name    = "Contact"
-     url     = "/#contact"
-     weight  = 0
+  identifier = "about"
+  name = "about"
+  title = "About"
+  url = "/"
 
-# We only use tag as a taxonomies
-# You can add more by yourself
-[taxonomies]
-  tag = "tags"
+[[menu.main]]
+  identifier = "blog"
+  name = "blog"
+  title = "Blog"
+  url = "/blog"
 
-[languages]
-    [languages.en]
-        languageName     = "English"
-        languageCode     = "en-us"
-        contentDir       = "content/"
-        weight           = 0
-        title            = "Brandon Verzuu"
-        [languages.en.params]
-            description  = "A personal website to be used as portfolio and a place where I can post blogs"   # Max 160 characters show in search results
-            # footerText   = ""                      # Text to override default footer text (markdown allowed)
 [deployment]
     [[deployment.targets]]
     name = "aws"
