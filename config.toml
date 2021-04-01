@@ -5,13 +5,13 @@ theme = "hugo-theme-codex"
 title = "Brandon Verzuu"
 languageCode = "en-us"
 baseURL = "https://brandonverzuu.com/"
-copyright = "© {year}"
+copyright = "Brandon Verzuu - © {year}"
 
 # Add your Disqus shortname here.
 # disqusShortname = ""
 
 # Add your Google Analytics identifier: UA-XXXXXXXX-X
-# googleAnalytics = "" 
+googleAnalytics = "UA-170084016-1" 
 
 # Optional params
 [params]
@@ -22,7 +22,7 @@ copyright = "© {year}"
   # Links to your social accounts, comment/uncomment as needed. Icons will be displayed for those specified.
   twitter = "https://twitter.com/brandonverzuu"
   github = "https://github.com/brand0new"
-  # email = "mailto:<your email>"
+  email = "mailto:brandonverzuu@gmail.com"
   # mastodon = "https://mastodon.social/@nickname"
   # facebook = "https://facebook.com/<your handle>"
   # gitlab = "https://gitlab.com/<your handle>"
@@ -33,11 +33,11 @@ copyright = "© {year}"
   # Titles for your icons (shown as tooltips), and also their display order.
   # Currently, these icons are supported: 
   #   "Twitter", "GitHub", "Email", "Mastodon", "Facebook", "GitLab", "Instagram", "LinkedIn", "YouTube"
-  iconOrder = ["Twitter", "GitHub", "LinkedIn"]
+  iconOrder = ["Twitter", "GitHub", "Email", "LinkedIn"]
 
   # Metadata for Twitter cards, defaults to params.twitter
-  # twitterSite = "@<your handle>"
-  # twitterAuthor = "@<your handle>"
+  twitterSite = "@BrandonVerzuu"
+  twitterAuthor = "@BrandonVerzuu"
 
   # Set to true to display page title in table of contents in blog posts.
   showPageTitleInTOC = false
