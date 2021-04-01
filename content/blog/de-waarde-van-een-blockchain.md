@@ -10,22 +10,19 @@ math: false
 toc: true
 ---
 
-Duizelingwekkende bedragen als je op een website zoals [CoinMarketCap](https://coinmarketcap.com/ "CoinMarketCap") kijkt. Hier vindt je een overzicht van de totale waarde die momenteel geïnvesteerd is per digitale valuta. Oftewel; de prijs keer de voorraad die in omloop is. Voor sommige digitale valuta leidt dit tot bizarre bedragen. Wat bezielt iedereen toch om zoveel fiat geld (Euro's, Dollars, etc.) om te zetten naar een digitale valuta? Is deze wel gerechtvaardigd? Is het mogelijk om te bepalen wat de daadwerkelijke waarde is van een digitale valuta op basis van de onderliggende blockchain? Of willen mensen alleen maar snel rijk kunnen worden met behulp van een "hippe trend" waar steeds meer mensen opspringen?
+Je ziet duizelingwekkende bedragen als je op een website zoals [CoinMarketCap](https://coinmarketcap.com/ "CoinMarketCap") kijkt. Hier vind je een overzicht van de totale waarde die momenteel geïnvesteerd is per digitale valuta. Oftewel; de prijs keer de voorraad die in omloop is. Voor sommige digitale valuta leidt dit tot bizarre bedragen. Wat bezielt iedereen toch om zoveel fiat geld (Euro's, Dollars, etc.) om te zetten naar een digitale valuta? Is deze wel gerechtvaardigd? Is het mogelijk om te bepalen wat de daadwerkelijke waarde is van een digitale valuta op basis van de onderliggende blockchain? Of willen mensen alleen maar snel rijk kunnen worden met behulp van een "hippe trend" waar steeds meer mensen opspringen?
 
 Ik wil graag stilstaan bij de monetaire zijde van blockchains. Wat voor invloed kan deze technologie hebben op de manier waarop wij naar geld en waarde kijken?
 
 > **Disclaimer**: *in geen enkele vorm of hoedanigheid is dit financieel advies. In deze post geef ik mijn visie en som ik gedachten en feiten op om uitleg te geven over de ontwikkelingen op financieel gebied.*
 
-
-## Het geloof in- en waarde van geld
+## Het geloof in - en waarde van geld
 
 Elk geldsysteem is gebaseerd op geloof. Op het concept dat wij allemaal waarde zien in de valuta waar wij mee omgaan. Deels wordt het geforceerd door de overheid, je betaalt immers je belasting in euro's, doe je dit niet dan kom je in de problemen.
 
 Maar we hebben een hele tijd ook zonder geld geleefd. Waarbij transacties bestonden uit het wisselen van goederen. Als je meer leest over het ontstaan van geld dan wordt er voornamelijk geschreven over de concept dat geld is ontstaan wegens problemen van het duiden en vastleggen van waarde.
 
 Broden kunnen ruilen is leuk, maar het sparen van brood is na een week niet een lucratieve manier om waarde te duiden. Zo zijn er allerlei verschillende middelen geweest om dit te doen. Van kerven tot het daadwerkelijk gebruik maken van munten en hun waarde.
-
-
 
 - USD als centrum
 - het loslaten van the golden standard
@@ -48,7 +45,7 @@ Enerzijds hebben we een groep die vastzit in een huidige denkwijze, waarbij stee
 
 ## Waarde van digitale valuta
 
-Maar dat zegt niets over de waarde van een digitale valuta zelf. Wat 
+Dit alles zegt niet concreet iets over de waarde van digitale valuta. 
 
 - Marktkapitalisatie in blockchain projecten
 - Inflatie fiat en blockchain

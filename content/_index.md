@@ -1,5 +1,5 @@
 ---
-heading: "Hi, I'm Brandon Verzuu"
-subheading: "Software and Blockchain enthousiast."
+heading: "Hallo, ik ben Brandon Verzuu"
+subheading: "Software enthousiast."
 handle: "BrandonVerzuu"
 ---
