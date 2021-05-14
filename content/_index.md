@@ -1,5 +1,5 @@
 ---
 heading: "Hallo, ik ben Brandon Verzuu"
-subheading: "Software enthousiast."
+subheading: "Software enthousiasteling."
 handle: "BrandonVerzuu"
 ---

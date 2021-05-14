@@ -4,7 +4,7 @@ theme = "hugo-theme-codex"
 # Override these settings with your own
 title = "Brandon Verzuu"
 languageCode = "en-us"
-baseURL = "https://brandonverzuu.com/"
+baseURL = "/"
 copyright = "Brandon Verzuu - © {year}"
 
 # Add your Disqus shortname here.
