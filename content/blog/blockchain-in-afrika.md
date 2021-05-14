@@ -46,7 +46,7 @@ Jouw economische identiteit moet je in staat stellen aan te tonen wat je bezit e
 
 Financiële inclusiviteit betekent dat iedereen dezelfde mate van toegang heeft tot financiële middelen. Dit betekent niet zozeer dat geld lenen direct mogelijk is, maar dan het mogelijk moet zijn om überhaupt het gesprek te voeren hierover.
 
-[In Nederland heeft een overgroot deel van de huiseigenaar een hypotheek](https://www.dnb.nl/actuele-economische-vraagstukken/hypotheekschuld/#:~:text=De%20meeste%20Nederlanders%20sluiten%20hiervoor,van%20de%20hele%20Europese%20Unie.&text=Half%202020%20hadden%20Nederlandse%20huishoudens%20samen%20ruim%20EUR%20740%20miljard%20aan%20hypotheekschuld.) gebruikt om aan dat huis te komen. Wat betekent dat een groot deel van het leven dat wij leiden mede mogelijk gemaakt wordt de toegang die we hebben tot financiële middelen.
+[In Nederland heeft een overgroot deel van de huiseigenaren een hypotheek](https://www.dnb.nl/actuele-economische-vraagstukken/hypotheekschuld/#:~:text=De%20meeste%20Nederlanders%20sluiten%20hiervoor,van%20de%20hele%20Europese%20Unie.&text=Half%202020%20hadden%20Nederlandse%20huishoudens%20samen%20ruim%20EUR%20740%20miljard%20aan%20hypotheekschuld.) gebruikt om aan dat huis te komen. Wat betekent dat een groot deel van het leven dat wij leiden mede mogelijk gemaakt wordt door de toegang die we hebben tot financiële middelen.
 
 ## De rol van een blockchain
 
@@ -76,7 +76,7 @@ Omdat we steeds meer digitaal doen, wordt het alsmaar belangrijker dat je bewust
 
 ## Zoveel meer dan Bitcoin
 
-Dit soort vraagstukken kunnen beantwoordt worden met blockchain technologie. Of Cardano ook écht gaat leiden tot een digitale revolutie in Afrika is nog maar de vraag.
+Dit soort vraagstukken kunnen beantwoord worden met blockchain technologie. Of Cardano ook écht gaat leiden tot een digitale revolutie in Afrika is nog maar de vraag.
 
 Er zijn veel meer goede initiatieven gestart in Afrika die door de huidige gang van zaken stranden en niet afgerond worden.
 
