@@ -2,7 +2,7 @@
 title: "Blockchain in Afrika"
 date: 2021-04-29T21:23:46+02:00
 draft: false
-slug: "blockchain-in-Arfika"
+slug: "blockchain-in-Afrika"
 description: "Een ander doel voor blockchain naast financiële doeleneinden"
 keywords: ["blockchain", "cardano", "ada", "bitcoin"]
 tags: ["blockchain"]
