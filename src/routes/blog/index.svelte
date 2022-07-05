@@ -26,22 +26,36 @@
 	export let posts : any[];
 </script>
 
-<h1>Posts</h1>
+<div class= "container">
+	<h1>Posts</h1>
 
-<div>
-	<h2>Most recent posts</h2>
-	{#each posts as { path, metadata }}
-		<div class="card w-96 bg-base-100 shadow-xl">
-			<figure><img src="https://placeimg.com/300/225/arch" alt="Shoes" /></figure>
+	<div class="blogposts">
+		{#each posts as { path, metadata }}
+		<div class="card card-compact w-96 bg-base-100 shadow-xl">
+			<figure><img src="https://placeimg.com/400/225/arch" alt="Shoes" /></figure>
 			<div class="card-body">
 				<h2 class="card-title">{metadata.title}</h2>
 				<p>{metadata.description}</p>
 				<div class="card-actions justify-end">
-					<button class="btn btn-primary">
+					<button class="btn btn-ghost">
                         <a href={`/blog/${path.replace(".md", "")}`}>Read</a>
                     </button>
 				</div>
 			</div>
 		</div>
-	{/each}
+		{/each}
+	</div>
 </div>
+
+<style>
+	.container {
+        max-width: 800px;
+        margin: 50px auto;
+    }
+
+    .blogposts {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-gap: 20px;
+    }
+</style>

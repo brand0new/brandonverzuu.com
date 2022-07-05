@@ -5,10 +5,17 @@
 
 <section class="h-screen">
 	<Navbar />
-	<main class="flex items-center justify-center bg-base-100">
-		<div class="w-4/5 m-4 px-4 py-4 sm:px-0 prose">
+	<main>
+		<div class="container prose">
 			<slot />
 			<!-- content goes into slot -->
 		</div>
 	</main>	
 </section>
+
+<style>
+	.container {
+		max-width: 1400px;
+		margin: 50px auto;
+	}
+</style>
