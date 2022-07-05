@@ -12,11 +12,11 @@
             <div class="info-text">
                 <h1>
                     <p>Hallo,</p>
-                    <p>Ik ben Brandon Verzuu</p>
+                    <p>ik ben Brandon Verzuu</p>
                 </h1>
             </div>
             <h2 class="subtitle">
-                Software en technologie enthousiasteling met een passie voor systeemontwerp.
+                Software en technologie fanaat met een passie voor architectuur.
             </h2>
             <div>
                 <a href="/about">Meer over mij</a>
