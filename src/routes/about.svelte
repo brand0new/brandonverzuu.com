@@ -1,3 +1,11 @@
+<script lang="ts">
+
+    const experience : Number = new Date(Date.now()).getTime() - new Date('01-01-2016').getTime(); 
+
+    export { experience };
+
+</script>
+
 <svelte:head>
     Over mij
 </svelte:head>
@@ -5,13 +13,16 @@
 <div class="main-container">
     <section>
         <div class="inner-container">
-            <h1 class="about-title">Hallo, ik ben Brandon Verzuu 🙌</h1>
+            <h1 class="about-title">Hoi! 👋</h1>
             <div class="about-subtitle">
                 <p>
-                    I am a software development and technology enthousiast. 
+                    Ik ben afgestudeerd bedrijfskundig informaticus met {experience} jaar praktijkervaring in software ontwikkeling voor MKB en enterprise partijen. Ik richt me op nieuwe ontwikkelingen binnen de sector en pragmatische manieren om deze toe te passen en hiervan te leren.
                 </p>
                 <p>
-                    Contact kun je met mij opnemen via <span class="info-text">brandonverzuu@gmail.com</span>
+                    Hiervoor ligt een hoofdrol weggelegd voor het onderzoeken naar en adviseren over de toepassing van nieuwe ontwikkelingen. De afgelopen vijf jaar heb ik een voorliefde ontwikkeld voor blockchain en (systeem)architectuur.
+                </p>
+                <p>
+                    Contact opnemen kan via <span class="info-text"><a href="mailto:brandonverzuu@gmail.com">brandonverzuu@gmail.com</a> of <a href="https://www.linkedin.com/in/brandonverzuu/">LinkedIn</a></span>
                 </p>
             </div>
         </div>

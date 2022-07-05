@@ -7,6 +7,8 @@ tags: ["blockchain"]
 layout: blog
 ---
 
+# {title}
+
 In mijn tweede post heb ik geschreven over het brede spectrum aan verschillende crypto die tegenwoordig bestaan. Hierbij lag de nadruk op de waarde van deze crypto.
 
 Dit is vaak het enige waar mensen aan denken wanneer ze crypto, bitcoin of blockchain horen. Voor een overgroot deel van de projecten is dit ook het doel. Zo is Bitcoin in het leven geroepen als digitale vorm van cash dat gebruikt kan worden om betalingen te doen.

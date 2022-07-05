@@ -49,7 +49,7 @@
 
 <style>
 	.container {
-        max-width: 800px;
+        max-width: 900px;
         margin: 50px auto;
     }
 

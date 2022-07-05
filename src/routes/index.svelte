@@ -7,12 +7,12 @@
  -->
 
 <div class="container">
-    <div class="info">
-        <div class="container info-container">
+    <div class="flex-start info">
+        <div class="flex-start info-container">
             <div class="info-text">
                 <h1>
-                    <p class="animate-text-1">Hallo,</p>
-                    <p class="text-2">Ik ben Brandon Verzuu</p>
+                    <p>Hallo,</p>
+                    <p>Ik ben Brandon Verzuu</p>
                 </h1>
             </div>
             <h2 class="subtitle">
@@ -25,23 +25,7 @@
     </div>
 </div>
 
-<div class="background-div bg-base-300"></div>
-
-<style>
-    .info {
-        text-align: center;
-        position: relative;
-    }       
- 
-    .info-container {
-        max-width: fit-content;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        text-align: left;
-        align-items: start;
-    }
- 
+<style> 
     .container {
         margin: 190px 0 0 2.5rem;
     }
@@ -61,16 +45,10 @@
         letter-spacing: -0.03em;
     }
  
-    .info h2 {
+    .subtitle {
         max-width: 65ch;
         font-weight: 200;
         margin-top: 0.50rem;
-    }
- 
-    .background-div {
-        width: 35vw;
-        height: 35vh;
-        margin: -155px auto;
     }
    
     .info .info-text {
