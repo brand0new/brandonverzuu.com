@@ -1,13 +1,17 @@
 <script lang="ts">
 
-    const experience : Number = new Date(Date.now()).getTime() - new Date('01-01-2016').getTime(); 
-
+    let experience : number = ( new Date(Date.now()).getTime() - new Date('01-01-2016').getTime());
+    console.log("diff in ms: " + experience);
+    experience /= (1000 * 60 * 60 * 24);
+    console.log("diff in days: " + experience);
+    experience = Math.abs(Math.floor(experience/365.25));
+    
     export { experience };
 
 </script>
 
 <svelte:head>
-    Over mij
+    <title>Over Brandon</title>
 </svelte:head>
 
 <div class="main-container">
