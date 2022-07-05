@@ -1,6 +1,10 @@
 ---
-    title: Begrijp jij bitcoin?
-    layout: blog
+title: Begrijp jij bitcoin?
+date: 2021-04-29T21:23:46+02:00
+description: "Een ander doel voor blockchain naast financiële doeleinden"
+keywords: ["blockchain", "cardano", "ada", "bitcoin"]
+tags: ["blockchain"]
+layout: blog
 ---
 
 # Begrijp jij bitcoin?
