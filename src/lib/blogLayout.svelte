@@ -1,3 +1,3 @@
-<div class="container max-w-xl mx-auto prose">
+<div class="prose">
     <slot />
 </div>

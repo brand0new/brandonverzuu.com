@@ -6,7 +6,7 @@
 <section class="h-screen">
 	<Navbar />
 	<main>
-		<div class="container prose">
+		<div class="container">
 			<slot />
 			<!-- content goes into slot -->
 		</div>
@@ -15,7 +15,6 @@
 
 <style>
 	.container {
-		max-width: 1400px;
 		margin: 50px auto;
 	}
 </style>

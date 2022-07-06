@@ -26,9 +26,11 @@
 	export let posts : any[];
 </script>
 
-<div class= "container">
-	<h1>Posts</h1>
-
+<div>
+	<h1 class="title">Posts 📚</h1>
+	<p>Van tijd tot tijd schrijf ik een blogposts over een onderwerp dat ik interessant vind. Hiervoor heb ik geen vast schema, maar updates worden verstuurd via LinkedIn.</p>
+	<p>Lees ze!</p>
+	<div class="divider" />
 	<div class="blogposts">
 		{#each posts as { path, metadata }}
 		<div class="card card-compact w-96 bg-base-100 shadow-xl">
@@ -48,14 +50,16 @@
 </div>
 
 <style>
-	.container {
-        max-width: 900px;
-        margin: 50px auto;
-    }
-
     .blogposts {
         display: grid;
-        grid-template-columns: 1fr 1fr;
-        grid-gap: 20px;
+        grid-template-columns: 0.5fr 1fr;
+        grid-gap: 2rem;
+		margin-top: 3rem;
+    }
+
+	.title {
+        font-size: 4.2rem;
+        font-weight: bold;
+        margin-top: 5rem;
     }
 </style>
