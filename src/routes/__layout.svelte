@@ -3,18 +3,12 @@
 	import Navbar from '../lib/components/navbar.svelte';
 </script>
 
-<section class="h-screen">
+<section>
 	<Navbar />
 	<main>
-		<div class="container">
+		<div class="mx-auto max-w-max flex items-center space-x-6">
 			<slot />
 			<!-- content goes into slot -->
 		</div>
 	</main>	
 </section>
-
-<style>
-	.container {
-		margin: 50px auto;
-	}
-</style>

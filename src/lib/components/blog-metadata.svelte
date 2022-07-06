@@ -17,21 +17,14 @@
 
 </script>
 
-<div class="badge-container">
+<div class="text-xs font-extralight italic">
+    <p>Published: {date}</p>
+</div>
+
+<div class="mt-3 badge-container space-x-1">
     {#each tags as tag }
         <div class="badge badge-outline">{tag}</div>
     {/each}
 </div>
 
-<div class="date">
-    <p>Published: {date}</p>
-</div>
-
 <div class="divider"/>
-
-<style>
-    .date p {
-        font-style: italic;
-        font-size: smaller;
-    }
-</style>

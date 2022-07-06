@@ -27,19 +27,20 @@
 </script>
 
 <div>
-	<h1 class="title">Posts 📚</h1>
-	<p>Van tijd tot tijd schrijf ik een blogposts over een onderwerp dat ik interessant vind. Hiervoor heb ik geen vast schema, maar updates worden verstuurd via LinkedIn.</p>
-	<p>Lees ze!</p>
+	<h1 class="text-7xl font-bold mt-20">Posts 📚</h1>
+	<div class="mt-3">
+		<p>Van tijd tot tijd schrijf ik een blogposts over een onderwerp dat ik interessant vind. Hiervoor heb ik geen vast schema, maar updates worden verstuurd via LinkedIn.</p>
+		<p>Lees ze!</p>
+	</div>
 	<div class="divider" />
-	<div class="blogposts">
+	<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-8">
 		{#each posts as { path, metadata }}
-		<div class="card card-compact w-96 bg-base-100 shadow-xl">
-			<figure><img src="https://placeimg.com/400/225/arch" alt="Shoes" /></figure>
+		<div class="card w-80 bg-base-100 shadow-xl">
 			<div class="card-body">
-				<h2 class="card-title">{metadata.title}</h2>
+				<h2 class="card-title text-2xl text-primary-focus">{metadata.title}</h2>
 				<p>{metadata.description}</p>
 				<div class="card-actions justify-end">
-					<button class="btn btn-ghost">
+					<button class="btn btn-sm btn-tertiary">
                         <a href={`/blog/${path.replace(".md", "")}`}>Read</a>
                     </button>
 				</div>
@@ -48,18 +49,3 @@
 		{/each}
 	</div>
 </div>
-
-<style>
-    .blogposts {
-        display: grid;
-        grid-template-columns: 0.5fr 1fr;
-        grid-gap: 2rem;
-		margin-top: 3rem;
-    }
-
-	.title {
-        font-size: 4.2rem;
-        font-weight: bold;
-        margin-top: 5rem;
-    }
-</style>

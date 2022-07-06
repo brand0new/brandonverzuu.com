@@ -7,12 +7,6 @@ tags: ["blockchain"]
 layout: blog
 ---
 
-<script>
-    import Metadata from '$lib/components/blog-metadata.svelte';
-</script>
-
-<Metadata />
-
 # {title}
 
 Je moet aardig je best hebben gedaan om in de afgelopen 10 jaar (!) nog niets over bitcoin gehoord te hebben. Misschien heb je al eens wat erover gelezen. Die ene - rare - neef overhoort op een verjaardag. Of misschien heb je een mailtje gehad met daarin een bekende Nederlander die dé investeringstrategie heeft waarmee je gegarandeerd miljonair gaat worden.
