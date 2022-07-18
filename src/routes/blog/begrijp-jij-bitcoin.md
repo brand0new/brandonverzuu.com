@@ -1,9 +1,9 @@
 ---
 title: Begrijp jij bitcoin?
 date: 2021-04-29T21:23:46+02:00
-description: "Een ander doel voor blockchain naast financiële doeleinden"
-keywords: ["blockchain", "cardano", "ada", "bitcoin"]
-tags: ["blockchain"]
+description: 'Een ander doel voor blockchain naast financiële doeleinden'
+keywords: ['blockchain', 'cardano', 'ada', 'bitcoin']
+tags: ['blockchain']
 layout: blog
 ---
 
@@ -39,7 +39,7 @@ Deze technologie lost [het bovenstaande probleem](https://en.wikipedia.org/wiki/
 
 De belangrijkste hiervan verklaart ook de naam van de technologie: **een blokkenketen** - ookwel blockchain in het Engels.
 
-Als metafoor voor blockchain wordt vaak een grootboek gebruikt. Het is met deze technologie namelijk mogelijk om **alle transacties  op het netwerk in te kunnen [zien](https://www.blockchain.com/explorer)**. Net zoals een grootboek dat je kunt openslaan kun je in de blockchain onder bitcoin zien waar elke bitcoin (zelfs elke Satoshi!) naartoe gaat.
+Als metafoor voor blockchain wordt vaak een grootboek gebruikt. Het is met deze technologie namelijk mogelijk om **alle transacties op het netwerk in te kunnen [zien](https://www.blockchain.com/explorer)**. Net zoals een grootboek dat je kunt openslaan kun je in de blockchain onder bitcoin zien waar elke bitcoin (zelfs elke Satoshi!) naartoe gaat.
 
 Alle transacties worden openlijk geregistreerd. Dit wordt niet per transactie gedaan maar gegroepeerd in **blokken**. De grootte van deze blokken ligt vast in de code en wordt gemeten in een hoeveelheid data (1MB om precies te zijn - op het moment van schrijven). Als er een nieuw blok geregistreerd wordt dan komen hier zoveel mogelijk transacties in, zonder het limiet aan data te overschreiden. Dit nieuwe blok wordt vervolgens **toegevoegd aan de bestaande keten van blokken**.
 
@@ -69,11 +69,12 @@ Er zijn steeds meer mensen betrokken de ontwikkelingen op het gebied van blockch
 
 We zijn er nog niet maar als iets duidelijk wordt op basis van het afgelopen decennia dan is het dat we een revolutie voor de boeg hebben. Waar de toekomst ons precies brengt weet ik niet maar ik geloof erin dat bitcoin de eerste stap was waarop nog vele gaan volgen.
 
-> _Geïnteresseerd in nog meer informatie over bitcoin, blockchain en  andere veranderingen die gaande zijn op financieel en technisch gebied? Hou dan zeker mijn blog in de gaten._
+> _Geïnteresseerd in nog meer informatie over bitcoin, blockchain en andere veranderingen die gaande zijn op financieel en technisch gebied? Hou dan zeker mijn blog in de gaten._
 
 ## Links
 
 Ben je nu al nieuwsgierig naar meer informatie? Hieronder nog wat links voor meer lees- en luistermateriaal.
+
 - [LekkerCryptisch.nl - Wat is bitcoin?](https://lekkercryptisch.nl/) (NL)
 - [Decrypt.co - Bitcoin Basics](https://decrypt.co/collections/bitcoin-basics-get-started) (EN)
 - [Cryptocast BNR](https://www.bnr.nl/podcast/cryptocast) (NL)

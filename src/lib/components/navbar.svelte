@@ -1,4 +1,4 @@
-<div class="navbar bg-base-100">
+<div class="navbar glass">
 	<div class="navbar-start">
 		<a href="/" class="btn btn-ghost normal-case text-xl">Home</a>
 	</div>

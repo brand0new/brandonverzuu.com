@@ -1,9 +1,9 @@
 ---
-title: "Blockchain in Afrika"
+title: 'Blockchain in Afrika'
 date: 2021-04-29T21:23:46+02:00
-description: "Een ander doel voor blockchain naast financiële doeleneinden"
-keywords: ["blockchain", "cardano", "ada", "bitcoin"]
-tags: ["blockchain"]
+description: 'Een ander doel voor blockchain naast financiële doeleneinden'
+keywords: ['blockchain', 'cardano', 'ada', 'bitcoin']
+tags: ['blockchain']
 layout: blog
 ---
 

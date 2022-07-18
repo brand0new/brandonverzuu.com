@@ -1,14 +1,12 @@
 <script lang="ts">
-    import Metadata from '$lib/components/blog-metadata.svelte';
+	import Metadata from '$lib/components/blog-metadata.svelte';
 </script>
 
 <div>
-    <Metadata />
+	<article class="prose mt-4">
+		<!-- markdown file is entered here -->
+		<slot />
+	</article>
 
-    <article class="prose">
-        <!-- markdown file is entered here -->
-        <slot />
-    </article>
-
-    <div class="divider" />
+	<div class="divider" />
 </div>
