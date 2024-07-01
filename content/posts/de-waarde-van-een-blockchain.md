@@ -1,13 +1,12 @@
 ---
-title: "De Waarde Van Een Blockchain"
+title: "De waarde van een blockchain"
 date: 2021-02-23T10:51:56+01:00
-draft: false
-slug: "de-waarde-van-een-blokchain"
 description: ""
+author: "Brandon Verzuu"
 keywords: ["blockchain", "btc", "blog", "waarde", "geld"]
-tags: ["blockchain", "financiën"]
-math: false
-toc: true
+theme: "light"
+featured: true
+cover: "https://www.apple.com.cn/newsroom/images/product/homepod/standard/Apple-HomePod-hero-230118_big.jpg.large_2x.jpg"
 ---
 
 Je ziet duizelingwekkende bedragen als je op een website zoals [**Coinmarketcap**](https://coinmarketcap.com/ "CoinMarketCap") kijkt. Hier vind je een overzicht van de totale waarde die momenteel geïnvesteerd is per digitale valuta.
@@ -24,13 +23,13 @@ Of willen mensen alleen maar snel rijk kunnen worden met behulp van een "hippe t
 
 In deze blogpost sta ik stil bij de monetaire zijde van blockchains. **Kunnen we deze technologie als geld zien?**
 
-> **Disclaimer** *in geen enkele vorm is dit bedoeld als financieel advies. In deze post geef ik mijn visie en som ik gedachten en feiten op om uitleg te geven over de ontwikkelingen op financieel gebied.*
+> **Disclaimer** _in geen enkele vorm is dit bedoeld als financieel advies. In deze post geef ik mijn visie en som ik gedachten en feiten op om uitleg te geven over de ontwikkelingen op financieel gebied._
 
 ## Geloof en waarde
 
 **Elk geldsysteem is gebaseerd op geloof.** Het feit dat wij allemaal waarde zien in de valuta waar wij mee omgaan. Deels wordt dit geloof geforceerd door de overheid, zo betaal je immers belasting in euro's, doe je dit niet dan kom je in de problemen.
 
-Maar we hebben een hele tijd ook zonder geld geleefd. Waarbij transacties bestonden uit het wisselen van goederen. Als je meer leest over het ontstaan van geld dan wordt er voornamelijk aangegeven dat geld is ontstaan vanwege **problemen bij het  vastleggen en bijhouden van waarde**.
+Maar we hebben een hele tijd ook zonder geld geleefd. Waarbij transacties bestonden uit het wisselen van goederen. Als je meer leest over het ontstaan van geld dan wordt er voornamelijk aangegeven dat geld is ontstaan vanwege **problemen bij het vastleggen en bijhouden van waarde**.
 
 Brood kunnen ruilen voor iets anders is goed te doen, maar het sparen van brood langer dan een week is - letterlijk - niet lucratief meer. In dat geval ga je er zelfs op achteruit omdat je dat brood beter aan de eenden kan voeren.
 
@@ -70,9 +69,9 @@ De geschiedenis laat ons zien wat gevolgen zijn van beslissingen genomen door **
 
 Ook ons huidige systeem zit vol met centrale partijen. Zo zijn er:
 
-* **commerciële banken** die geld voor inwoners beheren en reguleren
-* **De Nederlandsche Bank** (DNB) die zich bezighoudt met de nationale rentevoet
-* De **Europees Centrale Bank** (ECB) die zich op Europees niveau over geldzaken ontfermt.
+- **commerciële banken** die geld voor inwoners beheren en reguleren
+- **De Nederlandsche Bank** (DNB) die zich bezighoudt met de nationale rentevoet
+- De **Europees Centrale Bank** (ECB) die zich op Europees niveau over geldzaken ontfermt.
 
 Deze laatste partij is ook verantwoordelijk voor het bepalen van de hoeveelheid euro's die in omloop zijn. Ookwel het **monetair beleid** genoemd. Uiteraard komt er nog veel meer kijken bij het financiële ecosysteem in Europa.
 

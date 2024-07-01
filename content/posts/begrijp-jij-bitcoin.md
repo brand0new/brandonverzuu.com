@@ -1,12 +1,16 @@
 ---
 title: "Begrijp jij bitcoin?"
 date: 2021-01-31T13:42:51+01:00
-slug: "begrijp-jij-bitcoin"
 description: "Er is geen ontkomen meer aan onderhand. Wat weet jij van bitcoin?"
 keywords: ["bitcoin", "btc", "blog"]
+theme: "light"
+featured: true
+cover: "https://www.apple.com.cn/newsroom/images/product/homepod/standard/Apple-HomePod-hero-230118_big.jpg.large_2x.jpg"
+author: Brandon Verzuu
 draft: false
 tags: ["bitcoin"]
 math: false
+slug: "begrijp-jij-bitcoin"
 toc: true
 ---
 
@@ -17,6 +21,7 @@ Maar wat weet je er nu écht over?
 In deze blog ga ik je wat vertellen over de basis van bitcoin. Omdat er veel over bitcoin te vertellen is, behandel ik in deze blog alleen de technische kant van bitcoin.
 
 ## Het netwerk en de valuta
+
 In 2009 publiceerde **Satoshi Nakamoto** (anoniem pseudoniem) een whitepaper waarin een publiekelijk toegankelijk betalingssysteem wordt omschreven. Dit betalingssysteem zou moeten werken zonder één centrale partij die alles beheert. Waarbij mensen gebruik kunnen maken van een netwerk om een digitale valuta over te kunnen maken. De technologie gebruikt voor dit netwerk?
 
 **Blockchain**.
@@ -34,17 +39,19 @@ Er bestond namelijk nog geen geld in de digitale wereld. Alhoewel internetbankie
 Met nadruk op: "Als het goed is..."
 
 ## Hét cruciale probleem
+
 Deze technologie lost [het bovenstaande probleem](https://en.wikipedia.org/wiki/Double-spending) op. Het is niet mogelijk om 1 bitcoin dubbel uit te geven. Het is niet mogelijk om vals te spelen. Hiervoor zijn een aantal slimme oplossingen gecombineerd om dit te garanderen.
 
 De belangrijkste hiervan verklaart ook de naam van de technologie: **een blokkenketen** - ookwel blockchain in het Engels.
 
-Als metafoor voor blockchain wordt vaak een grootboek gebruikt. Het is met deze technologie namelijk mogelijk om **alle transacties  op het netwerk in te kunnen [zien](https://www.blockchain.com/explorer)**. Net zoals een grootboek dat je kunt openslaan kun je in de blockchain onder bitcoin zien waar elke bitcoin (zelfs elke Satoshi!) naartoe gaat.
+Als metafoor voor blockchain wordt vaak een grootboek gebruikt. Het is met deze technologie namelijk mogelijk om **alle transacties op het netwerk in te kunnen [zien](https://www.blockchain.com/explorer)**. Net zoals een grootboek dat je kunt openslaan kun je in de blockchain onder bitcoin zien waar elke bitcoin (zelfs elke Satoshi!) naartoe gaat.
 
 Alle transacties worden openlijk geregistreerd. Dit wordt niet per transactie gedaan maar gegroepeerd in **blokken**. De grootte van deze blokken ligt vast in de code en wordt gemeten in een hoeveelheid data (1MB om precies te zijn - op het moment van schrijven). Als er een nieuw blok geregistreerd wordt dan komen hier zoveel mogelijk transacties in, zonder het limiet aan data te overschreiden. Dit nieuwe blok wordt vervolgens **toegevoegd aan de bestaande keten van blokken**.
 
 Dit betekent dat de keten in de blockchain steeds langer en langer wordt. Elke keer wordt er een nieuw blok gemaakt, gevuld met transactie en achteraan de keten toegevoegd. Zo ontstaat er één groot archief met alle transacties.
 
 ## Samenwerken aan een veilig netwerk
+
 In werkelijkheid zitten hier wat meer haken en ogen aan maar voor nu heb je een globaal beeld van de werking van zo'n netwerk. Dit hele proces wordt mogelijk gemaakt doordat mensen met een of meerdere computers kunnen deelnemen aan dit netwerk.
 
 In een blockchain komen de volgende nodes voor:
@@ -56,6 +63,7 @@ In een blockchain komen de volgende nodes voor:
 **Kleine (Light) node**: Dit kunnen zelfs telefoons zijn. Ze hebben niet een volledige kopie van de hele keten beschikbaar maar vragen dit op bij een volledige node als dat nodig is. Dit maakt het mogelijk om **enkel transacties te doen** zonder hiervoor een volledige computer nodig te hebben.
 
 ## De eindstreep?
+
 Zijn we er dan? Is bitcoin de toekomst en kunnen we onze papieren geld en semi-digitale euro's ritueel verbranden? Dat lijkt me nog erg voorbarig. Voor een valuta is 10 jaar nog wel heel jong. Toch ziet het er alsnog goed uit voor de nabije toekomst.
 
 Er zijn nog wel wat hordes die genomen moeten worden. Bitcoin staat in de **crypto scene** bekend als een dino. Vooral wanneer de drukte toeneemt op het netwerk gaan de **transactiekosten omhoog** en de **transactiesnelheid omlaag**. Dit is niet ideaal. Vooral niet voor een betalingsmiddel dat je wil gebruiken als je boodschappen gaat doen of snel een drankje wil afrekenen.
@@ -66,10 +74,12 @@ Er zijn steeds meer mensen betrokken de ontwikkelingen op het gebied van blockch
 
 We zijn er nog niet maar als iets duidelijk wordt op basis van het afgelopen decennia dan is het dat we een revolutie voor de boeg hebben. Waar de toekomst ons precies brengt weet ik niet maar ik geloof erin dat bitcoin de eerste stap was waarop nog vele gaan volgen.
 
-> _Geïnteresseerd in nog meer informatie over bitcoin, blockchain en  andere veranderingen die gaande zijn op financieel en technisch gebied? Hou dan zeker mijn blog in de gaten._
+> _Geïnteresseerd in nog meer informatie over bitcoin, blockchain en andere veranderingen die gaande zijn op financieel en technisch gebied? Hou dan zeker mijn blog in de gaten._
 
 ## Links
+
 Ben je nu al nieuwsgierig naar meer informatie? Hieronder nog wat links voor meer lees- en luistermateriaal.
+
 - [LekkerCryptisch.nl - Wat is bitcoin?](https://lekkercryptisch.nl/) (NL)
 - [Decrypt.co - Bitcoin Basics](https://decrypt.co/collections/bitcoin-basics-get-started) (EN)
 - [Cryptocast BNR](https://www.bnr.nl/podcast/cryptocast) (NL)

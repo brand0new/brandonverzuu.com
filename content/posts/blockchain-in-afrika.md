@@ -1,13 +1,12 @@
 ---
 title: "Blockchain in Afrika"
 date: 2021-04-29T21:23:46+02:00
-draft: false
-slug: "blockchain-in-Afrika"
 description: "Een ander doel voor blockchain naast financiële doeleneinden"
-keywords: ["blockchain", "cardano", "ada", "bitcoin"]
-tags: ["blockchain"]
-math: false
-toc: true
+author: "Brandon Verzuu"
+tags: ["blockchain", "cardano", "ada", "bitcoin"]
+theme: "light"
+featured: true
+cover: "https://www.apple.com.cn/newsroom/images/product/homepod/standard/Apple-HomePod-hero-230118_big.jpg.large_2x.jpg"
 ---
 
 In mijn tweede post heb ik geschreven over het brede spectrum aan verschillende crypto die tegenwoordig bestaan. Hierbij lag de nadruk op de waarde van deze crypto.

@@ -1,22 +1,27 @@
 ---
-title: "The Serverless Site My Customer Needed"
+title: "The serverless site my customer needed"
 date: 2020-06-25T20:00:00+02:00
-draft: false
+description: ""
+author: "Brandon Verzuu"
+keywords:
+theme: "light"
+featured: true
+cover: "https://www.apple.com.cn/newsroom/images/product/homepod/standard/Apple-HomePod-hero-230118_big.jpg.large_2x.jpg"
 ---
 
 Not long ago I published a new version of my website that no longer used a HTML one-page template. I had written both HTML and CSS files myself and I quickly felt content. The site displayed summarized "about me" information with some contact details.
 
-Almost immediately after I put the website live, I asked myself: *"What if I wanted to share content?"*. Surely I could use an existing platform to scribble down my thoughts, but could it be possible to put this content on my site without a hassle and without worrying about maintaining components like a Content Management System (CMS) or even the webserver itself?
+Almost immediately after I put the website live, I asked myself: _"What if I wanted to share content?"_. Surely I could use an existing platform to scribble down my thoughts, but could it be possible to put this content on my site without a hassle and without worrying about maintaining components like a Content Management System (CMS) or even the webserver itself?
 
 So yeah, I meant myself when writing about "my customer" and yes, I think that's disgusting too. But hear me out. <!--more-->
 
 The point is; **I delivered a product without actually understanding and/or observing what the customer needed.** If I would have sat down for longer then 20 minutes and drafted up some ideas maybe I could've avoided this. Right? I see this phenomenon happening around me all the time. Sadly I even contribut to it more then I'd like to commit. So this made me wonder:
 
-> *Can I be more mindful in my development process? And if so, could I find a solution that actually fulfills my needs?*
+> _Can I be more mindful in my development process? And if so, could I find a solution that actually fulfills my needs?_
 
 In order to answer this question I got urged myself to delve into the origin of design thinking. And boy, did I fall down the rabbit hole.
 
-*If you don't feel like finding out more about the history of design and how it got into software development, you'd better skip to the part where I talk about the development of my site.*
+_If you don't feel like finding out more about the history of design and how it got into software development, you'd better skip to the part where I talk about the development of my site._
 
 ## The human part of design
 
@@ -24,7 +29,7 @@ In order to answer this question I got urged myself to delve into the origin of 
 
 The design thinking movement, like many trends before, has made its delayed way into business environments. Especially those where IT and business seem to meet. With the main point boiling down to:
 
-> *Using a designers approach to solve managerial or software related problems*
+> _Using a designers approach to solve managerial or software related problems_
 
 Though it originates from something much more elaborate:
 
@@ -32,13 +37,13 @@ As far as I could trace back, it started in 1964 when Ken Garland published **["
 
 The developing technology didn't help either as it introduced increasingly more complex problems at the time. In attempt to solve these problems people tried to turn to design, as a method of solving problems, into a form of science.
 
-The late 1960's are the origin of the **Wicked Problems**  firstly mentioned by Horst Rittel, a design theorist and professor at the Ulm School of Design in Germany. He stated that these wicked problems are a[^1]:
+The late 1960's are the origin of the **Wicked Problems** firstly mentioned by Horst Rittel, a design theorist and professor at the Ulm School of Design in Germany. He stated that these wicked problems are a[^1]:
 
 > "class of social system problems which are ill-formulated, where the information is confusing, where there are many clients and decision makers with conflicting values, and where the ramifications in the whole system are thoroughly confusing."
 
 [^1]: [C. West Churchman, "Wicked Problems," Management Science, (December 1967), vol. 4, no.14, B-141-42](https://bit.ly/37Tu1dt)
 
-That roughly translates to: *Wicked problems are unclear in the way how they should be solved, a lot of people are involved but they don't agree with each other and it's unknown what is and isn't relevant... It's actually quite a mess*.
+That roughly translates to: _Wicked problems are unclear in the way how they should be solved, a lot of people are involved but they don't agree with each other and it's unknown what is and isn't relevant... It's actually quite a mess_.
 
 Rittel claimed that although these problems are so complex, they have a underlying pattern consisting of two phases: **problem definition** and **problem solution**. He pleaded for the importance of human experience and perception in design as opposed to others in this period. This is were the **problem space** and **solution space** phases are derived from in diagrams about design thinking.
 
@@ -46,8 +51,8 @@ This sparked the interest of many, since it strives to solve a problem that's re
 
 After this periode a lot more happened on which I could elaborate more, but one of the key events related to design thinking was the 1992 publication of Richard Buchanan's **"Wicked Problems in Design Thinking"** in which he portrait design and its role in solving problems. Stating[^2]:
 
-> "The subject matter of design is potentially *universal* in scope,
-because design thinking may be applied to any area of human experience"
+> "The subject matter of design is potentially _universal_ in scope,
+> because design thinking may be applied to any area of human experience"
 
 [^2]: [Buchanan, Richard. "Wicked problems in design thinking." Design issues 8.2 (1992): 5-21.](https://bit.ly/3hUsOqL)
 
@@ -65,7 +70,7 @@ Take into account the human part of the development; **do you know if the proble
 
 ## Spaces of problems and solutions
 
-So after being distracted for hours about the roots of design thinking, I got back to the problem I was dealing with. What do I want? What do I think I want? What do I think I want but is it actually something I don't need? 
+So after being distracted for hours about the roots of design thinking, I got back to the problem I was dealing with. What do I want? What do I think I want? What do I think I want but is it actually something I don't need?
 
 You get the point.
 
