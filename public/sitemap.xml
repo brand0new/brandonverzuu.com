@@ -2,10 +2,65 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>http://localhost:1313/categories/</loc>
+    <loc>http://localhost:1313/tags/ada/</loc>
+    <lastmod>2021-04-29T21:23:46+02:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/bitcoin/</loc>
+    <lastmod>2021-04-29T21:23:46+02:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/blockchain/</loc>
+    <lastmod>2021-04-29T21:23:46+02:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/posts/blockchain-in-afrika/</loc>
+    <lastmod>2021-04-29T21:23:46+02:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/</loc>
+    <lastmod>2021-04-29T21:23:46+02:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/cardano/</loc>
+    <lastmod>2021-04-29T21:23:46+02:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/posts/</loc>
+    <lastmod>2021-04-29T21:23:46+02:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/tags/</loc>
+    <lastmod>2021-04-29T21:23:46+02:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/blog/</loc>
+    <lastmod>2021-02-23T10:51:56+01:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/btc/</loc>
+    <lastmod>2021-02-23T10:51:56+01:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/posts/de-waarde-van-een-blockchain/</loc>
+    <lastmod>2021-02-23T10:51:56+01:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/geld/</loc>
+    <lastmod>2021-02-23T10:51:56+01:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/waarde/</loc>
+    <lastmod>2021-02-23T10:51:56+01:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/posts/begrijp-jij-bitcoin/</loc>
+    <lastmod>2021-01-31T13:42:51+01:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/business/</loc>
+    <lastmod>2020-06-25T20:00:00+02:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/customers/</loc>
+    <lastmod>2020-06-25T20:00:00+02:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/posts/the-serverless-site-my-customer-needed/</loc>
+    <lastmod>2020-06-25T20:00:00+02:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/introduction/</loc>
+    <lastmod>2020-06-05T17:02:19+02:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/posts/first-post/</loc>
+    <lastmod>2020-06-05T17:02:19+02:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/about/</loc>
+  </url><url>
+    <loc>http://localhost:1313/categories/</loc>
   </url>
 </urlset>

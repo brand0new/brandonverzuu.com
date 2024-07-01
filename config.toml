@@ -1,0 +1,31 @@
+baseURL = 'https://example.org/'
+languageCode = 'en-us'
+title = 'Brandon Verzuu'
+theme = 'hugo-theme-itheme'
+defaultContentLanguage = "en" # current only supported 'en' and 'zh-hans', see the 'i18n' folder
+paginate = 5
+
+[params]
+  defaultCover = 'https://picsum.photos/id/38/1080/1920' # default cover image for post not setting cover
+  theme = 'dark'
+  email = 'brandonverzuu@gmail.com' # the email address display in the footer
+  [params.algolia] # Algolia search configuration
+    enabled = false # enable Algolia search
+    appId = 'YOUR_KEY' # appid for Algolia search
+    appKey = 'YOUR_APP_KEY' # appkey for Algolia search
+    searchIndex = 'YOUR_INDEX' # index for Algolia search
+  [[params.socialMedia]] # custom social links display in the footer, you can add one or more
+    name = 'Github'
+    url = 'https://github.com/brand0new'
+  [[params.socialMedia]]
+    name = 'X'
+    url = 'https://x.com/BrandonVerzuu'
+  [[params.socialMedia]]
+    name = 'LinkedIn'
+    url = 'https://linkedin.com/in/brandonverzuu'
+  [[params.blogroll]] # blogroll links display in the footer, you can add one or more
+    name = 'Apple'
+    url = 'https://Apple.com/'
+  [[params.blogroll]]
+    name = 'Google'
+    url = 'https://Google.com/'

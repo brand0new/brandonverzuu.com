@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Brandon Verzuu</title>
-    <link>http://localhost:1313/</link>
-    <description>Recent content on Brandon Verzuu</description>
+    <title>Posts on Brandon Verzuu</title>
+    <link>http://localhost:1313/posts/</link>
+    <description>Recent content in Posts on Brandon Verzuu</description>
     <generator>Hugo</generator>
     <language>en-us</language>
     <lastBuildDate>Thu, 29 Apr 2021 21:23:46 +0200</lastBuildDate>
-    <atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://localhost:1313/posts/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Blockchain in Afrika</title>
       <link>http://localhost:1313/posts/blockchain-in-afrika/</link>
@@ -42,13 +42,6 @@
       <pubDate>Fri, 05 Jun 2020 17:02:19 +0200</pubDate>
       <guid>http://localhost:1313/posts/first-post/</guid>
       <description>I used to have a personal webpage containing nothing more than the content of the about page. In order to have a place where I can write content of whatever comes to mind I decided to go with my own platform. This minimal approach lets me focus on content rather then get distracted by all the possibilities other platforms out there have to offer.&#xA;So what can we expect on here?</description>
-    </item>
-    <item>
-      <title>About</title>
-      <link>http://localhost:1313/about/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/about/</guid>
-      <description>Hi I&amp;rsquo;m Brandon Verzuu</description>
     </item>
   </channel>
 </rss>

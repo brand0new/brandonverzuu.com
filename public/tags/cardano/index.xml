@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Cardano on Brandon Verzuu</title>
+    <link>http://localhost:1313/tags/cardano/</link>
+    <description>Recent content in Cardano on Brandon Verzuu</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 29 Apr 2021 21:23:46 +0200</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/cardano/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Blockchain in Afrika</title>
+      <link>http://localhost:1313/posts/blockchain-in-afrika/</link>
+      <pubDate>Thu, 29 Apr 2021 21:23:46 +0200</pubDate>
+      <guid>http://localhost:1313/posts/blockchain-in-afrika/</guid>
+      <description>In mijn tweede post heb ik geschreven over het brede spectrum aan verschillende crypto die tegenwoordig bestaan. Hierbij lag de nadruk op de waarde van deze crypto.&#xA;Dit is vaak het enige waar mensen aan denken wanneer ze crypto, bitcoin of blockchain horen. Voor een overgroot deel van de projecten is dit ook het doel. Zo is Bitcoin in het leven geroepen als digitale vorm van cash dat gebruikt kan worden om betalingen te doen.</description>
+    </item>
+  </channel>
+</rss>
