@@ -1,6 +1,6 @@
 (() => {
   // ns-params:@params
-  var baseURL = "http://localhost:1313/";
+  var baseURL = "brandonverzuu.com/";
   var params = { algolia: { appid: "YOUR_KEY", appkey: "YOUR_APP_KEY", enabled: false, searchindex: "YOUR_INDEX" }, blogroll: [{ name: "Apple", url: "https://Apple.com/" }, { name: "Google", url: "https://Google.com/" }], defaultcover: "https://picsum.photos/id/38/1080/1920", email: "brandonverzuu@gmail.com", showcopyright: true, showmore: true, showrss: true, socialmedia: [{ name: "Github", url: "https://github.com/brand0new" }, { name: "X", url: "https://x.com/BrandonVerzuu" }, { name: "LinkedIn", url: "https://linkedin.com/in/brandonverzuu" }], theme: "dark" };
 
   // <stdin>

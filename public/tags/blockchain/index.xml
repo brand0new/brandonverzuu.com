@@ -2,24 +2,24 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Blockchain on Brandon Verzuu</title>
-    <link>http://localhost:1313/tags/blockchain/</link>
+    <link>brandonverzuu.com/tags/blockchain/</link>
     <description>Recent content in Blockchain on Brandon Verzuu</description>
     <generator>Hugo</generator>
-    <language>en-us</language>
+    <language>en</language>
     <lastBuildDate>Thu, 29 Apr 2021 21:23:46 +0200</lastBuildDate>
-    <atom:link href="http://localhost:1313/tags/blockchain/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="brandonverzuu.com/tags/blockchain/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Blockchain in Afrika</title>
-      <link>http://localhost:1313/posts/blockchain-in-afrika/</link>
+      <link>brandonverzuu.com/posts/blockchain-in-afrika/</link>
       <pubDate>Thu, 29 Apr 2021 21:23:46 +0200</pubDate>
-      <guid>http://localhost:1313/posts/blockchain-in-afrika/</guid>
+      <guid>brandonverzuu.com/posts/blockchain-in-afrika/</guid>
       <description>In mijn tweede post heb ik geschreven over het brede spectrum aan verschillende crypto die tegenwoordig bestaan. Hierbij lag de nadruk op de waarde van deze crypto.&#xA;Dit is vaak het enige waar mensen aan denken wanneer ze crypto, bitcoin of blockchain horen. Voor een overgroot deel van de projecten is dit ook het doel. Zo is Bitcoin in het leven geroepen als digitale vorm van cash dat gebruikt kan worden om betalingen te doen.</description>
     </item>
     <item>
       <title>De waarde van een blockchain</title>
-      <link>http://localhost:1313/posts/de-waarde-van-een-blockchain/</link>
+      <link>brandonverzuu.com/posts/de-waarde-van-een-blockchain/</link>
       <pubDate>Tue, 23 Feb 2021 10:51:56 +0100</pubDate>
-      <guid>http://localhost:1313/posts/de-waarde-van-een-blockchain/</guid>
+      <guid>brandonverzuu.com/posts/de-waarde-van-een-blockchain/</guid>
       <description>Je ziet duizelingwekkende bedragen als je op een website zoals Coinmarketcap kijkt. Hier vind je een overzicht van de totale waarde die momenteel geïnvesteerd is per digitale valuta.&#xA;Beter gezegd; de prijs keer de voorraad die in omloop is. Voor sommige digitale valuta leidt dit tot bizarre bedragen.&#xA;Wat bezielt iedereen toch om zoveel fiat valuta (euro&amp;rsquo;s, dollars, etc.) om te zetten naar een digitale valuta?&#xA;Is het mogelijk om te bepalen wat de waarde is van een digitale valuta op basis van de onderliggende blockchain?</description>
     </item>
   </channel>

@@ -2,24 +2,24 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Blog on Brandon Verzuu</title>
-    <link>http://localhost:1313/tags/blog/</link>
+    <link>brandonverzuu.com/tags/blog/</link>
     <description>Recent content in Blog on Brandon Verzuu</description>
     <generator>Hugo</generator>
-    <language>en-us</language>
+    <language>en</language>
     <lastBuildDate>Tue, 23 Feb 2021 10:51:56 +0100</lastBuildDate>
-    <atom:link href="http://localhost:1313/tags/blog/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="brandonverzuu.com/tags/blog/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>De waarde van een blockchain</title>
-      <link>http://localhost:1313/posts/de-waarde-van-een-blockchain/</link>
+      <link>brandonverzuu.com/posts/de-waarde-van-een-blockchain/</link>
       <pubDate>Tue, 23 Feb 2021 10:51:56 +0100</pubDate>
-      <guid>http://localhost:1313/posts/de-waarde-van-een-blockchain/</guid>
+      <guid>brandonverzuu.com/posts/de-waarde-van-een-blockchain/</guid>
       <description>Je ziet duizelingwekkende bedragen als je op een website zoals Coinmarketcap kijkt. Hier vind je een overzicht van de totale waarde die momenteel geïnvesteerd is per digitale valuta.&#xA;Beter gezegd; de prijs keer de voorraad die in omloop is. Voor sommige digitale valuta leidt dit tot bizarre bedragen.&#xA;Wat bezielt iedereen toch om zoveel fiat valuta (euro&amp;rsquo;s, dollars, etc.) om te zetten naar een digitale valuta?&#xA;Is het mogelijk om te bepalen wat de waarde is van een digitale valuta op basis van de onderliggende blockchain?</description>
     </item>
     <item>
       <title>Begrijp jij bitcoin?</title>
-      <link>http://localhost:1313/posts/begrijp-jij-bitcoin/</link>
+      <link>brandonverzuu.com/posts/begrijp-jij-bitcoin/</link>
       <pubDate>Sun, 31 Jan 2021 13:42:51 +0100</pubDate>
-      <guid>http://localhost:1313/posts/begrijp-jij-bitcoin/</guid>
+      <guid>brandonverzuu.com/posts/begrijp-jij-bitcoin/</guid>
       <description>Je moet aardig je best hebben gedaan om in de afgelopen 10 jaar (!) nog niets over bitcoin gehoord te hebben. Misschien heb je al eens wat erover gelezen. Die ene - rare - neef overhoort op een verjaardag. Of misschien heb je een mailtje gehad met daarin een bekende Nederlander die dé investeringstrategie heeft waarmee je gegarandeerd miljonair gaat worden.&#xA;Maar wat weet je er nu écht over?&#xA;In deze blog ga ik je wat vertellen over de basis van bitcoin.</description>
     </item>
   </channel>

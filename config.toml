@@ -1,8 +1,8 @@
-baseURL = 'https://example.org/'
-languageCode = 'en-us'
+baseURL = 'brandonverzuu.com/'
+languageCode = 'en'
+defaultContentLanguage = "en" # current only supported 'en' and 'zh-hans', see the 'i18n' folder
 title = 'Brandon Verzuu'
 theme = 'hugo-theme-itheme'
-defaultContentLanguage = "en" # current only supported 'en' and 'zh-hans', see the 'i18n' folder
 paginate = 5
 
 [params]
@@ -29,3 +29,8 @@ paginate = 5
   [[params.blogroll]]
     name = 'Google'
     url = 'https://Google.com/'
+
+[deployment]
+    [[deployment.targets]]
+    name = "aws"
+    URL = "s3://brandonverzuu.com?region=eu-central-1"

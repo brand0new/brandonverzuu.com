@@ -2,87 +2,87 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tags on Brandon Verzuu</title>
-    <link>http://localhost:1313/tags/</link>
+    <link>brandonverzuu.com/tags/</link>
     <description>Recent content in Tags on Brandon Verzuu</description>
     <generator>Hugo</generator>
-    <language>en-us</language>
+    <language>en</language>
     <lastBuildDate>Thu, 29 Apr 2021 21:23:46 +0200</lastBuildDate>
-    <atom:link href="http://localhost:1313/tags/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="brandonverzuu.com/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Ada</title>
-      <link>http://localhost:1313/tags/ada/</link>
+      <link>brandonverzuu.com/tags/ada/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/tags/ada/</guid>
+      <guid>brandonverzuu.com/tags/ada/</guid>
       <description></description>
     </item>
     <item>
       <title>Bitcoin</title>
-      <link>http://localhost:1313/tags/bitcoin/</link>
+      <link>brandonverzuu.com/tags/bitcoin/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/tags/bitcoin/</guid>
+      <guid>brandonverzuu.com/tags/bitcoin/</guid>
       <description></description>
     </item>
     <item>
       <title>Blockchain</title>
-      <link>http://localhost:1313/tags/blockchain/</link>
+      <link>brandonverzuu.com/tags/blockchain/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/tags/blockchain/</guid>
+      <guid>brandonverzuu.com/tags/blockchain/</guid>
       <description></description>
     </item>
     <item>
       <title>Cardano</title>
-      <link>http://localhost:1313/tags/cardano/</link>
+      <link>brandonverzuu.com/tags/cardano/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/tags/cardano/</guid>
+      <guid>brandonverzuu.com/tags/cardano/</guid>
       <description></description>
     </item>
     <item>
       <title>Blog</title>
-      <link>http://localhost:1313/tags/blog/</link>
+      <link>brandonverzuu.com/tags/blog/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/tags/blog/</guid>
+      <guid>brandonverzuu.com/tags/blog/</guid>
       <description></description>
     </item>
     <item>
       <title>Btc</title>
-      <link>http://localhost:1313/tags/btc/</link>
+      <link>brandonverzuu.com/tags/btc/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/tags/btc/</guid>
+      <guid>brandonverzuu.com/tags/btc/</guid>
       <description></description>
     </item>
     <item>
       <title>Geld</title>
-      <link>http://localhost:1313/tags/geld/</link>
+      <link>brandonverzuu.com/tags/geld/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/tags/geld/</guid>
+      <guid>brandonverzuu.com/tags/geld/</guid>
       <description></description>
     </item>
     <item>
       <title>Waarde</title>
-      <link>http://localhost:1313/tags/waarde/</link>
+      <link>brandonverzuu.com/tags/waarde/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/tags/waarde/</guid>
+      <guid>brandonverzuu.com/tags/waarde/</guid>
       <description></description>
     </item>
     <item>
       <title>Business</title>
-      <link>http://localhost:1313/tags/business/</link>
+      <link>brandonverzuu.com/tags/business/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/tags/business/</guid>
+      <guid>brandonverzuu.com/tags/business/</guid>
       <description></description>
     </item>
     <item>
       <title>Customers</title>
-      <link>http://localhost:1313/tags/customers/</link>
+      <link>brandonverzuu.com/tags/customers/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/tags/customers/</guid>
+      <guid>brandonverzuu.com/tags/customers/</guid>
       <description></description>
     </item>
     <item>
       <title>Introduction</title>
-      <link>http://localhost:1313/tags/introduction/</link>
+      <link>brandonverzuu.com/tags/introduction/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/tags/introduction/</guid>
+      <guid>brandonverzuu.com/tags/introduction/</guid>
       <description></description>
     </item>
   </channel>

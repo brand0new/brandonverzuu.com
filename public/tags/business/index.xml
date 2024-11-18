@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Business on Brandon Verzuu</title>
-    <link>http://localhost:1313/tags/business/</link>
+    <link>brandonverzuu.com/tags/business/</link>
     <description>Recent content in Business on Brandon Verzuu</description>
     <generator>Hugo</generator>
-    <language>en-us</language>
+    <language>en</language>
     <lastBuildDate>Thu, 25 Jun 2020 20:00:00 +0200</lastBuildDate>
-    <atom:link href="http://localhost:1313/tags/business/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="brandonverzuu.com/tags/business/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>The serverless site my customer needed</title>
-      <link>http://localhost:1313/posts/the-serverless-site-my-customer-needed/</link>
+      <link>brandonverzuu.com/posts/the-serverless-site-my-customer-needed/</link>
       <pubDate>Thu, 25 Jun 2020 20:00:00 +0200</pubDate>
-      <guid>http://localhost:1313/posts/the-serverless-site-my-customer-needed/</guid>
+      <guid>brandonverzuu.com/posts/the-serverless-site-my-customer-needed/</guid>
       <description>&lt;p&gt;Not long ago I published a new version of my website that no longer used a HTML one-page template. I had written both HTML and CSS files myself and I quickly felt content. The site displayed summarized &amp;ldquo;about me&amp;rdquo; information with some contact details.&lt;/p&gt;&#xA;&lt;p&gt;Almost immediately after I put the website live, I asked myself: &lt;em&gt;&amp;ldquo;What if I wanted to share content?&amp;rdquo;&lt;/em&gt;. Surely I could use an existing platform to scribble down my thoughts, but could it be possible to put this content on my site without a hassle and without worrying about maintaining components like a Content Management System (CMS) or even the webserver itself?&lt;/p&gt;&#xA;&lt;p&gt;So yeah, I meant myself when writing about &amp;ldquo;my customer&amp;rdquo; and yes, I think that&amp;rsquo;s disgusting too. But hear me out.&lt;/p&gt;</description>
     </item>
   </channel>

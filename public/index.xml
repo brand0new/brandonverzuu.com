@@ -2,52 +2,52 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Brandon Verzuu</title>
-    <link>http://localhost:1313/</link>
+    <link>brandonverzuu.com/</link>
     <description>Recent content on Brandon Verzuu</description>
     <generator>Hugo</generator>
-    <language>en-us</language>
+    <language>en</language>
     <lastBuildDate>Thu, 29 Apr 2021 21:23:46 +0200</lastBuildDate>
-    <atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="brandonverzuu.com/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Blockchain in Afrika</title>
-      <link>http://localhost:1313/posts/blockchain-in-afrika/</link>
+      <link>brandonverzuu.com/posts/blockchain-in-afrika/</link>
       <pubDate>Thu, 29 Apr 2021 21:23:46 +0200</pubDate>
-      <guid>http://localhost:1313/posts/blockchain-in-afrika/</guid>
+      <guid>brandonverzuu.com/posts/blockchain-in-afrika/</guid>
       <description>In mijn tweede post heb ik geschreven over het brede spectrum aan verschillende crypto die tegenwoordig bestaan. Hierbij lag de nadruk op de waarde van deze crypto.&#xA;Dit is vaak het enige waar mensen aan denken wanneer ze crypto, bitcoin of blockchain horen. Voor een overgroot deel van de projecten is dit ook het doel. Zo is Bitcoin in het leven geroepen als digitale vorm van cash dat gebruikt kan worden om betalingen te doen.</description>
     </item>
     <item>
       <title>De waarde van een blockchain</title>
-      <link>http://localhost:1313/posts/de-waarde-van-een-blockchain/</link>
+      <link>brandonverzuu.com/posts/de-waarde-van-een-blockchain/</link>
       <pubDate>Tue, 23 Feb 2021 10:51:56 +0100</pubDate>
-      <guid>http://localhost:1313/posts/de-waarde-van-een-blockchain/</guid>
+      <guid>brandonverzuu.com/posts/de-waarde-van-een-blockchain/</guid>
       <description>Je ziet duizelingwekkende bedragen als je op een website zoals Coinmarketcap kijkt. Hier vind je een overzicht van de totale waarde die momenteel geïnvesteerd is per digitale valuta.&#xA;Beter gezegd; de prijs keer de voorraad die in omloop is. Voor sommige digitale valuta leidt dit tot bizarre bedragen.&#xA;Wat bezielt iedereen toch om zoveel fiat valuta (euro&amp;rsquo;s, dollars, etc.) om te zetten naar een digitale valuta?&#xA;Is het mogelijk om te bepalen wat de waarde is van een digitale valuta op basis van de onderliggende blockchain?</description>
     </item>
     <item>
       <title>Begrijp jij bitcoin?</title>
-      <link>http://localhost:1313/posts/begrijp-jij-bitcoin/</link>
+      <link>brandonverzuu.com/posts/begrijp-jij-bitcoin/</link>
       <pubDate>Sun, 31 Jan 2021 13:42:51 +0100</pubDate>
-      <guid>http://localhost:1313/posts/begrijp-jij-bitcoin/</guid>
+      <guid>brandonverzuu.com/posts/begrijp-jij-bitcoin/</guid>
       <description>Je moet aardig je best hebben gedaan om in de afgelopen 10 jaar (!) nog niets over bitcoin gehoord te hebben. Misschien heb je al eens wat erover gelezen. Die ene - rare - neef overhoort op een verjaardag. Of misschien heb je een mailtje gehad met daarin een bekende Nederlander die dé investeringstrategie heeft waarmee je gegarandeerd miljonair gaat worden.&#xA;Maar wat weet je er nu écht over?&#xA;In deze blog ga ik je wat vertellen over de basis van bitcoin.</description>
     </item>
     <item>
       <title>The serverless site my customer needed</title>
-      <link>http://localhost:1313/posts/the-serverless-site-my-customer-needed/</link>
+      <link>brandonverzuu.com/posts/the-serverless-site-my-customer-needed/</link>
       <pubDate>Thu, 25 Jun 2020 20:00:00 +0200</pubDate>
-      <guid>http://localhost:1313/posts/the-serverless-site-my-customer-needed/</guid>
+      <guid>brandonverzuu.com/posts/the-serverless-site-my-customer-needed/</guid>
       <description>&lt;p&gt;Not long ago I published a new version of my website that no longer used a HTML one-page template. I had written both HTML and CSS files myself and I quickly felt content. The site displayed summarized &amp;ldquo;about me&amp;rdquo; information with some contact details.&lt;/p&gt;&#xA;&lt;p&gt;Almost immediately after I put the website live, I asked myself: &lt;em&gt;&amp;ldquo;What if I wanted to share content?&amp;rdquo;&lt;/em&gt;. Surely I could use an existing platform to scribble down my thoughts, but could it be possible to put this content on my site without a hassle and without worrying about maintaining components like a Content Management System (CMS) or even the webserver itself?&lt;/p&gt;&#xA;&lt;p&gt;So yeah, I meant myself when writing about &amp;ldquo;my customer&amp;rdquo; and yes, I think that&amp;rsquo;s disgusting too. But hear me out.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Why create a personal website?</title>
-      <link>http://localhost:1313/posts/first-post/</link>
+      <link>brandonverzuu.com/posts/first-post/</link>
       <pubDate>Fri, 05 Jun 2020 17:02:19 +0200</pubDate>
-      <guid>http://localhost:1313/posts/first-post/</guid>
+      <guid>brandonverzuu.com/posts/first-post/</guid>
       <description>I used to have a personal webpage containing nothing more than the content of the about page. In order to have a place where I can write content of whatever comes to mind I decided to go with my own platform. This minimal approach lets me focus on content rather then get distracted by all the possibilities other platforms out there have to offer.&#xA;So what can we expect on here?</description>
     </item>
     <item>
       <title>About</title>
-      <link>http://localhost:1313/about/</link>
+      <link>brandonverzuu.com/about/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/about/</guid>
+      <guid>brandonverzuu.com/about/</guid>
       <description>Hi I&amp;rsquo;m Brandon Verzuu</description>
     </item>
   </channel>
