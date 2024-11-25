@@ -1,4 +1,4 @@
-baseURL = 'brandonverzuu.com/'
+baseURL = '/'
 languageCode = 'en'
 defaultContentLanguage = "en" # current only supported 'en' and 'zh-hans', see the 'i18n' folder
 title = 'Brandon Verzuu'
@@ -7,7 +7,6 @@ paginate = 5
 
 [params]
   defaultCover = 'https://picsum.photos/id/38/1080/1920' # default cover image for post not setting cover
-  theme = 'dark'
   email = 'brandonverzuu@gmail.com' # the email address display in the footer
   [params.algolia] # Algolia search configuration
     enabled = false # enable Algolia search
