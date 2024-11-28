@@ -1,12 +1,8 @@
 ---
 title: "The serverless site my customer needed"
-date: "2020-06-25T20:00:00+02:00"
-draft: false
-description: ""
-author: "Brandon Verzuu"
-cover: "https://picsum.photos/id/14/1440/1080"
-tags: ["business", "customers"]
-theme: "dark"
+description: "A short story on diving in head first"
+published: 2020/06/25
+slug: "the-serverless-site-my-customer-needed"
 ---
 
 Not long ago I published a new version of my website that no longer used a HTML one-page template. I had written both HTML and CSS files myself and I quickly felt content. The site displayed summarized "about me" information with some contact details.

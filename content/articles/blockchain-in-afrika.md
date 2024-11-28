@@ -1,12 +1,8 @@
 ---
 title: "Blockchain in Afrika"
-date: "2021-04-29T21:23:46+02:00"
-draft: false
 description: "Een ander doel voor blockchain naast financiële doeleneinden"
-author: "Brandon Verzuu"
-cover: "https://picsum.photos/id/12/1440/1080"
-tags: ["blockchain", "cardano", "ada", "bitcoin"]
-theme: "dark"
+published: 2021/04/29
+slug: "blockchain-in-afrika"
 ---
 
 In mijn tweede post heb ik geschreven over het brede spectrum aan verschillende crypto die tegenwoordig bestaan. Hierbij lag de nadruk op de waarde van deze crypto.

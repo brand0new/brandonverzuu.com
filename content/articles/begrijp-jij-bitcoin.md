@@ -1,12 +1,8 @@
 ---
 title: "Begrijp jij bitcoin?"
-date: "2021-01-31T13:42:51+01:00"
-draft: false
 description: "Er is geen ontkomen meer aan onderhand. Wat weet jij van bitcoin?"
-author: Brandon Verzuu
-cover: "https://picsum.photos/id/11/1440/1080"
-tags: ["bitcoin", "btc", "blog"]
-theme: "dark"
+published: 2021/01/31
+slug: "begrijp-jij-bitcoin"
 ---
 
 Je moet aardig je best hebben gedaan om in de afgelopen 10 jaar (!) nog niets over bitcoin gehoord te hebben. Misschien heb je al eens wat erover gelezen. Die ene - rare - neef overhoort op een verjaardag. Of misschien heb je een mailtje gehad met daarin een bekende Nederlander die dé investeringstrategie heeft waarmee je gegarandeerd miljonair gaat worden.

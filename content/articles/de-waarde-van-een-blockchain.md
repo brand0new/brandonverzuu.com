@@ -1,12 +1,8 @@
 ---
 title: "De waarde van een blockchain"
-date: "2021-02-23T10:51:56+01:00"
-draft: false
-description: ""
-author: "Brandon Verzuu"
-cover: "https://picsum.photos/id/13/1440/1080"
-tags: ["blockchain", "btc", "blog", "waarde", "geld"]
-theme: "dark"
+description: "Een betoog over de zoektocht naar de waarde van iets van nature digitaal"
+published: 2021/02/23
+slug: "de-waarde-van-een-blockchain"
 ---
 
 Je ziet duizelingwekkende bedragen als je op een website zoals [**Coinmarketcap**](https://coinmarketcap.com/ "CoinMarketCap") kijkt. Hier vind je een overzicht van de totale waarde die momenteel geïnvesteerd is per digitale valuta.
@@ -77,7 +73,7 @@ Deze laatste partij is ook verantwoordelijk voor het bepalen van de hoeveelheid 
 
 Maar het feit dat één centrale partij besluit over deze valuta is het punt waarop **fiat valuta** en **digitale valuta** verschillen als dag en nacht.
 
-Zoals je wellicht gelezen hebt in [**mijn vorige blogpost**](../begrijp-jij-bitcoin), is een blockchain **decentraal** van aard. Er is geen één partij die verantwoordelijk is voor het draaiend houden van het netwerk.
+Zoals je wellicht gelezen hebt in mijn vorige blogpost, is een blockchain **decentraal** van aard. Er is geen één partij die verantwoordelijk is voor het draaiend houden van het netwerk.
 
 Dit betekent dat de code van een decentrale blockchain openbaar beschikbaar is. Hierin zitten de regels die gelden op het netwerk. **Dit betekent dat niet alleen het beleid, maar ook de uitvoering ervan** inzichtelijk is. Dit creëert een omgeving waarin vertrouwen niet relevant is omdat inzichtelijk is wat er gebeurd en waarom.
 
