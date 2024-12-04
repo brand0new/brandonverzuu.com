@@ -7,8 +7,8 @@
       Hello!
     </h1>
     <p class="text-gray-900 dark:text-gray-400">
-      I am a solution architect from Rosmalen, Netherlands.
-      I help organisations integrate their systems with a focus on cloud integration, web-based APIs and API strategy development.
+      I am a solution architect from Rosmalen, The Netherlands.
+      I support organisations with the integration of their systems. Focussing on Cloud Integration, web-based APIs and API strategy development.
     </p>
     <p class="text-gray-900 dark:text-gray-400">
       Compasionate about software development and technology in general.
