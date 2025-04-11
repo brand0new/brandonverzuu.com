@@ -4,7 +4,7 @@ export default defineNuxtConfig({
 
   modules: [
     "@nuxt/ui",
-    "nuxt-icon",
+    "@nuxt/icon",
     "@nuxtjs/google-fonts",
     "@nuxtjs/fontaine",
     "@nuxt/image",
@@ -12,10 +12,6 @@ export default defineNuxtConfig({
     "@nuxthq/studio",
     "@vueuse/nuxt"
   ],
-
-  ui: {
-    icons: ["heroicons", "lucide"],
-  },
 
   app: {
     pageTransition: { name: "page", mode: "out-in" },
@@ -31,9 +27,13 @@ export default defineNuxtConfig({
   },
 
   content: {
-    highlight: {
-      theme: "github-dark",
-    },
+    build: {
+      markdown: {
+        highlight: {
+          theme: "github-dark",
+        },
+      }
+    }
   },
 
   googleFonts: {

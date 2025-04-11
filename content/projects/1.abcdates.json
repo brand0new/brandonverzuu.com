@@ -1,6 +1,6 @@
 {
-  "name": "ABCDate Idea Generator",
-  "url": "https://abcdates.nuxt.dev",
+  "name": "Date Idea Generator",
+  "url": "https://abcdates.brandonverzuu.com",
   "description": "Generate date ideas based on the alphabet",
   "thumbnail": "/projects/abcdates.svg",
   "status": "WIP",
