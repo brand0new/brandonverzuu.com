@@ -12,12 +12,12 @@
 <script setup>
 const description =
   "All of my long-form thoughts on programming, user interfaces, product design, and more, collected in chronological order.";
+const { data: articles } = await useAsyncData("articles", () =>
+  queryCollection("articles").all()
+);
+
 useSeoMeta({
   title: "Articles | Brandon Verzuu",
   description,
 });
-
-const { data: articles } = await useAsyncData("all-articles", () =>
-  queryContent("/articles").sort({ published: -1 }).find()
-);
 </script>

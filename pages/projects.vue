@@ -8,14 +8,14 @@
 </template>
 
 <script setup>
-const description =
-  "If I come around to actually finishing a project you'll be able to find it here.";
+const description = "If I come around to actually finishing a project you'll be able to find it here.";
+const { data: projects } = await useAsyncData("projects", () =>
+  queryCollection("projects").all()
+);
+
 useSeoMeta({
   title: "Projects | Brandon Verzuu",
-  description,
+  description: description
 });
 
-const { data: projects } = await useAsyncData("projects-all", () =>
-  queryContent("/projects").find()
-);
 </script>

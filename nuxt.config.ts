@@ -9,7 +9,6 @@ export default defineNuxtConfig({
     "@nuxtjs/fontaine",
     "@nuxt/image",
     "@nuxt/content",
-    "@nuxthq/studio",
     "@vueuse/nuxt"
   ],
 
@@ -31,8 +30,8 @@ export default defineNuxtConfig({
       markdown: {
         highlight: {
           theme: "github-dark",
-        },
-      }
+        }
+      },
     }
   },
 
