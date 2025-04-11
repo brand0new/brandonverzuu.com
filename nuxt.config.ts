@@ -1,6 +1,7 @@
 export default defineNuxtConfig({
   ssr: true,
   devtools: { enabled: true },
+
   modules: [
     "@nuxt/ui",
     "nuxt-icon",
@@ -11,9 +12,11 @@ export default defineNuxtConfig({
     "@nuxthq/studio",
     "@vueuse/nuxt"
   ],
+
   ui: {
     icons: ["heroicons", "lucide"],
   },
+
   app: {
     pageTransition: { name: "page", mode: "out-in" },
     head: {
@@ -26,15 +29,19 @@ export default defineNuxtConfig({
       },
     },
   },
+
   content: {
     highlight: {
       theme: "github-dark",
     },
   },
+
   googleFonts: {
     display: "swap",
     families: {
       Inter: [400, 500, 600, 700, 800, 900],
     },
   },
+
+  compatibilityDate: "2025-04-11",
 });
