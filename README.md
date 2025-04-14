@@ -7,3 +7,17 @@ Previously I've worked with Hugo to generate a statically hosted site on AWS. Bu
 Template is blatantly stolen from the Nuxt Content gallery and tweaked to fit my own needs.
 
 All credits go out to (the creator of this template)[https://github.com/fayazara/zooper] 
+
+## Development
+
+To develop locally use
+
+```bash
+$ npm run dev
+```
+
+To deploy static site to Cloudflare use a manual deploy to the Pages Worker
+
+```bash
+$ npx wrangler pages deploy ./.output/public
+```
