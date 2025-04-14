@@ -3,7 +3,7 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
 
   nitro: {
-    preset: 'cloudflare-pages-static'
+    preset: 'cloudflare_pages'
   },
 
   modules: [
