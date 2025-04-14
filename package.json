@@ -1,5 +1,7 @@
 {
-  "name": "nuxt-app",
+  "name": "personal-site",
+  "version": "1.0.0",
+  "description": "My personal website",
   "private": true,
   "scripts": {
     "dev": "nuxt dev",
