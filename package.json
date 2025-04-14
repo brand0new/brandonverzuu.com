@@ -22,6 +22,7 @@
     "@iconify-json/lucide": "1.1.145",
     "@nuxt/image": "1.1.0",
     "@nuxt/ui": "^2.21.1",
-    "vue-use-fixed-header": "^2.0.0"
+    "vue-use-fixed-header": "^2.0.0",
+    "wrangler": "^4.10.0"
   }
 }
