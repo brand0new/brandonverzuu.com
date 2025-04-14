@@ -15,7 +15,7 @@ export default defineContentConfig({
         })
     }),
     articles: defineCollection({
-      source: 'articles/*',
+      source: 'articles/*.md',
       type: 'page',
       schema: z.object({
         title: z.string(),
