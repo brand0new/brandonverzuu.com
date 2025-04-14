@@ -13,7 +13,7 @@
 const description =
   "All of my long-form thoughts on programming, user interfaces, product design, and more, collected in chronological order.";
 const { data: articles } = await useAsyncData("articles", () =>
-  queryCollection("articles").all()
+  queryCollection("articles").order("published", "DESC").all()
 );
 
 useSeoMeta({
