@@ -2,6 +2,10 @@ export default defineNuxtConfig({
   ssr: true,
   devtools: { enabled: true },
 
+  nitro: {
+    preset: 'cloudflare-pages-static'
+  },
+
   modules: [
     "@nuxt/ui",
     "@nuxt/icon",
