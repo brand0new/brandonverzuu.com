@@ -10,14 +10,11 @@ All credits go out to (the creator of this template)[https://github.com/fayazara
 
 ## Development
 
-To develop locally use
+Reference `package.json` for all relevant scripts to use during development.
 
 ```bash
-$ npm run dev
-```
-
-To deploy static site to Cloudflare use a manual deploy to the Pages Worker
-
-```bash
-$ npx wrangler pages deploy ./.output/public
+$ npm run dev 
+$ npm run generate
+$ npm run preview
+$ npm run deploy
 ```
