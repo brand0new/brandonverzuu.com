@@ -1,8 +1,15 @@
 ---
 title: "Improving Developer Experience with OpenAPI's Arazzo Workflow Specification"
 description: "Arazzo is a new open-source project that aims to improve developer experience by providing a specification for workflows using OpenAPI. In this article, we will explore the key features and benefits of Arazzo, and how it can help developers create better workflows in their applications."
-published: 2024/06/17
+published: true
+date: 2024/06/17
 slug: "improving-dx-with-arazzo"
+tags: [
+    "openapi",
+    "arazzo",
+    "api",
+    "developer experience",
+]
 ---
 
 _We explore how OpenAPI’s Arazzo Specification attempts to redefine API documentation by clarifying call sequences and dependencies improving Developer Experience._

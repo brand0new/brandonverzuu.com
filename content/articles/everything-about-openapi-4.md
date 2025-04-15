@@ -1,8 +1,13 @@
 ---
 title: "Everything you need to know about OpenAPI version 4"
 description: "OpenAPI version 4 codenamed Moonwalk is scheduled in development. I'll be covering everything you need to know about this new major version."
-published: 2024/07/09
+published: true
+date: 2024/07/09
 slug: "everything-about-openapi-4"
+tags: [
+    "openapi",
+    "arazzo"
+]
 ---
 
 OpenAPI version 4 — named ‘Moonwalk’ — is scheduled to for release by the end of 2024. Are there plans related to #LLMs? Is there a complete overhaul? What will become of our beloved #OpenAPISpecification?

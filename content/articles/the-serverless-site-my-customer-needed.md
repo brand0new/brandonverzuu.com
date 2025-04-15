@@ -1,8 +1,13 @@
 ---
 title: "The serverless site my customer needed"
 description: "A short story on diving in head first"
-published: 2020/06/25
+published: true
+date: 2020/06/25
 slug: "the-serverless-site-my-customer-needed"
+tags: [
+    "design",
+    "web-development",
+]
 ---
 
 Not long ago I published a new version of my website that no longer used a HTML one-page template. I had written both HTML and CSS files myself and I quickly felt content. The site displayed summarized "about me" information with some contact details.

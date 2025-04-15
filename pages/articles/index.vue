@@ -13,7 +13,10 @@
 const description =
   "All of my long form content on software development, technology, and more, shown in chronological order.";
 const { data: articles } = await useAsyncData("articles", () =>
-  queryCollection("articles").order("published", "DESC").all()
+  queryCollection("articles")
+    .where("published", "=", true)
+    .order("date", "DESC")
+    .all()
 );
 
 useSeoMeta({

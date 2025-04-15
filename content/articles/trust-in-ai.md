@@ -1,8 +1,15 @@
 ---
 title: "Trust in AI? A Reshaping of Our Social Contract"
 description: "As AI becomes more integrated into everything we do, we need to reflect on the trust we place in it. How far are we willing to go in trusting AI?"
-published: 2025/02/28
+published: true
+date: 2025/02/28
 slug: "trust-in-ai"
+tags: [
+    "ai",
+    "social contract",
+    "technology",
+    "ethics"
+    ]
 ---
 
 _“A dive into how AI is reshaping the frontier of our social contract”_
@@ -12,15 +19,15 @@ Due to recent events in my life as well as the rampant emergence of AI have made
 It plays a vital role throughout my whole personal and professional life.
 
 > “Am I able to trust this contractor with my money and — more importantly — my valuable home?”
-
+>
 > “Am I able to trust the developers within my team to tell me when they’re stuck, so we can find a solution together?”
-
+>
 > “Am I able to trust the bank with my savings during periods of uncertainty?”
-
+>
 > “Is the customer able to trust me to design, develop and implement a solution that will solve their problems?”
-
+>
 > “Do I trust whatever results I get from a search engine?”
-
+>
 > “Do I trust whatever result I get from an LLM?”
 
 With this post I put my thoughts into words so that I can share, learn and reflect out in public instead of within the confines of my head.

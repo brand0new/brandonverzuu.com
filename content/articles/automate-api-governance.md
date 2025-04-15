@@ -1,8 +1,13 @@
 ---
 title: "Automate Your API Governance In 15 Minutes"
 description: "A practical example of using linting tooling to automate your API governance. Free developers from having to remember each individual convention and design rule by automating the process."
-published: 2025/01/02
+published: true
+date: 2025/01/02
 slug: "automate-api-governance"
+tags: [
+  "governance",
+  "linting"
+]
 ---
 
 There’s a quote from Arnaud Lauret — author of The Design of Web APIs — during his [talk on API Governance at Nordic APIs](https://www.youtube.com/watch?v=EMLCNqx80W4&t=1s&pp=ygUSbm9yZGljIGFwaXMgYXJuYXVk) that has stuck with me for a while now:

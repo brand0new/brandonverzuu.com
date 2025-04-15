@@ -17,9 +17,10 @@
 <script lang="ts" setup>
 const { data: articles } = await useAsyncData("articles-home", () =>
   queryCollection("articles")
-    .order("published", "DESC")
-    .limit(3)
-    .select("title", "description", "published", "slug", "path")
+    .select("title", "description", "date", "slug", "path", "tags")
+    .where("published", "=", true)
+    .limit(5)
+    .order("date", "DESC")
     .all()
 );
 </script>

@@ -1,8 +1,15 @@
 ---
 title: "Capture API Changes with Overlay"
 description: "A practical example of using Overlay Specification to automate your API governance. All with the goal of ensuring consistently applying predicatable changes to API descriptions."
-published: 2025/01/27
+published: true
+date: 2025/01/27
 slug: "capture-api-changes-with-overlay"
+tags: [
+    "overlay",
+    "openapi",
+    "api",
+    "governance"
+]
 ---
 
 In Dutch, we have a saying: _“Aan de weg timmeren,”_ which literally translates to _“Carpeting the road.”_ It’s used to describe someone who makes consistent progress. This phrase comes to mind whenever I see posts from the OpenAPI Initiative or those involved with the organisation.
