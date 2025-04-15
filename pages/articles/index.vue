@@ -11,7 +11,7 @@
 
 <script setup>
 const description =
-  "All of my long-form thoughts on programming, user interfaces, product design, and more, collected in chronological order.";
+  "All of my long form content on software development, technology, and more, shown in chronological order.";
 const { data: articles } = await useAsyncData("articles", () =>
   queryCollection("articles").order("published", "DESC").all()
 );

@@ -24,6 +24,11 @@ useSeoMeta({
 <style>
 .prose h2 a,
 .prose h3 a {
-  @apply no-underline;
+  text-decoration: none;
+}
+
+img {
+  width: 100%;
+  height: auto;
 }
 </style>

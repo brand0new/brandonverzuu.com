@@ -1,6 +1,6 @@
 ---
 title: "Capture API Changes with Overlay"
-description: "A practical example of using Overlay Specification to automate your API governance."
+description: "A practical example of using Overlay Specification to automate your API governance. All with the goal of ensuring consistently applying predicatable changes to API descriptions."
 published: 2025/01/27
 slug: "capture-api-changes-with-overlay"
 ---

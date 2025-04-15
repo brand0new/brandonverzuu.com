@@ -1,6 +1,6 @@
 ---
 title: "Automate Your API Governance In 15 Minutes"
-description: "A practical example of using Overlay Specification to automate your API governance."
+description: "A practical example of using linting tooling to automate your API governance. Free developers from having to remember each individual convention and design rule by automating the process."
 published: 2025/01/02
 slug: "automate-api-governance"
 ---
