@@ -18,3 +18,7 @@ $ npm run generate
 $ npm run preview
 $ npm run deploy
 ```
+
+## Styling
+
+- Icons used throughout the site: [mage icon set](https://icones.js.org/collection/mage)
