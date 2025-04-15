@@ -139,11 +139,11 @@ _**Important**: currently there’s a limited amount of tools that offer support
 $ bump overlay spec.openapi.yaml spec.overlay.yaml > final.openapi.yaml
 ```
 
-![Resulting OpenAPI Specification](/articles/resulting-openapi.jpg)
+![Resulting OpenAPI Specification](/articles/resulting-openapi-spec.jpg)
 
 Finally, we end up with a rendered specification that clearly describes the headers that will be returned from the deprecated endpoint.
 
-![Rendered OpenAPI Specification](/articles/rendered-openapi.jpg)
+![Rendered OpenAPI Specification](/articles/rendered-openapi-spec.jpg)
 
 Conclusion? Pretty neat! 🎉
 
