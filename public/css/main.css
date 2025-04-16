@@ -1,6 +1,23 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
 @import "@nuxt/ui";
 
+@source "../../content";
+
 @theme {
-  --default-font-family: 'Cabinet Grotesk', sans-serif;
+  --default-font-family: 'Satoshi', sans-serif, medium;
+  
+}
+
+@layer base { 
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Cabinet Grotesk', sans-serif;
+    font-weight: 700;
+  }
+
+  p {
+    font-family: 'Satoshi', sans-serif;
+    font-style: medium;
+  }
 }

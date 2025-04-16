@@ -1,11 +1,10 @@
 <template>
-  <main v-if="article" class="min-h-screen">
-    <div class="prose dark:prose-invert prose-blockquote:not-italic prose-pre:bg-gray-900 prose-img:rounded-lg">
-      <h1>{{ article.title }}</h1>
-      <UBadge v-for="tag in article.tags" :label="tag" class="mx-1 rounded-full" variant="outline" />
-      <ContentRenderer :value="article" />
-    </div>
-  </main>
+  <article v-if="article"
+    class="prose mx-auto dark:prose-invert prose-blockquote:not-italic prose-pre:bg-gray-900 prose-img:rounded-lg">
+    <h1 class="text-7xl font-extrabold">{{ article.title }}</h1>
+    <UBadge v-for="tag in article.tags" :label="tag" class="mx-1 rounded-full" variant="outline" />
+    <ContentRenderer :value="article" />
+  </article>
 </template>
 <script lang="ts" setup>
 const slug = useRoute().params.slug as string

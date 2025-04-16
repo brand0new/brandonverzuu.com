@@ -46,25 +46,15 @@ export default defineNuxtConfig({
 
   fonts: {
     defaults: {
-      weights: [400],
-      styles: ['normal', 'italic'],
-      subsets: [
-        'cyrillic-ext',
-        'cyrillic',
-        'greek-ext',
-        'greek',
-        'vietnamese',
-        'latin-ext',
-        'latin',
-      ]
-    },
-    fontshare: [
-      {
-        family: 'Cabinet Grotesk',
-        weights: [400, 500, 600, 700],
-        styles: ['normal', 'medium', 'italic']
+      weights: [400, 500, 700],
+      fallbacks: {
+        monospace: ['Courier New']
       }
-    ]
+    },
+    families: [
+      { name: 'Cabinet Grotesk', provider: 'fontshare' },
+      { name: 'Satoshi', provider: 'fontshare' },
+    ],
   },
 
   compatibilityDate: "2025-04-11",

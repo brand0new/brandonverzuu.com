@@ -1,9 +1,9 @@
 <template>
-  <UApp class="max-w-2xl">
+  <UApp>
     <NuxtLoadingIndicator color="#14b8a6" />
     <AppNavbar />
     <div class="h-32"></div>
-    <UContainer>
+    <UContainer class="max-w-2xl mx-auto">
       <NuxtPage />
     </UContainer>
     <div class="h-32"></div>
