@@ -2,6 +2,8 @@ export default defineNuxtConfig({
   ssr: true,
   devtools: { enabled: true },
 
+  css: ['~/public/css/main.css'],
+
   nitro: {
     preset: 'cloudflare_pages_static',
     prerender: {
@@ -12,15 +14,15 @@ export default defineNuxtConfig({
   modules: [
     "@nuxt/ui",
     "@nuxt/icon",
-    "@nuxtjs/google-fonts",
-    "@nuxtjs/fontaine",
     "@nuxt/image",
-    "@nuxt/content",
-    "@vueuse/nuxt"
+    "@nuxt/content"
   ],
 
   app: {
-    pageTransition: { name: "page", mode: "out-in" },
+    pageTransition: {
+      name: "page",
+      mode: "out-in"
+    },
     head: {
       htmlAttrs: {
         lang: "en",
@@ -29,7 +31,7 @@ export default defineNuxtConfig({
       bodyAttrs: {
         class: "antialiased bg-gray-50 dark:bg-black min-h-screen",
       },
-    },
+    }, 
   },
 
   content: {
@@ -39,14 +41,30 @@ export default defineNuxtConfig({
           theme: "github-dark",
         }
       },
-    }
+    },
   },
 
-  googleFonts: {
-    display: "swap",
-    families: {
-      Inter: [400, 500, 600, 700, 800, 900],
+  fonts: {
+    defaults: {
+      weights: [400],
+      styles: ['normal', 'italic'],
+      subsets: [
+        'cyrillic-ext',
+        'cyrillic',
+        'greek-ext',
+        'greek',
+        'vietnamese',
+        'latin-ext',
+        'latin',
+      ]
     },
+    fontshare: [
+      {
+        family: 'Cabinet Grotesk',
+        weights: [400, 500, 600, 700],
+        styles: ['normal', 'medium', 'italic']
+      }
+    ]
   },
 
   compatibilityDate: "2025-04-11",
