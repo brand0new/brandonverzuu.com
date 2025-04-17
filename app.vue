@@ -3,7 +3,7 @@
     <NuxtLoadingIndicator color="#14b8a6" />
     <AppNavbar />
     <div class="h-32"></div>
-    <UContainer class="max-w-2xl lg:max-w-4xl mx-auto">
+    <UContainer class="max-w-xl lg:max-w-4xl mx-auto">
       <NuxtPage />
     </UContainer>
 

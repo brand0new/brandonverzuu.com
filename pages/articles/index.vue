@@ -9,7 +9,7 @@
   </main>
 </template>
 
-<script setup>
+<script setup lang="ts">
 const description =
   "All of my long form content on software development, technology, and more, shown in chronological order.";
 const { data: articles } = await useAsyncData("articles", () =>

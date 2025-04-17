@@ -14,9 +14,7 @@ tags: [
 
 _“A dive into how AI is reshaping the frontier of our social contract”_
 
-Due to recent events in my life as well as the rampant emergence of AI have made me start to reflect on trust.
-
-It plays a vital role throughout my whole personal and professional life.
+Due to recent events in my life as well as the rampant emergence of AI have made me start to reflect on trust. It plays a vital role throughout my whole personal and professional life.
 
 > “Am I able to trust this contractor with my money and — more importantly — my valuable home?”
 >
@@ -34,15 +32,7 @@ With this post I put my thoughts into words so that I can share, learn and refle
 
 ## Trust, as cost-benefit mechanism
 
-Trust is a central part in the interactions we have throughout our everyday lives.
-
-It helps us determine whether or not to rely on others in order to achieve something, to help us solve a problem.
-
-We tend to do things ourselves whenever there is more trust in ourselves than in the other, given certain conditions.
-
-This can be costs, risks, consequences, capabilities, constraints, etc.
-
-This is why DIY is a thing. Especially for people who’ve increased the trust in themselves enough through practice in order for it to cross a certain threshold.
+Trust is a central part in the interactions we have throughout our everyday lives. It helps us determine whether or not to rely on others in order to achieve something, to help us solve a problem. We tend to do things ourselves whenever there is more trust in ourselves than in the other, given certain conditions. This can be costs, risks, consequences, capabilities, constraints, etc. This is why DIY is a thing. Especially for people who’ve increased the trust in themselves enough through practice in order for it to cross a certain threshold.
 
 > “I trust myself enough to paint this wall. It’s not worth it to pay a painter for just one wall.”
 
@@ -50,25 +40,17 @@ Compared to:
 
 > “I don’t trust myself enough to paint the exterior of my house. I trust a painter more and they’ll do a better and safer job.”
 
-Sometimes we have no choice but to trust another party because they provide something we can hardly get ourselves.
-
-I can choose to get my own drinking water if I don’t trust our regional provider, but I would have to perform miracles to get there disregarding the practicality of achieving it.
+Sometimes we have no choice but to trust another party because they provide something we can hardly get ourselves. I can choose to get my own drinking water if I don’t trust our regional provider, but I would have to perform miracles to get there disregarding the practicality of achieving it.
 
 ## Trust, a life without it
 
-If trust is simply part of our lives, will we ever not require it?
-
-Like many of these questions the answer starts with: “it depends”.
+If trust is simply part of our lives, will we ever not require it? Like many of these questions the answer starts with: “it depends”.
 
 Take financial networks for example. We can find a well-known solution there in the form of distributed ledger technology. In particular Bitcoin eliminates trust within its protocol by facilitating transactions between two parties that have to follow a strict set of rules that others are incentivised to follow.
 
-Since there’s no owner of the network, the code is open-source and maintainers work on it — mainly — out of their own virtue. You have a solution that in principle is able to work without trust.
+Since there’s no owner of the network, the code is open-source and maintainers work on it — mainly — out of their own virtue. You have a solution that in principle is able to work without trust. Another example of a concept eliminating trust is a zero-knowledge proof.
 
-Another example of a concept eliminating trust is a zero-knowledge proof.
-
-This is an algorithm that’s able to determine the validity of a statement without sharing any details relating to the proof.
-
-Therefore, there is no longer a need to unwillingly trust third parties with your personal details in theory. This would mean that in order to prove you are of an eligible age, you would no longer need to provide the exact details of your date of birth.
+This is an algorithm that’s able to determine the validity of a statement without sharing any details relating to the proof. Therefore, there is no longer a need to unwillingly trust third parties with your personal details in theory. This would mean that in order to prove you are of an eligible age, you would no longer need to provide the exact details of your date of birth.
 
 These tools can help us in a way. But how far are we willing to go in relying in technology to eliminate trust?
 
@@ -107,11 +89,7 @@ But we do have to be aware of our trust shifting, and whether it might be mispla
 - Will we always be fully checking the results to our prompt?
 - Will we always keep fact-checking if an AI is hallucinating?
 
-**As with many technological advancements being aware of whatever lies at the core tends to become a commodity.**
-
-The majority no longer wants to know where their drinking water comes from, how it gets to their house and how it is cleaned after they’ve used it.
-
-I am curious to see how our trust will be shifting in the coming years.
+**As with many technological advancements being aware of whatever lies at the core tends to become a commodity.** The majority no longer wants to know where their drinking water comes from, how it gets to their house and how it is cleaned after they’ve used it. I am curious to see how our trust will be shifting in the coming years.
 
 **How far would you go in trusting an AI?**
 

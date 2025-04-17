@@ -1,7 +1,7 @@
 {
-  "name": "Date Idea Generator",
+  "name": "ABCDates",
   "url": "https://abcdates.brandonverzuu.com",
-  "description": "Generate date ideas based on the alphabet",
+  "description": "Get ideas for dates based on the alphabet",
   "thumbnail": "/projects/abcdates.svg",
   "status": "WIP",
   "opensource": false

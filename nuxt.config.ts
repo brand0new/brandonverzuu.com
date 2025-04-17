@@ -58,6 +58,12 @@ export default defineNuxtConfig({
         weights: ['500'],
         styles: ['normal'],
       },
+      {
+        name: 'Telma',
+        provider: 'fontshare',
+        weights: ['500'],
+        styles: ['normal'],
+      }
     ],
   },
 

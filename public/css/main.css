@@ -52,7 +52,7 @@
   font-family: var(--default-font-family);
 }
 
-p {
+p, li {
   font-size: 18.5px;
   font-weight: 500;
 }
@@ -63,7 +63,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 h1 {
- font-size: 55.24px; 
+ font-size: 95.24px; 
 }
 
 h2 {
