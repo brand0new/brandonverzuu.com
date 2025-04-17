@@ -12,7 +12,7 @@
       <p class="relative z-10 mt-2 text-sm text-gray-600 dark:text-gray-400">
         {{ article.description }}
       </p>
-      <UBadge v-for="tag in article.tags" :label="tag" class="mt-3 mx-1 rounded-full" variant="subtle" />
+      <UBadge v-for="tag in article.tags" :label="tag" class="mt-5 mr-2 rounded-full" variant="subtle" />
     </article>
   </NuxtLink>
 </template>

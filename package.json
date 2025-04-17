@@ -5,6 +5,7 @@
   "private": true,
   "scripts": {
     "dev": "nuxt dev",
+    "host": "nuxt dev --host",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "deploy": "wrangler pages deploy"

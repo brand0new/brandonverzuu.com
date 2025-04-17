@@ -53,7 +53,7 @@
 }
 
 p, li {
-  font-size: 18.5px;
+  font-size: 16px;
   font-weight: 500;
 }
 
@@ -63,25 +63,21 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 h1 {
- font-size: 95.24px; 
+ font-size: 55.24px; 
 }
 
 h2 {
-  font-size: 46.03px; 
+  font-size: 38px; 
 }
 
 h3 {
-  font-size: 38.36px; 
+  font-size: 31px; 
 }
 
 h4 {
-  font-size: 31.97px; 
+  font-size: 26px; 
 }
 
 h5 {
-  font-size: 26.64px; 
-}
-
-h6 {
-  font-size: 22.2px; 
+  font-size: 22px; 
 }

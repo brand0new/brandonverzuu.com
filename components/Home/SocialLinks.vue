@@ -4,12 +4,12 @@
     <div class="space-y-5">
       <NuxtLink v-for="link in links" :key="link.icon" :to="link.url" external
         class="flex items-end gap-4 dark:hover:text-gray-300 group">
-        <p class="text-sm text-gray-600 dark:text-gray-400">
+        <p class="text-sm text-gray-600 dark:text-gray-400 group-hover:text-primary-600">
           {{ link.name }}
         </p>
         <div class="flex-1 border-b border-dashed border-gray-300 dark:border-gray-800 group-hover:border-gray-700">
         </div>
-        <UIcon :name="link.icon" size="40" mode="svg" class="text-primary-500"></UIcon>
+        <UIcon :name="link.icon" size="25" mode="svg" class="text-primary-400 group-hover:text-primary-600"></UIcon>
       </NuxtLink>
     </div>
   </div>

@@ -1,5 +1,5 @@
 <template>
-  <main class="min-h-screen">
+  <main>
     <AppHeader class="mb-8" title="Bookmarks" :description="description" />
     <ul class="space-y-5">
       <li v-for="bookmark in bookmarks" :key="bookmark.id">
