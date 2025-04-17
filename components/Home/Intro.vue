@@ -1,7 +1,6 @@
 <template>
   <div class="space-y-6">
     <div class="flex flex-col md:flex-row  items-center space-y-4 md:space-y-0 md:space-x-4">
-      <UAvatar src="/avatar.jpg" size="3xl" />
       <h1 class=" dark:text-gray-100 md:text-left mb-0">
         Hi, I'm Brandon!
       </h1>
