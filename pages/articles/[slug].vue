@@ -1,8 +1,7 @@
 <template>
-  <article v-if="article"
-    class="prose mx-auto dark:prose-invert prose-blockquote:not-italic prose-pre:bg-gray-900 prose-img:rounded-lg">
+  <article v-if="article" class="prose mx-auto dark:prose-invert prose-blockquote:not-italic prose-img:rounded-lg">
     <h1 class="text-7xl font-extrabold">{{ article.title }}</h1>
-    <UBadge v-for="tag in article.tags" :label="tag" class="mx-1 rounded-full" variant="outline" />
+    <UBadge v-for="tag in article.tags" :label="tag" class="mx-1 rounded-full" variant="subtle" />
     <ContentRenderer :value="article" />
   </article>
 </template>

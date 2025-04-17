@@ -3,16 +3,9 @@
     <AppHeader class="mb-8" title="Bookmarks" :description="description" />
     <ul class="space-y-2">
       <li v-for="bookmark in bookmarks" :key="bookmark.id">
-        <a
-          :href="bookmark.url"
-          target="_blank"
-          class="flex items-center gap-3 hover:bg-gray-100 dark:hover:bg-white/10 p-2 rounded-lg -m-2 text-sm min-w-0"
-        >
-          <UAvatar
-            :src="getThumbnail(bookmark.url)"
-            :alt="bookmark.label"
-            :ui="{ rounded: 'rounded-md' }"
-          />
+        <a :href="bookmark.url" target="_blank"
+          class="flex items-center gap-3 hover:bg-gray-100 dark:hover:bg-white/10 p-2 rounded-lg -m-2 text-sm min-w-0">
+          <UAvatar :src="getThumbnail(bookmark.url)" :alt="bookmark.label" size="2xl" />
           <p class="truncate text-gray-700 dark:text-gray-200">
             {{ bookmark.label }}
           </p>
@@ -59,6 +52,21 @@ const bookmarks = [
     id: 5,
     label: "Create and host your own cloud",
     url: "https://umbrel.com"
+  },
+  {
+    id: 6,
+    label: "A free fonts service launched by the Indian Type Foundry (ITF)",
+    url: "https://fontshare.com"
+  },
+  {
+    id: 7,
+    label: "Industrial strength, enterprise grade, beautiful dev tools for code hackers.",
+    url: "https://pb33f.io"
+  },
+  {
+    id: 8,
+    label: "A helpful tool to determine scale for your Typography",
+    url: "https://typescale.com"
   }
 ];
 

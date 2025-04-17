@@ -5,18 +5,83 @@
 
 @source "../../content";
 
-@theme {
-  --default-font-family: 'Satoshi', sans-serif, medium;
+@theme static {
+  --default-font-family: 'Satoshi';
+  --default-font-size: 18.5px;
+  --default-font-weight: 500;
+
+  --color-midnight-50: #f0f7fe;
+  --color-midnight-100: #deecfb;
+  --color-midnight-200: #c4e0f9;
+  --color-midnight-300: #9bccf5;
+  --color-midnight-400: #6cb0ee;
+  --color-midnight-500: #4a91e7;
+  --color-midnight-600: #3476dc;
+  --color-midnight-700: #2c61c9;
+  --color-midnight-800: #2950a4;
+  --color-midnight-900: #264582;
+  --color-midnight-950: #15213c;
+
+  --color-madang-50: #effef0;
+  --color-madang-100: #dafedd;
+  --color-madang-200: #b8fbbf;
+  --color-madang-300: #7ff68d;
+  --color-madang-400: #40e854;
+  --color-madang-500: #17d02e;
+  --color-madang-600: #0dac21;
+  --color-madang-700: #0e871d;
+  --color-madang-800: #116a1d;
+  --color-madang-900: #10571b;
+  --color-madang-950: #02310a;
+
+  --color-porcelain-50: #f2f7f9;
+  --color-porcelain-100: #e9f1f5;
+  --color-porcelain-200: #cfe2e8;
+  --color-porcelain-300: #a5cad4;
+  --color-porcelain-400: #75aebb;
+  --color-porcelain-500: #5394a4;
+  --color-porcelain-600: #407889;
+  --color-porcelain-700: #35616f;
+  --color-porcelain-800: #2f525d;
+  --color-porcelain-900: #2b464f;
+  --color-porcelain-950: #1d2e34;
+
 }
 
-@layer base { 
-  h1, h2, h3, h4, h5, h6 {
-    font-family: 'Cabinet Grotesk', sans-serif;
-    font-weight: 700;
-  }
+.prose {
+  font-family: var(--default-font-family);
+}
 
-  p {
-    font-family: 'Satoshi', sans-serif;
-    font-style: medium;
-  }
+p {
+  font-size: 18.5px;
+  font-weight: 500;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Cabinet Grotesk', sans-serif;
+  font-weight: 700;
+}
+
+h1 {
+ font-size: 55.24px; 
+}
+
+h2 {
+  font-size: 46.03px; 
+}
+
+h3 {
+  font-size: 38.36px; 
+}
+
+h4 {
+  font-size: 31.97px; 
+}
+
+h5 {
+  font-size: 26.64px; 
+}
+
+h6 {
+  font-size: 22.2px; 
 }

@@ -29,7 +29,7 @@ export default defineNuxtConfig({
         class: "h-full",
       },
       bodyAttrs: {
-        class: "antialiased bg-gray-50 dark:bg-black min-h-screen",
+        class: "antialiased min-h-screen",
       },
     }, 
   },
@@ -38,22 +38,26 @@ export default defineNuxtConfig({
     build: {
       markdown: {
         highlight: {
-          theme: "github-dark",
+          theme: "github-dark-default",
         }
       },
     },
   },
 
   fonts: {
-    defaults: {
-      weights: [400, 500, 700],
-      fallbacks: {
-        monospace: ['Courier New']
-      }
-    },
     families: [
-      { name: 'Cabinet Grotesk', provider: 'fontshare' },
-      { name: 'Satoshi', provider: 'fontshare' },
+      {
+        name: 'Cabinet Grotesk',
+        provider: 'fontshare',
+        weights: ['400', '500', '600', '800'],
+        styles: ['normal'],
+      },
+      {
+        name: 'Satoshi',
+        provider: 'fontshare',
+        weights: ['500'],
+        styles: ['normal'],
+      },
     ],
   },
 
