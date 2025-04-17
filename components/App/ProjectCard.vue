@@ -4,7 +4,7 @@
       <h3 :class="['group-hover:text-primary-600', props.project.name.toLowerCase()]">
         {{ props.project.name }}
       </h3>
-      <p class="text-gray-400 text-sm">{{ props.project.description }}</p>
+      <p class="text-sm text-gray-600 dark:text-gray-400">{{ props.project.description }}</p>
     </div>
     <div class="flex-1 border-b border-dashed border-gray-300 dark:border-gray-800 group-hover:border-gray-700"></div>
     <UAvatar :src="props.project.thumbnail" size="md" :alt="props.project.name" />

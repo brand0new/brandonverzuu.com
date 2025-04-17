@@ -8,7 +8,9 @@
 <script lang="ts" setup>
 const slug = useRoute().params.slug as string
 const { data: article } = await useAsyncData(`articles-${slug}`, () => {
-  return queryCollection('articles').path(`/articles/${slug}`).first()
+  return queryCollection('articles')
+    .path(`/articles/${slug}`)
+    .first()
 })
 
 useSeoMeta({

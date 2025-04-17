@@ -1,25 +1,26 @@
 <template>
   <main class="min-h-screen">
     <AppHeader class="mb-8" title="Bookmarks" :description="description" />
-    <ul class="space-y-2">
+    <ul class="space-y-5">
       <li v-for="bookmark in bookmarks" :key="bookmark.id">
-        <a :href="bookmark.url" target="_blank"
-          class="flex items-center gap-3 hover:bg-gray-100 dark:hover:bg-white/10 p-2 rounded-lg -m-2 text-sm min-w-0">
-          <UAvatar :src="getThumbnail(bookmark.url)" :alt="bookmark.label" size="2xl" />
-          <p class="truncate text-gray-700 dark:text-gray-200">
-            {{ bookmark.label }}
-          </p>
-          <span class="flex-1"></span>
-          <span class="text-xs font-medium text-gray-400 dark:text-gray-600">
-            {{ getHost(bookmark.url) }}
-          </span>
+        <a :href="bookmark.url"
+          class="flex items-center gap-5 hover:bg-gray-100 dark:hover:bg-white/10 p-2 rounded-lg -m-2 text-sm min-w-0">
+          <UAvatar :src="getThumbnail(bookmark.url)" :alt="bookmark.label" size="lg" />
+          <div class="flex flex-col">
+            <span class="text-gray-700 dark:text-gray-200">
+              {{ bookmark.label }}
+            </span>
+            <span class="text-xs font-medium text-gray-400 dark:text-gray-600">
+              {{ getHost(bookmark.url) }}
+            </span>
+          </div>
         </a>
       </li>
     </ul>
   </main>
 </template>
 
-<script setup>
+<script setup lang="ts">
 const description =
   "Here's some interesting stuff I've found on the internet.";
 useSeoMeta({
@@ -70,7 +71,7 @@ const bookmarks = [
   }
 ];
 
-function getHost(url) {
+function getHost(url: string) {
   const parsedUrl = new URL(url);
   let host = parsedUrl.host;
   if (host.startsWith("www.")) {
@@ -79,7 +80,7 @@ function getHost(url) {
   return host;
 }
 
-function getThumbnail(url) {
+function getThumbnail(url: string) {
   const host = getHost(url);
   return `https://logo.clearbit.com/${host}`;
 }

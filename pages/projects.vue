@@ -8,7 +8,7 @@
 </template>
 
 <script setup>
-const description = "If I come around to actually finishing a project you'll be able to find it here.";
+const description = "A collection of my projects, open source and otherwise. Some are in progress, some are finished, and some are just ideas. I hope you find something interesting here.";
 const { data: projects } = await useAsyncData("projects", () =>
   queryCollection("projects").all()
 );
