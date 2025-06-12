@@ -80,7 +80,7 @@ Assuming you haven’t worked with Spectral before we’ll start with a global i
 npm i -g @stoplight/spectral-cli
 ```
 
-![Installing Spectral CLI globally](/articles/spectral-1.jpg)
+![Installing Spectral CLI globally](/articles/automate-api-governance/spectral-1.jpg)
 
 _Reference spectral documentation for CICD integration or other setups._
 
@@ -88,7 +88,7 @@ After installing we can start writing a custom rule. In our working directory we
 
 Running the `spectral lint` command will clarify we need to provide a ruleset to apply.
 
-![Running the lint command](/articles/spectral-2.jpg)
+![Running the lint command](/articles/automate-api-governance/spectral-2.jpg)
 
 Let’s create a custom ruleset called **object-policies.spectral.json** in which we’ll define our custom rule.
 
@@ -130,7 +130,7 @@ $ spectral lint petstore.openapi.yml --ruleset object-policies.spectral.json
 
 _For this example, I’ve decided to create a dedicated file to contain all policies related to object validation. When you simply create a file called “.spectral.json”, Spectral will automatically apply these rule without the explicit “ — ruleset” flag._
 
-![Running the lint command with ruleset](/articles/spectral-3.jpg)
+![Running the lint command with ruleset](/articles/automate-api-governance/spectral-3.jpg)
 
 Let’s add an additional rule. Our goal is to improve the readability of the API description with the emphasis of having a clear description for Schema Components.
 
@@ -162,7 +162,7 @@ We use a built-in function to apply a Regex to the content of the description pr
 
 The intention of this validation rule is to give warnings to developers that their Schema description is lacking a functional description template that recommend to use to achieve consistent definitions that are more likely to be understood by external developers.
 
-![Running lint command with output](/articles/spectral-4.jpg)
+![Running lint command with output](/articles/automate-api-governance/spectral-4.jpg)
 
 If we run the linter again, we’ll see the new finding listed as a warning within the result.
 

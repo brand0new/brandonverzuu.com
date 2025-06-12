@@ -1,18 +1,30 @@
 <template>
   <NuxtLink :to="article.path" class="group">
-    <article>
-      <time class="relative z-10 order-first flex items-center mb-3 text-sm text-gray-400 dark:text-gray-500 pl-3.5"
-        datetime="2022-09-05"><span class="absolute inset-y-0 left-0 flex items-center" aria-hidden="true"><span
-            class="h-4 w-0.5 rounded-full bg-gray-200 dark:bg-gray-500"></span></span>
-        {{ getReadableDate(article.date) }}
-      </time>
-      <h3 class="group-hover:text-primary-600">
-        {{ article.title }}
-      </h3>
-      <p class="relative z-10 mt-2 text-sm text-gray-600 dark:text-gray-400">
-        {{ article.description }}
-      </p>
-      <UBadge v-for="tag in article.tags" :label="tag" class="mt-5 mr-2 rounded-full" variant="subtle" />
+    <article class="relative rounded-xl overflow-hidden">
+      <!-- Background image -->
+      <div
+        class="absolute inset-0 z-0 bg-cover bg-center"
+        :style="{ backgroundImage: `url(/articles/${article.slug}/cover.jpg)` }"
+      ></div>
+      <!-- Overlay -->
+      <div class="absolute inset-0 z-0 bg-black/40"></div>
+      <!-- Content -->
+      <div class="relative z-10 p-4">
+        <time class="relative z-10 order-first flex items-center mb-3 text-sm text-gray-200 dark:text-gray-300 pl-3.5"
+          :datetime="article.date"
+        >
+          <span class="absolute inset-y-0 left-0 flex items-center" aria-hidden="true">
+            <span class="h-4 w-0.5 rounded-full bg-gray-200 dark:bg-gray-500"></span>
+          </span>
+          {{ getReadableDate(article.date) }}
+        </time>
+        <h3 class="group-hover:text-primary-400 text-white dark:text-white">
+          {{ article.title }}
+        </h3>
+        <p class="relative z-10 mt-2 text-sm text-gray-100 dark:text-gray-200">
+          {{ article.description }}
+        </p>
+      </div>
     </article>
   </NuxtLink>
 </template>
@@ -33,4 +45,5 @@ const getReadableDate = (dateString) => {
     day: "numeric",
   });
 };
+
 </script>

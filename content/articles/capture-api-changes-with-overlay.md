@@ -135,7 +135,7 @@ Within the overlay I’ve decided to implement some HTTP headers that relate to 
 
 **Second, we add the deprecation flag to the endpoint within our API description.**
 
-![OpenAPI Specification with deprecation flags](/articles/openapi-with-deprecation.jpg)
+![OpenAPI Specification with deprecation flags](/articles/capture-api-changes-with-overlay/openapi-with-deprecation.jpg)
 
 **Third, we apply the overlay to the specification using a CLI tool.**
 
@@ -146,11 +146,11 @@ _**Important**: currently there’s a limited amount of tools that offer support
 $ bump overlay spec.openapi.yaml spec.overlay.yaml > final.openapi.yaml
 ```
 
-![Resulting OpenAPI Specification](/articles/resulting-openapi-spec.jpg)
+![Resulting OpenAPI Specification](/articles/capture-api-changes-with-overlay/resulting-openapi-spec.jpg)
 
 Finally, we end up with a rendered specification that clearly describes the headers that will be returned from the deprecated endpoint.
 
-![Rendered OpenAPI Specification](/articles/rendered-openapi-spec.jpg)
+![Rendered OpenAPI Specification](/articles/capture-api-changes-with-overlay/rendered-openapi-spec.jpg)
 
 Conclusion? Pretty neat! 🎉
 

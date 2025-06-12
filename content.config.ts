@@ -22,6 +22,7 @@ export default defineContentConfig({
         description: z.string(),
         published: z.boolean(),
         date: z.date(),
+        image: z.string().optional(),
         slug: z.string().optional(),
         tags: z.array(z.string()).optional(),
       })

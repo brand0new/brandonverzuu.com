@@ -38,7 +38,7 @@ Not only because it describes a fundamental change to the specification but it a
 
 OAI understands the importance of the traction that AI has within the space and has decided to act on it by incorporating a design constraint for it within the new major version of OpenAPI.
 
-![General structure outline of OpenAPI Specification version 4](/articles/openapi-4-structure-outline.jpg)
+![General structure outline of OpenAPI Specification version 4](/articles/everything-about-openapi-4/openapi-4-structure-outline.jpg)
 
 Besides this new structure, this version will allow for name spacing to create a OpenAPI Description (OAD) that adds the aforementioned purposeful semantics.
 
@@ -220,7 +220,7 @@ Based on the statistics from APIstic — which has statistics based on a total o
 
 Even if it is a remote representation then that would still leave a lot of room for improvement — and work… — for the majority out there.
 
-![Graph depicting OpenAPI major version usage by APIstic](/articles/apistic-major-version-usage-graph.jpg)
+![Graph depicting OpenAPI major version usage by APIstic](/articles/everything-about-openapi-4/apistic-major-version-usage-graph.jpg)
 
 ## Predictions
 
