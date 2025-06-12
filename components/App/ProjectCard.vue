@@ -28,6 +28,6 @@ const props = defineProps({
 <style scoped>
 .abcdates {
   font-family: 'Telma';
-  color: pink
+  color: #fe6e8b;
 }
 </style>
