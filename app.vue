@@ -2,7 +2,7 @@
   <UApp>
     <AppNavbar />
     <div class="h-32"></div>
-    <UContainer class="max-w-xl lg:max-w-4xl mx-auto">
+    <UContainer class="max-w-xl lg:max-w-2xl mx-auto">
       <NuxtPage />
     </UContainer>
     <div class="h-32"></div>
@@ -15,7 +15,6 @@
 .page-leave-active {
   transition: all 0.2s;
 }
-
 .page-leave-to {
   opacity: 0;
   transform: translateY(-5px);
