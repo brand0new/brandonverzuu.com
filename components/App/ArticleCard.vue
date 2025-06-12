@@ -9,7 +9,7 @@
       <!-- Overlay -->
       <div class="absolute inset-0 z-0 bg-black/40"></div>
       <!-- Content -->
-      <div class="relative z-10 p-4">
+      <div class="relative z-10 p-4 m-8">
         <time class="relative z-10 order-first flex items-center mb-3 text-sm text-gray-200 dark:text-gray-300 pl-3.5"
           :datetime="article.date"
         >
