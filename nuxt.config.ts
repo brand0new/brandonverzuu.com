@@ -45,22 +45,21 @@ export default defineNuxtConfig({
   },
 
   fonts: {
+    provider: 'fontshare',
     families: [
       {
         name: 'Cabinet Grotesk',
-        provider: 'fontshare',
         weights: ['400', '500', '600', '800'],
         styles: ['normal'],
       },
       {
         name: 'Satoshi',
-        provider: 'fontshare',
         weights: ['500'],
         styles: ['normal'],
+        global: true,
       },
       {
         name: 'Telma',
-        provider: 'fontshare',
         weights: ['500'],
         styles: ['normal'],
       }

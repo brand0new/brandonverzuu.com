@@ -6,7 +6,7 @@
 @source "../../content";
 
 @theme static {
-  --default-font-family: 'Satoshi';
+  --default-font-family: 'Satoshi', sans-serif;
   --default-font-size: 18.5px;
   --default-font-weight: 500;
 
@@ -53,6 +53,7 @@
 }
 
 p, li {
+  font-family: var(--default-font-family);
   font-size: 16px;
   font-weight: 500;
 }
