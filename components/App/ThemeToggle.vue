@@ -16,7 +16,12 @@ const isDark = computed({
     <button
       class="relative px-3 py-4 flex items-center justify-center transition hover:text-primary-500 dark:hover:text-primary-400"
       @click="isDark = !isDark">
-      <Icon aria-hidden="true" :name="isDark ? 'mage:sun-fill' : 'mage:moon'" class="w-5 h-5" />
+      <ClientOnly>
+        <Icon aria-hidden="true" :name="isDark ? 'mage:moon-fill' : 'mage:sun'" class="w-5 h-5" />
+        <template #fallback>
+          <div class="w-5 h-5"></div>
+        </template>
+      </ClientOnly>
       <span class="sr-only">Toggle theme</span>
     </button>
   </UTooltip>
