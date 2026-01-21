@@ -18,7 +18,7 @@
     "nuxt": "^3.17.5",
     "prettier": "^3.5.3",
     "prettier-plugin-tailwindcss": "^0.6.12",
-    "wrangler": "^4.19.2"
+    "wrangler": "^4.59.1"
   },
   "dependencies": {
     "@nuxt/image": "^1.10.0",
