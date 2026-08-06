@@ -24,7 +24,6 @@ logs
 .idea
 .vscode
 .npmrc
-.prettierrc
 .notes
 
 # Local env files
