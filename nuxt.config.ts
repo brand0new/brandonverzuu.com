@@ -1,7 +1,7 @@
 export default defineNuxtConfig({
   ssr: true,
 
-  css: ['~/public/css/main.css'],
+  css: ['~~/public/css/main.css'],
 
   nitro: {
     preset: 'cloudflare_pages_static',
