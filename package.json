@@ -13,9 +13,9 @@
   "devDependencies": {
     "@iconify-json/mage": "^1.2.2",
     "@nuxt/content": "^3.6.1",
-    "@nuxt/devtools": "^2.7.0",
+    "@nuxt/devtools": "^3.4.1",
     "@tailwindcss/typography": "^0.5.16",
-    "nuxt": "^3.17.5",
+    "nuxt": "^3.21.11",
     "prettier": "^3.5.3",
     "prettier-plugin-tailwindcss": "^0.6.12",
     "wrangler": "^4.59.1"
