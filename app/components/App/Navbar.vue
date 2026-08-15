@@ -4,7 +4,7 @@
       <ul
         class="flex items-center my-4 px-3 text-sm font-medium text-gray-800 rounded-full shadow-lg shadow-gray-800/5 ring-1 backdrop-blur dark:text-gray-200 dark:ring-white/20 ring-gray-900/5">
         <li v-for="item in items" :key="item.path">
-          <UTooltip :text="item.name"">
+          <UTooltip :text="item.name">
             <ULink :to="item.path"
             class="relative px-3 py-4 flex items-center justify-center transition hover:text-primary-500 dark:hover:text-primary-400"
             active-class="text-primary-600 dark:text-primary-400">
