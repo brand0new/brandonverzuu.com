@@ -17,12 +17,14 @@
         <div
           class="flex-1 border-b border-dashed border-gray-300 group-hover:border-gray-700 dark:border-gray-800"
         ></div>
-        <UIcon
-          :name="link.icon"
-          size="25"
-          mode="svg"
-          class="text-primary-400 group-hover:text-primary-600"
-        ></UIcon>
+        <client-only>
+          <UIcon
+            :name="link.icon"
+            size="25"
+            mode="svg"
+            class="text-primary-400 group-hover:text-primary-600"
+          ></UIcon>
+        </client-only>
       </NuxtLink>
     </div>
   </div>
