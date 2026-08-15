@@ -1,3 +1,6 @@
 name = "personal-site"
 compatibility_date = "2024-09-19"
 pages_build_output_dir = "./dist"
+
+[vars]
+NODE_VERSION = "22"

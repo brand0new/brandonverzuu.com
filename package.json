@@ -22,7 +22,7 @@
     "wrangler": "^4.123.0"
   },
   "dependencies": {
-    "@nuxt/image": "^1.11.0",
+    "@nuxt/image": "^2.1.0",
     "@nuxt/ui": "^4.10.0",
     "better-sqlite3": "^12.11.1",
     "tailwindcss": "^4.1.10",
