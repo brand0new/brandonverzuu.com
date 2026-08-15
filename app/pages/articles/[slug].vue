@@ -14,6 +14,10 @@ const { data: article } = await useAsyncData(`articles-${slug}`, () => {
 })
 
 useSeoMeta({
+  title: () => (article.value ? `${article.value.title} | Brandon Verzuu` : "Brandon Verzuu"),
+  description: () => article.value?.description,
+  ogTitle: () => (article.value ? `${article.value.title} | Brandon Verzuu` : "Brandon Verzuu"),
+  ogDescription: () => article.value?.description,
   ogImage: `https://brandonverzuu.com/articles/${slug}.png`,
   twitterCard: "summary_large_image",
   author: "Brandon Verzuu",
