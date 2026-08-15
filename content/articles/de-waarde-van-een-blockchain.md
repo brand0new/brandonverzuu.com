@@ -4,11 +4,7 @@ description: "Een betoog over de zoektocht naar de waarde van iets van nature di
 published: true
 date: 2021/02/23
 slug: "de-waarde-van-een-blockchain"
-tags: [
-    "blockchain",
-    "crypto",
-    "finance"
-]
+tags: ["blockchain", "crypto", "finance"]
 ---
 
 Je ziet duizelingwekkende bedragen als je op een website zoals [**Coinmarketcap**](https://coinmarketcap.com/ "CoinMarketCap") kijkt. Hier vind je een overzicht van de totale waarde die momenteel geïnvesteerd is per digitale valuta.

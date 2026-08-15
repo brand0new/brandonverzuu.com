@@ -2,14 +2,27 @@
   <div>
     <h2 class="mb-4">Find me on</h2>
     <div class="space-y-5">
-      <NuxtLink v-for="link in links" :key="link.icon" :to="link.url" external
-        class="flex items-end gap-4 dark:hover:text-gray-300 group">
-        <p class="text-sm text-gray-600 dark:text-gray-400 group-hover:text-primary-600">
+      <NuxtLink
+        v-for="link in links"
+        :key="link.icon"
+        :to="link.url"
+        external
+        class="group flex items-end gap-4 dark:hover:text-gray-300"
+      >
+        <p
+          class="group-hover:text-primary-600 text-sm text-gray-600 dark:text-gray-400"
+        >
           {{ link.name }}
         </p>
-        <div class="flex-1 border-b border-dashed border-gray-300 dark:border-gray-800 group-hover:border-gray-700">
-        </div>
-        <UIcon :name="link.icon" size="25" mode="svg" class="text-primary-400 group-hover:text-primary-600"></UIcon>
+        <div
+          class="flex-1 border-b border-dashed border-gray-300 group-hover:border-gray-700 dark:border-gray-800"
+        ></div>
+        <UIcon
+          :name="link.icon"
+          size="25"
+          mode="svg"
+          class="text-primary-400 group-hover:text-primary-600"
+        ></UIcon>
       </NuxtLink>
     </div>
   </div>
@@ -36,6 +49,6 @@ const links = [
     name: "Linkedin",
     url: "https://www.linkedin.com/in/brandonverzuu/",
     icon: "mage:linkedin",
-  }
+  },
 ];
 </script>

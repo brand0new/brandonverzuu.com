@@ -4,11 +4,7 @@ description: ""
 published: false
 date: 2025/04/15
 slug: "maturity-models"
-tags: [
-  "maturity-model",
-  "large-language-models",
-  "governance"
-]
+tags: ["maturity-model", "large-language-models", "governance"]
 ---
 
 Goal of the article:
@@ -35,6 +31,4 @@ The main premise of a maturity model is to weigh the different capabilities and 
 
 These requirements are used to determine the maturity of a certain capability.
 
- 
-
-## 
+##

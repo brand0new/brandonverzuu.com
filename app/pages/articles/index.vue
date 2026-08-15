@@ -16,7 +16,7 @@ const { data: articles } = await useAsyncData("articles", () =>
   queryCollection("articles")
     .where("published", "=", true)
     .order("date", "DESC")
-    .all()
+    .all(),
 );
 
 useSeoMeta({

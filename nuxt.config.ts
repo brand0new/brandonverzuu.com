@@ -1,26 +1,21 @@
 export default defineNuxtConfig({
   ssr: true,
 
-  css: ['~~/public/css/main.css'],
+  css: ["~~/public/css/main.css"],
 
   nitro: {
-    preset: 'cloudflare_pages_static',
+    preset: "cloudflare_pages_static",
     prerender: {
       autoSubfolderIndex: false,
-    }
+    },
   },
 
-  modules: [
-    "@nuxt/ui",
-    "@nuxt/icon",
-    "@nuxt/image",
-    "@nuxt/content"
-  ],
+  modules: ["@nuxt/ui", "@nuxt/icon", "@nuxt/image", "@nuxt/content"],
 
   app: {
     pageTransition: {
       name: "page",
-      mode: "out-in"
+      mode: "out-in",
     },
     head: {
       htmlAttrs: {
@@ -30,7 +25,7 @@ export default defineNuxtConfig({
       bodyAttrs: {
         class: "antialiased min-h-screen",
       },
-    }, 
+    },
   },
 
   content: {
@@ -38,30 +33,30 @@ export default defineNuxtConfig({
       markdown: {
         highlight: {
           theme: "github-dark-default",
-        }
+        },
       },
     },
   },
 
   fonts: {
-    provider: 'fontshare',
+    provider: "fontshare",
     families: [
       {
-        name: 'Cabinet Grotesk',
-        weights: ['400', '500', '600', '800'],
-        styles: ['normal'],
+        name: "Cabinet Grotesk",
+        weights: ["400", "500", "600", "800"],
+        styles: ["normal"],
       },
       {
-        name: 'Satoshi',
-        weights: ['500'],
-        styles: ['normal'],
+        name: "Satoshi",
+        weights: ["500"],
+        styles: ["normal"],
         global: true,
       },
       {
-        name: 'Telma',
-        weights: ['500'],
-        styles: ['normal'],
-      }
+        name: "Telma",
+        weights: ["500"],
+        styles: ["normal"],
+      },
     ],
   },
 

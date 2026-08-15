@@ -1,28 +1,39 @@
 <template>
-  <article v-if="article" class="prose mx-auto dark:prose-invert prose-blockquote:not-italic prose-img:rounded-lg">
+  <article
+    v-if="article"
+    class="prose dark:prose-invert prose-blockquote:not-italic prose-img:rounded-lg mx-auto"
+  >
     <h1 class="text-7xl font-extrabold">{{ article.title }}</h1>
-    <UBadge v-for="tag in article.tags" :label="tag" class="mx-1 rounded-full" variant="subtle" />
+    <UBadge
+      v-for="tag in article.tags"
+      :label="tag"
+      class="mx-1 rounded-full"
+      variant="subtle"
+    />
     <ContentRenderer :value="article" />
   </article>
 </template>
 <script lang="ts" setup>
-const slug = useRoute().params.slug as string
+const slug = useRoute().params.slug as string;
 const { data: article } = await useAsyncData(`articles-${slug}`, () => {
-  return queryCollection('articles')
-    .path(`/articles/${slug}`)
-    .first()
-})
+  return queryCollection("articles").path(`/articles/${slug}`).first();
+});
 
 useSeoMeta({
-  title: () => (article.value ? `${article.value.title} | Brandon Verzuu` : "Brandon Verzuu"),
+  title: () =>
+    article.value
+      ? `${article.value.title} | Brandon Verzuu`
+      : "Brandon Verzuu",
   description: () => article.value?.description,
-  ogTitle: () => (article.value ? `${article.value.title} | Brandon Verzuu` : "Brandon Verzuu"),
+  ogTitle: () =>
+    article.value
+      ? `${article.value.title} | Brandon Verzuu`
+      : "Brandon Verzuu",
   ogDescription: () => article.value?.description,
   ogImage: `https://brandonverzuu.com/articles/${slug}.png`,
   twitterCard: "summary_large_image",
   author: "Brandon Verzuu",
 });
-
 </script>
 
 <style>

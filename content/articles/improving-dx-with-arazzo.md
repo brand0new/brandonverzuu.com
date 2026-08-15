@@ -4,12 +4,7 @@ description: "Arazzo is a new open-source project that aims to improve developer
 published: true
 date: 2024/06/17
 slug: "improving-dx-with-arazzo"
-tags: [
-    "openapi",
-    "arazzo",
-    "api",
-    "developer experience",
-]
+tags: ["openapi", "arazzo", "api", "developer experience"]
 ---
 
 _We explore how OpenAPI’s Arazzo Specification attempts to redefine API documentation by clarifying call sequences and dependencies improving Developer Experience._
@@ -39,13 +34,13 @@ Consider our beloved Pet Store.
 ```yaml
 # pet-api-specification.yaml
 paths:
-    /v1/pets:
-        get:
-    /v1/orders:
-        get:
-        post:
-    /v1/coupons:
-        get:
+  /v1/pets:
+    get:
+  /v1/orders:
+    get:
+    post:
+  /v1/coupons:
+    get:
 ```
 
 Interpreting how to create an Order for a Pet using a Coupon using the description above could be done intuitively. Though in practice it turns out intuitive and readable specifications are not that common.
@@ -55,18 +50,18 @@ Consider the following API description.
 ```yaml
 # created with the intend to aggrevate readers
 paths:
-    /pet/getPet:
-        get:
-    /pets:
-        get:
-    /orders:
-        post:
-    /orders/orderPet:
-        post:
-    /discounts:
-        get: # <- you need to call this endpoint
-    /discounts/coupons:
-        post:
+  /pet/getPet:
+    get:
+  /pets:
+    get:
+  /orders:
+    post:
+  /orders/orderPet:
+    post:
+  /discounts:
+    get: # <- you need to call this endpoint
+  /discounts/coupons:
+    post:
 ```
 
 This API description becomes murkier and harder to grasp without reaching for documentation or fellow developer.
@@ -76,6 +71,7 @@ Sure, we all have an idea on intuitive API design but reality is that especially
 This context usually results in a dependency between specific calls in order to achieve a particular goal. The OAS contains no specification to describe this behavior. The OpenAPI Initiative has been developing the Arazzo Specification for this specific use case to which I’ll be giving an introduction within this post.
 
 ## Compensating features of Arazzo
+
 Arazzo is intended to be implemented using an OpenAPI Specification. I’m not too keen on the design choice of adding a specification alongside the OAS file. Though considering expanding the already broad OAS with more capabilities doesn’t seem to be the superior choice either.
 
 The specification prescribes a file structure similar to an OAS:
@@ -103,22 +99,22 @@ Arazzo intends to leverage the API and workflow specifications you already have.
 ```yaml
 # openapi.yaml
 paths:
-    /v1/pets/{id}:
-        get:
-            operationId: getSpecificPet
+  /v1/pets/{id}:
+    get:
+      operationId: getSpecificPet
 
 # arazzo.yaml
 arazzo: 1.0.0
 sourceDescriptions:
-- name: apiDescription
-  url: https://<domain>/api/petstore/openapi.yaml
-  type: openapi
+  - name: apiDescription
+    url: https://<domain>/api/petstore/openapi.yaml
+    type: openapi
 workflows:
-- workflowId: retrieveAndOrderPet
-  summary: Workflow to retrieve and order a specific Pet
-  steps:
-  - stepId: retrievePet
-    operationId: apiDescription.getSpecificPet # referencing sources
+  - workflowId: retrieveAndOrderPet
+    summary: Workflow to retrieve and order a specific Pet
+    steps:
+      - stepId: retrievePet
+        operationId: apiDescription.getSpecificPet # referencing sources
 ```
 
 Using sourceDescriptions enables developers to focus on specifying the workflow and not on the details of the API itself.
@@ -162,7 +158,7 @@ workflows:
           - condition: $statusCode == 302
       - stepId: exchangeAuthorizationCodeForToken
         description: Get token from the OIDC Token endpoint
-        ...                  
+        ...
         successCriteria:
           # assertions to determine step was successful
           - condition: $statusCode == 200

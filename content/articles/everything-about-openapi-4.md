@@ -4,10 +4,7 @@ description: "OpenAPI version 4 codenamed Moonwalk is scheduled in development. 
 published: true
 date: 2024/07/09
 slug: "everything-about-openapi-4"
-tags: [
-    "openapi",
-    "arazzo"
-]
+tags: ["openapi", "arazzo"]
 ---
 
 OpenAPI version 4 — named ‘Moonwalk’ — is scheduled to for release by the end of 2024. Are there plans related to #LLMs? Is there a complete overhaul? What will become of our beloved #OpenAPISpecification?
@@ -109,7 +106,7 @@ paths:
         5XX:
           description: serverError
           content:
-            application/http-problem: {}    
+            application/http-problem: {}
 components:
   Pet:
     type: object
@@ -127,10 +124,10 @@ To something that looks more like this:
 openapi: 4.0.0
 ...
 imports:
- - namespace: inventory
-   href: /domains/inventory.yml
+  - namespace: inventory
+    href: /domains/inventory.yml
 paths:
-  'pets':
+  "pets":
     requests:
       createPet: # API function as starting point
         method: post
@@ -205,7 +202,7 @@ deployments:
     title: SBX
     location: https://api-sbx.example.com
     security:
-          - basic: []
+      - basic: []
     clientRegistration: https://developers.example/let-me-in
     apiPaths: sandbox
 ```
@@ -246,12 +243,12 @@ The amount and separation should be based on the functional design of the system
 
 ```yaml
 # conceptual overview of relevant resources
-resources: 
-  - workflowDescription: https://api.example.com/workflows/petstore.arazzo.yml 
-  - apiDescriptions: 
-      - petstore-api: https://api.example.com/api-specifications/petstore.openapi.yml 
+resources:
+  - workflowDescription: https://api.example.com/workflows/petstore.arazzo.yml
+  - apiDescriptions:
+      - petstore-api: https://api.example.com/api-specifications/petstore.openapi.yml
       - ...
-  - domainDescriptions: 
+  - domainDescriptions:
       - sales: https://example.com/domains/sales.yml
       - inventory: https://example.com/domains/inventory.yml
       - ...
@@ -265,32 +262,26 @@ components:
   schemas:
     Invoice:
       type: object
-      properties:
-        ...
+      properties: ...
     Order:
       type: object
-      properties:
-        ...
+      properties: ...
     OrderLines:
       type: object
-      properties:
-        ...
+      properties: ...
 
 # inventory.yml
 components:
-   schemas:
-     Product:
+  schemas:
+    Product:
       type: object
-      properties:
-        ...
-     Pet:
+      properties: ...
+    Pet:
       type: object
-      properties:
-        ...
-     Food:
+      properties: ...
+    Food:
       type: object
-      properties:
-        ...
+      properties: ...
 ```
 
 Then we’ll offer an API description based on the functionality and data we’re offering:
@@ -301,10 +292,10 @@ Then we’ll offer an API description based on the functionality and data we’r
 openapi: 4.0.0
 ...
 imports:
- - namespace: inventory
-   href: /domains/inventory.yml
+  - namespace: inventory
+    href: /domains/inventory.yml
 paths:
-  'pets':
+  "pets":
     requests:
       createPet: # API function as starting point
         method: post
@@ -339,10 +330,10 @@ apiResponses:
 openapi: 4.0.0
 ...
 imports:
- - namespace: sales
-   href: /domains/sales.yml
+  - namespace: sales
+    href: /domains/sales.yml
 paths:
-  'pets':
+  "pets":
     requests:
       createOrder:
         method: post
@@ -391,13 +382,13 @@ workflows:
   - workflowId: OrderingPets
     summary: Workflow for ordering Pets at Example
     inputs:
-      type: 
+      type:
     steps:
       - stepId: listAvailablePets
         description: Show Pet offering to Customer
         operationId: $sourceDescriptions.petstore-api.getPets
         outputs:
-          potentialPetId: $response.body.pets[x].id 
+          potentialPetId: $response.body.pets[x].id
       - stepId: getPetInformation
         description: Show Pet information to Customer
         operationId: $sourceDescriptions.petstore-api.getPet
@@ -452,6 +443,7 @@ As with all open source projects all contributions are welcome, so check their w
 Let’s bring the web together! 🚀
 
 ## Links
+
 - [Announcement post](https://www.openapis.org/blog/2023/12/06/openapi-moonwalk-2024)
 - [Moonwalk (openapi v4) repository](https://github.com/OAI/sig-moonwalk/tree/specification)
 - [APIstic data overview](http://openapi.inf.usi.ch/)
