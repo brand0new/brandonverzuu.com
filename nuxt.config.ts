@@ -12,6 +12,28 @@ export default defineNuxtConfig({
 
   modules: ["@nuxt/ui", "@nuxt/icon", "@nuxt/image", "@nuxt/content"],
 
+  icon: {
+    // Default provider only resolves icons client-side (or via a live fetch
+    // to the public Iconify API during SSR/prerender for anything not in the
+    // small client bundle). Use the "server" provider so icons are resolved
+    // from a locally generated bundle instead.
+    provider: "server",
+    // "auto" also switches to fetching icons from a remote CDN at build time
+    // whenever the nitro preset name contains "cloudflare"/"edge"/"worker".
+    // This is a purely static build with no edge runtime, and the icon sets
+    // are already installed locally (@iconify-json/mage, @iconify-json/lucide),
+    // so force local bundling to avoid depending on that CDN at build time.
+    serverBundle: "local",
+  },
+
+  image: {
+    // This site is a fully static prerendered build (no server/edge functions),
+    // so @nuxt/image's IPX provider has nowhere to run at request time and the
+    // static prerenderer never generates the /_ipx/... files it points to.
+    // Serve images as-is instead of routing them through IPX.
+    provider: "none",
+  },
+
   app: {
     pageTransition: {
       name: "page",
