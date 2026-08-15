@@ -4,12 +4,7 @@ description: "As AI becomes more integrated into everything we do, we need to re
 published: true
 date: 2025/02/28
 slug: "trust-in-ai"
-tags: [
-    "ai",
-    "social contract",
-    "technology",
-    "ethics"
-    ]
+tags: ["ai", "social contract", "technology", "ethics"]
 ---
 
 _“A dive into how AI is reshaping the frontier of our social contract”_
@@ -73,9 +68,9 @@ A thought experiment where we fast forward into the future…
 > When booking the trip according to your preferences the assistant encounters a problem: Insufficient Funds on the spending account…
 >
 > You have set a policy to not go into debt. But the assistant infers from the different sources that you’re having a hard time and are at risk of burning out if you don’t take a break soon.
-> 
+>
 > It determines to transfer the required funds from your savings account and continues to book the trip for you.
-> 
+>
 > When in Italy that summer you sip on your drink as you throw your legs up during your well-deserved break.
 
 This may seem like an irrelevant case of booking a vacation in which our protagonist even had a happy ending.

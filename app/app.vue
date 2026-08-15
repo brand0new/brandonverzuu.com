@@ -2,7 +2,7 @@
   <UApp>
     <AppNavbar />
     <div class="h-32"></div>
-    <UContainer class="max-w-xl lg:max-w-2xl mx-auto">
+    <UContainer class="mx-auto max-w-xl lg:max-w-2xl">
       <NuxtPage />
     </UContainer>
     <div class="h-32"></div>

@@ -4,12 +4,7 @@ description: "A practical example of using Overlay Specification to automate you
 published: true
 date: 2025/01/27
 slug: "capture-api-changes-with-overlay"
-tags: [
-    "overlay",
-    "openapi",
-    "api",
-    "governance"
-]
+tags: ["overlay", "openapi", "api", "governance"]
 ---
 
 In Dutch, we have a saying: _“Aan de weg timmeren,”_ which literally translates to _“Carpeting the road.”_ It’s used to describe someone who makes consistent progress. This phrase comes to mind whenever I see posts from the OpenAPI Initiative or those involved with the organisation.
@@ -36,12 +31,13 @@ The name is quite fitting when looking at the specification. Overlay is intended
 Before we dive into more detail on the uses of Overlay, let’s first examine the available components.
 
 ## Components of Overlay
+
 An Overlay Specification is only relevant when there is an API Specification. Overlay allows its writer to target a piece of OpenAPI Specification using an **Action Object**.
 
 The Action Object describes a change that needs to be applied. This is done using these properties:
 
 - **target**: A JSONPath query describing the component that will undergo the described action.
-description: An explanation of the action in natural language
+  description: An explanation of the action in natural language
 - **update**: An object containing the structure to apply to an API description
 - **remove**: A flag that describes if the target needs to be removed from the API description
 
@@ -49,8 +45,8 @@ description: An explanation of the action in natural language
 # an overlay file can contain more of actions
 - target: $.info
     description: Always replace info object with customer-facing details
-    update: 
-       contact: 
+    update:
+       contact:
         email: support@acme.com
         name: ACME
         url: 'https://www.acme.com'
@@ -95,40 +91,40 @@ info:
   version: 1.0.0
 extends: ./petstore.openapi.yaml
 actions:
-- target: $.components
-  update:
-    parameters:
-      HeaderDeprecation:
-        name: Deprecation
-        in: header
-        description: RFC xxxx - A deprecation header is metadata describing the date and time when the endpoint is considered deprecated. 
-        schema:
-          type: string
-          format: timestamp
-          example: '@1737722995'
-      HeaderSunset:
-        name: Sunset
-        in: header
-        description: RFC 8594 - A Sunset header is metadata describing the date and time when the endpoint fully stops service.
-        schema:
-          type: string
-          example: Thu, 31 Dec 2026 23:59:59 CET
-      HeaderDeprecationLink:
-        name: Link
-        in: header
-        description: RFC 8288 - A Link header is a relation type that points to a related resource
-        schema:
-          type: string
-          example: "<https://developer.acme.com/deprecation>; rel=\"deprecation\"; type=\"text/html\""
-- target: $.paths.*[?(@.deprecated == true)].responses.*
-  update:
-    headers:
-      Deprecation:
-        $ref: '#/components/parameters/HeaderDeprecation'
-      Sunset:
-        $ref: '#/components/parameters/HeaderSunset'
-      Link:
-        $ref: '#/components/parameters/HeaderDeprecationLink'
+  - target: $.components
+    update:
+      parameters:
+        HeaderDeprecation:
+          name: Deprecation
+          in: header
+          description: RFC xxxx - A deprecation header is metadata describing the date and time when the endpoint is considered deprecated.
+          schema:
+            type: string
+            format: timestamp
+            example: "@1737722995"
+        HeaderSunset:
+          name: Sunset
+          in: header
+          description: RFC 8594 - A Sunset header is metadata describing the date and time when the endpoint fully stops service.
+          schema:
+            type: string
+            example: Thu, 31 Dec 2026 23:59:59 CET
+        HeaderDeprecationLink:
+          name: Link
+          in: header
+          description: RFC 8288 - A Link header is a relation type that points to a related resource
+          schema:
+            type: string
+            example: '<https://developer.acme.com/deprecation>; rel="deprecation"; type="text/html"'
+  - target: $.paths.*[?(@.deprecated == true)].responses.*
+    update:
+      headers:
+        Deprecation:
+          $ref: "#/components/parameters/HeaderDeprecation"
+        Sunset:
+          $ref: "#/components/parameters/HeaderSunset"
+        Link:
+          $ref: "#/components/parameters/HeaderDeprecationLink"
 ```
 
 Within the overlay I’ve decided to implement some HTTP headers that relate to deprecation in a generic way. In theory this will allow for the implementation of this overlay on virtually any API description that implements the deprecation flag but lacks any of these headers.

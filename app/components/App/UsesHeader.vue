@@ -1,10 +1,10 @@
 <template>
   <li>
     <div
-      class="relative after:-z-10 after:block after:h-[2px] after:absolute after:top-1/2 after:transform after:bg-gray-100 dark:after:bg-white/10 after:w-full after:left-0 after:right-0"
+      class="relative after:absolute after:top-1/2 after:right-0 after:left-0 after:-z-10 after:block after:h-[2px] after:w-full after:transform after:bg-gray-100 dark:after:bg-white/10"
     >
       <span
-        class="font-medium text-sm text-gray-600 dark:text-gray-500 bg-gray-50 dark:bg-black pr-4"
+        class="bg-gray-50 pr-4 text-sm font-medium text-gray-600 dark:bg-black dark:text-gray-500"
         >{{ title }}</span
       >
     </div>

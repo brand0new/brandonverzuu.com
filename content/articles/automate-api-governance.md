@@ -4,10 +4,7 @@ description: "A practical example of using linting tooling to automate your API 
 published: true
 date: 2025/01/02
 slug: "automate-api-governance"
-tags: [
-  "governance",
-  "linting"
-]
+tags: ["governance", "linting"]
 ---
 
 There’s a quote from Arnaud Lauret — author of The Design of Web APIs — during his [talk on API Governance at Nordic APIs](https://www.youtube.com/watch?v=EMLCNqx80W4&t=1s&pp=ygUSbm9yZGljIGFwaXMgYXJuYXVk) that has stuck with me for a while now:
@@ -94,21 +91,19 @@ Let’s create a custom ruleset called **object-policies.spectral.json** in whic
 
 ```json
 {
-    "description": "Object policies",
-    "rules": {
-        "object-policies:required-description": {
-            "description": "Object must have a description",
-            "message": "Object must have a description",
-            "given": [
-                "$..schemas[*]"
-            ],
-            "severity": "error",
-            "then": {
-                "field": "description",
-                "function": "truthy"
-            }
-        }
+  "description": "Object policies",
+  "rules": {
+    "object-policies:required-description": {
+      "description": "Object must have a description",
+      "message": "Object must have a description",
+      "given": ["$..schemas[*]"],
+      "severity": "error",
+      "then": {
+        "field": "description",
+        "function": "truthy"
+      }
     }
+  }
 }
 ```
 
@@ -138,23 +133,21 @@ Now we validate if the description property is present, we’ll check if our agr
 
 ```json
 {
-    "description": "Object policies",
-    "rules": {
-        "object-policies:preferred-description-template": {
-            "description": "Object description must implement template",
-            "message": "Should contain 'A ... is a ... that ...' template",
-            "given": [
-                "$..schemas[*].description"
-            ],
-            "severity": "warn",
-            "then": {
-                "function": "pattern",
-                "functionOptions": {
-                    "match": "(A|An)\\s.+\\sis\\sa\\s.+\\sthat\\s.+"
-                }
-            }
+  "description": "Object policies",
+  "rules": {
+    "object-policies:preferred-description-template": {
+      "description": "Object description must implement template",
+      "message": "Should contain 'A ... is a ... that ...' template",
+      "given": ["$..schemas[*].description"],
+      "severity": "warn",
+      "then": {
+        "function": "pattern",
+        "functionOptions": {
+          "match": "(A|An)\\s.+\\sis\\sa\\s.+\\sthat\\s.+"
         }
+      }
     }
+  }
 }
 ```
 

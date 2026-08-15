@@ -6,7 +6,7 @@
 @source "../../content";
 
 @theme static {
-  --default-font-family: 'Satoshi', sans-serif;
+  --default-font-family: "Satoshi", sans-serif;
   --default-font-size: 18.5px;
   --default-font-weight: 500;
 
@@ -45,40 +45,45 @@
   --color-porcelain-800: #2f525d;
   --color-porcelain-900: #2b464f;
   --color-porcelain-950: #1d2e34;
-
 }
 
 .prose {
   font-family: var(--default-font-family);
 }
 
-p, li {
+p,
+li {
   font-family: var(--default-font-family);
   font-size: 16px;
   font-weight: 500;
 }
 
-h1, h2, h3, h4, h5, h6 {
-  font-family: 'Cabinet Grotesk', sans-serif;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Cabinet Grotesk", sans-serif;
   font-weight: 500;
 }
 
 h1 {
- font-size: 55.24px; 
+  font-size: 55.24px;
 }
 
 h2 {
-  font-size: 38px; 
+  font-size: 38px;
 }
 
 h3 {
-  font-size: 31px; 
+  font-size: 31px;
 }
 
 h4 {
-  font-size: 26px; 
+  font-size: 26px;
 }
 
 h5 {
-  font-size: 22px; 
+  font-size: 22px;
 }

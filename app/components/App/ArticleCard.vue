@@ -1,6 +1,6 @@
 <template>
   <NuxtLink :to="article.path" class="group">
-    <article class="relative rounded-xl overflow-hidden">
+    <article class="relative overflow-hidden rounded-xl">
       <!-- Background image -->
       <div
         class="absolute inset-0 z-0 bg-cover bg-center"
@@ -9,12 +9,18 @@
       <!-- Overlay -->
       <div class="absolute inset-0 z-0 bg-black/40"></div>
       <!-- Content -->
-      <div class="relative z-10 p-4 m-8">
-        <time class="relative z-10 order-first flex items-center mb-3 text-sm text-gray-200 dark:text-gray-300 pl-3.5"
+      <div class="relative z-10 m-8 p-4">
+        <time
+          class="relative z-10 order-first mb-3 flex items-center pl-3.5 text-sm text-gray-200 dark:text-gray-300"
           :datetime="article.date"
         >
-          <span class="absolute inset-y-0 left-0 flex items-center" aria-hidden="true">
-            <span class="h-4 w-0.5 rounded-full bg-gray-200 dark:bg-gray-500"></span>
+          <span
+            class="absolute inset-y-0 left-0 flex items-center"
+            aria-hidden="true"
+          >
+            <span
+              class="h-4 w-0.5 rounded-full bg-gray-200 dark:bg-gray-500"
+            ></span>
           </span>
           {{ getReadableDate(article.date) }}
         </time>
@@ -45,5 +51,4 @@ const getReadableDate = (dateString) => {
     day: "numeric",
   });
 };
-
 </script>

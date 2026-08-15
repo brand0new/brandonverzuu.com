@@ -3,9 +3,15 @@
     <AppHeader class="mb-8" title="Bookmarks" :description="description" />
     <ul class="space-y-5">
       <li v-for="bookmark in bookmarks" :key="bookmark.id">
-        <a :href="bookmark.url"
-          class="flex items-center gap-5 hover:bg-gray-100 dark:hover:bg-white/10 p-2 rounded-lg -m-2 text-sm min-w-0">
-          <UAvatar :src="getThumbnail(bookmark.url)" :alt="bookmark.label" size="lg" />
+        <a
+          :href="bookmark.url"
+          class="-m-2 flex min-w-0 items-center gap-5 rounded-lg p-2 text-sm hover:bg-gray-100 dark:hover:bg-white/10"
+        >
+          <UAvatar
+            :src="getThumbnail(bookmark.url)"
+            :alt="bookmark.label"
+            size="lg"
+          />
           <div class="flex flex-col">
             <span class="text-gray-700 dark:text-gray-200">
               {{ bookmark.label }}
@@ -21,8 +27,7 @@
 </template>
 
 <script setup lang="ts">
-const description =
-  "Here's some interesting stuff I've found on the internet.";
+const description = "Here's some interesting stuff I've found on the internet.";
 useSeoMeta({
   title: "Bookmarks | Brandon Verzuu",
   description,
@@ -36,39 +41,41 @@ const bookmarks = [
   },
   {
     id: 2,
-    label: "A comprehensive view of all stakeholders creating the programmable economy",
+    label:
+      "A comprehensive view of all stakeholders creating the programmable economy",
     url: "https://apilandscape.apiscene.io",
   },
   {
     id: 3,
     label: "An online and interactive view of the bitcoin ecosystem",
-    url: "https://mempool.space/"
+    url: "https://mempool.space/",
   },
   {
     id: 4,
     label: "A self hosted network-wide ad blocker",
-    url: "https://pi-hole.net/"
+    url: "https://pi-hole.net/",
   },
   {
     id: 5,
     label: "Create and host your own cloud",
-    url: "https://umbrel.com"
+    url: "https://umbrel.com",
   },
   {
     id: 6,
     label: "A free fonts service launched by the Indian Type Foundry (ITF)",
-    url: "https://fontshare.com"
+    url: "https://fontshare.com",
   },
   {
     id: 7,
-    label: "Industrial strength, enterprise grade, beautiful dev tools for code hackers.",
-    url: "https://pb33f.io"
+    label:
+      "Industrial strength, enterprise grade, beautiful dev tools for code hackers.",
+    url: "https://pb33f.io",
   },
   {
     id: 8,
     label: "A helpful tool to determine scale for your Typography",
-    url: "https://typescale.com"
-  }
+    url: "https://typescale.com",
+  },
 ];
 
 function getHost(url: string) {

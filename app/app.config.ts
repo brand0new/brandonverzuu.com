@@ -21,14 +21,15 @@ export default defineAppConfig({
       },
       variants: {
         transition: {
-          enterFrom: "opacity-0 translate-y-full sm:translate-y-0 sm:scale-x-95",
+          enterFrom:
+            "opacity-0 translate-y-full sm:translate-y-0 sm:scale-x-95",
           leaveFrom: "opacity-100 translate-y-0 sm:scale-x-100",
-        }
-      }
+        },
+      },
     },
 
     container: {
-      base: "max-w-sm"
+      base: "max-w-sm",
     },
   },
 });
