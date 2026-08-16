@@ -30,7 +30,12 @@ useSeoMeta({
       ? `${article.value.title} | Brandon Verzuu`
       : "Brandon Verzuu",
   ogDescription: () => article.value?.description,
-  ogImage: `https://brandonverzuu.com/articles/${slug}.png`,
+  // Absolute URL to a file that actually exists in the static output. The
+  // previous `/articles/${slug}.png` was never generated or committed, so every
+  // social preview resolved to a 404. Fall back to the avatar when an article
+  // declares no cover image.
+  ogImage: () =>
+    `https://brandonverzuu.com${article.value?.image ?? "/avatar.jpg"}`,
   twitterCard: "summary_large_image",
   author: "Brandon Verzuu",
 });

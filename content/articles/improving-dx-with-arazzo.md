@@ -4,6 +4,7 @@ description: "Arazzo is a new open-source project that aims to improve developer
 published: true
 date: 2024/06/17
 slug: "improving-dx-with-arazzo"
+image: "/articles/improving-dx-with-arazzo/cover.jpg"
 tags: ["openapi", "arazzo", "api", "developer experience"]
 ---
 

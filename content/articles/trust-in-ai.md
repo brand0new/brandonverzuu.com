@@ -4,6 +4,7 @@ description: "As AI becomes more integrated into everything we do, we need to re
 published: true
 date: 2025/02/28
 slug: "trust-in-ai"
+image: "/articles/trust-in-ai/cover.jpg"
 tags: ["ai", "social contract", "technology", "ethics"]
 ---
 

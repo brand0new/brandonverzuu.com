@@ -4,6 +4,7 @@ description: "A practical example of using Overlay Specification to automate you
 published: true
 date: 2025/01/27
 slug: "capture-api-changes-with-overlay"
+image: "/articles/capture-api-changes-with-overlay/cover.jpg"
 tags: ["overlay", "openapi", "api", "governance"]
 ---
 
