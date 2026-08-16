@@ -1,10 +1,17 @@
 <template>
   <NuxtLink :to="article.path" class="group">
-    <article class="relative overflow-hidden rounded-xl">
-      <!-- Background image -->
+    <article
+      class="from-porcelain-800 to-porcelain-950 relative overflow-hidden rounded-xl bg-gradient-to-br"
+    >
+      <!-- Background image. Only rendered when the article declares a cover in
+           its frontmatter: this is a static build, so a guessed path for an
+           article without a cover is a hard 404 in production rather than a
+           silently empty image. Articles without one fall back to the gradient
+           on the wrapper above. -->
       <div
+        v-if="article.image"
         class="absolute inset-0 z-0 bg-cover bg-center"
-        :style="{ backgroundImage: `url(/articles/${article.slug}/cover.jpg)` }"
+        :style="{ backgroundImage: `url(${article.image})` }"
       ></div>
       <!-- Overlay -->
       <div class="absolute inset-0 z-0 bg-black/40"></div>

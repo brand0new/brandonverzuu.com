@@ -4,6 +4,7 @@ description: "A practical example of using linting tooling to automate your API 
 published: true
 date: 2025/01/02
 slug: "automate-api-governance"
+image: "/articles/automate-api-governance/cover.jpg"
 tags: ["governance", "linting"]
 ---
 
