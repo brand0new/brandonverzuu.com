@@ -13,17 +13,32 @@ export default defineNuxtConfig({
   modules: ["@nuxt/ui", "@nuxt/icon", "@nuxt/image", "@nuxt/content"],
 
   icon: {
-    // Default provider only resolves icons client-side (or via a live fetch
-    // to the public Iconify API during SSR/prerender for anything not in the
-    // small client bundle). Use the "server" provider so icons are resolved
-    // from a locally generated bundle instead.
-    provider: "server",
-    // "auto" also switches to fetching icons from a remote CDN at build time
-    // whenever the nitro preset name contains "cloudflare"/"edge"/"worker".
-    // This is a purely static build with no edge runtime, and the icon sets
-    // are already installed locally (@iconify-json/mage, @iconify-json/lucide),
-    // so force local bundling to avoid depending on that CDN at build time.
-    serverBundle: "local",
+    // This is a purely static build with no server/edge runtime, so icons
+    // must be resolved entirely at build time with nothing fetched at
+    // request time. The "server" provider (previously used here) resolves
+    // icons via a Nitro API route (/api/_nuxt_icon/...), which doesn't
+    // exist in the static `dist/` output and 404s in production. Instead,
+    // bundle icons directly into the client JS at build time via
+    // clientBundle, so the <Icon>/<UIcon> components (all wrapped in
+    // <client-only> to avoid SSR/prerender-time resolution) render from
+    // local data with zero runtime requests. Icons are listed explicitly
+    // because some are chosen dynamically (e.g. ThemeToggle's ternary),
+    // which the automatic source scanner can miss.
+    clientBundle: {
+      scan: true,
+      icons: [
+        "mage:book-text-fill",
+        "mage:bookmark-fill",
+        "mage:folder-2-fill",
+        "mage:github",
+        "mage:home-fill",
+        "mage:linkedin",
+        "mage:medium",
+        "mage:moon-fill",
+        "mage:sun",
+        "mage:x",
+      ],
+    },
   },
 
   image: {
