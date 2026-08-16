@@ -27,5 +27,13 @@
     "better-sqlite3": "^12.11.1",
     "tailwindcss": "^4.1.10",
     "vue-use-fixed-header": "^2.0.0"
+  },
+  "allowScripts": {
+    "vue-demi@0.14.10": true,
+    "better-sqlite3@12.11.1": true,
+    "esbuild@0.25.5": true,
+    "esbuild@0.27.7": true,
+    "esbuild@0.28.1": true,
+    "workerd@1.20260811.1": true
   }
 }
