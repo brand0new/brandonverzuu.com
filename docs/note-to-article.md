@@ -116,15 +116,23 @@ If you'd rather have it instant, the alternative is a GitHub Action on the
 Defined in `.claude/skills/note-to-article/SKILL.md`, with the voice rules in
 `.claude/article-style.md`. In short:
 
-- **Editor, not ghostwriter.** It restructures, fixes typos and dictation artifacts,
-  smooths transitions, and writes an intro and close around what you said. It does
-  not invent facts, statistics, quotes, citations, or opinions.
-- **Thin notes get questions, not padding.** If the note gestures at something it
-  doesn't contain, Claude comments with three to five specific questions and waits.
-  Answer from the GitHub app and it picks up where it left off.
-- **Every PR says what it added.** The body carries a "What I added" list naming the
-  connective tissue that wasn't in your note, so you know where your words end and
-  Claude's begin before you merge.
+- **Ghostwriter.** It takes the seed and writes the whole article in your voice —
+  a 200-word note becoming a 1,300-word piece is the expected outcome, not overreach.
+  The style guide is derived from all eleven of your articles and carries measured
+  targets: 17 words per sentence, ~29 per paragraph with half of them single-sentence,
+  five `##` sections, your opening roadmap line, the split theory-versus-reality
+  verdict, and a list of the LLM tells to avoid.
+- **The line is facts, not length.** Structure, argument development, everyday
+  analogies, and explicitly hypothetical examples are Claude's to write. Statistics,
+  quotes, citations, positions you haven't taken, and anything *you personally did* —
+  an engagement, a customer, a tool you built — are never invented.
+- **Missing facts get questions, not guesses.** If the note points at a number or an
+  anecdote it doesn't contain, Claude comments with three to five specific questions
+  and says which sections it can already write. Answer from the GitHub app and it
+  picks up where it left off.
+- **Every PR says what came from where.** The body lists the argument moves,
+  analogies, and examples Claude added, so you can see which claims are yours and
+  which are craft before you merge.
 
 ## Rotating or revoking the token
 
