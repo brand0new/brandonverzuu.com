@@ -6,19 +6,20 @@ article. This document is the one-time setup.
 ```
 Apple Notes ──share──> Shortcut ──POST──> GitHub issue (draft-article)
                                                 │
-                                     scheduled Claude session
+                                       scheduled agent run
                                                 │
                               ┌─────────────────┴─────────────────┐
                          note is thin                      note is enough
                               │                                   │
-                    questions on the issue              PR on claude/article-<slug>
+                    questions on the issue              PR opened, checks run
                     (needs-input label)                           │
-                              │                          review in GitHub mobile
-                        you reply ──────────────────────> merge ──> Cloudflare builds
+                              │                          checks pass ──> agent merges
+                        you reply ──────────────────────> PR opened ──> checks pass
 ```
 
-Nothing goes live without you merging a PR. That is the only publish gate, and it's
-deliberate.
+The only manual step is answering questions on the issue when a note is too thin to
+write from. Once the facts are in, the agent takes the article all the way to a
+merged PR itself.
 
 ## 1. Create the labels
 
@@ -34,7 +35,21 @@ In the repo, create three labels (Issues → Labels → New label):
 the repo, so a labeled issue is provably one you created. The skill ignores anything
 unlabeled.
 
-## 2. Create a fine-grained PAT
+## 2. Create a token for the agent
+
+The scheduled agent needs write access to this repo — it files no issues itself, but
+it comments on them, pushes branches, opens PRs, and merges them once checks pass.
+That's broader than the Shortcut's PAT needs to be, so keep them separate:
+
+- **Shortcut token** (step-by-step below): fine-grained, Issues **read/write** only,
+  scoped to this one repo. It only ever creates an issue.
+- **Agent token**: needs `repo` scope (or a fine-grained equivalent with
+  Contents/Pull requests/Issues read-write on this repo) since it pushes commits,
+  opens PRs, and merges them. This is whatever credential the onboarded agent already
+  authenticates with — see `AGENTS.md` at the repo root for the onboarding step that
+  wires this up.
+
+### The Shortcut's own token
 
 github.com → Settings → Developer settings → Personal access tokens → Fine-grained
 tokens → Generate new token.
@@ -99,22 +114,19 @@ the rest is the article source.
 Worth adding once it works: a Home Screen icon, and "Hey Siri, draft article" for
 dictating one while driving. Dictation artifacts are fine — the skill cleans them up.
 
-## 4. Schedule the processing session
+## 4. The scheduled run
 
-A Claude Code Routine wakes on a schedule, checks for issues labeled `draft-article`,
-and runs the `note-to-article` skill on anything it finds. If the inbox is empty it
-does nothing and goes back to sleep.
+Scheduling isn't done by hand per-agent: it's part of onboarding. `AGENTS.md` at the
+repo root instructs any newly onboarded coding agent to set up its own recurring job
+against this repo — check for issues labeled `draft-article`, run the
+`note-to-article` procedure on anything it finds, do nothing if the inbox is empty.
 
 Twice a day is plenty for essays; there's no value in a tighter loop.
 
-If you'd rather have it instant, the alternative is a GitHub Action on the
-`issues.labeled` event running the Claude Code Action — that needs an
-`ANTHROPIC_API_KEY` repo secret and bills separately from your subscription.
+## What the agent does with a note
 
-## What Claude does with a note
-
-Defined in `.claude/skills/note-to-article/SKILL.md`, with the voice rules in
-`.claude/article-style.md`. In short:
+Defined in `skills/note-to-article/SKILL.md`, with the voice rules in
+`skills/note-to-article/style-guide.md`. In short:
 
 - **Ghostwriter.** It takes the seed and writes the whole article in your voice —
   a 200-word note becoming a 1,300-word piece is the expected outcome, not overreach.
@@ -123,18 +135,24 @@ Defined in `.claude/skills/note-to-article/SKILL.md`, with the voice rules in
   five `##` sections, your opening roadmap line, the split theory-versus-reality
   verdict, and a list of the LLM tells to avoid.
 - **The line is facts, not length.** Structure, argument development, everyday
-  analogies, and explicitly hypothetical examples are Claude's to write. Statistics,
+  analogies, and explicitly hypothetical examples are the agent's to write. Statistics,
   quotes, citations, positions you haven't taken, and anything *you personally did* —
   an engagement, a customer, a tool you built — are never invented.
 - **Missing facts get questions, not guesses.** If the note points at a number or an
-  anecdote it doesn't contain, Claude comments with three to five specific questions
-  and says which sections it can already write. Answer from the GitHub app and it
-  picks up where it left off.
-- **Every PR says what came from where.** The body lists the argument moves,
-  analogies, and examples Claude added, so you can see which claims are yours and
-  which are craft before you merge.
+  anecdote it doesn't contain, the agent comments on the issue with three to five
+  specific questions and says which sections it can already write. Answer from the
+  GitHub app and it picks up where it left off — this is the only place questions
+  get asked.
+- **The agent merges its own PR.** There is no manual review gate. Once
+  `npm run generate` passes locally and the repo's required checks pass on the PR,
+  the agent merges it and comments the merged link back on the issue. The "What I
+  added" list in the PR body is what makes the change auditable after the fact —
+  read it there if you want to see which claims are yours and which are craft.
 
-## Rotating or revoking the token
+## Rotating or revoking a token
 
-Revoke on GitHub, generate a new one, edit the `Authorization` header in the
-Shortcut. Nothing else references it.
+Shortcut token: revoke on GitHub, generate a new one, edit the `Authorization`
+header in the Shortcut. Nothing else references it.
+
+Agent token: rotate through whatever auth flow the agent used during onboarding
+(see `AGENTS.md`). Revoking it pauses the scheduled run until it's replaced.
