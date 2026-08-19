@@ -11,6 +11,7 @@
             :src="getThumbnail(bookmark.url)"
             :alt="bookmark.label"
             size="lg"
+            :ui="{ root: 'rounded-md', image: 'rounded-none object-contain' }"
           />
           <div class="flex flex-col">
             <span class="text-gray-700 dark:text-gray-200">
