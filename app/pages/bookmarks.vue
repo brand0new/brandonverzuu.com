@@ -76,6 +76,21 @@ const bookmarks = [
     label: "A helpful tool to determine scale for your Typography",
     url: "https://typescale.com",
   },
+  {
+    id: 9,
+    label: "Opensource solution for working with API descriptions",
+    url: "https://github.com/speclynx",
+  },
+  {
+    id: 10,
+    label: "Agent solution of choice",
+    url: "https://hermes-agent.nousresearch.com/",
+  },
+  {
+    id: 11,
+    label: "Opensource Digital Signage to display",
+    url: "https://anthias.screenly.io/",
+  },
 ];
 
 function getHost(url: string) {
