@@ -5,6 +5,10 @@ published: true
 date: 2021/04/29
 slug: "blockchain-in-afrika"
 tags: ["blockchain", "crypto", "finance", "africa"]
+image: "/articles/blockchain-in-afrika/cover.png"
+imageAuthor: "Saliousoft"
+imageLicense: "CC BY-SA 4.0"
+imageSource: "https://commons.wikimedia.org/wiki/File:Mobile_Money_kiosk.jpg"
 ---
 
 In mijn tweede post heb ik geschreven over het brede spectrum aan verschillende crypto die tegenwoordig bestaan. Hierbij lag de nadruk op de waarde van deze crypto.

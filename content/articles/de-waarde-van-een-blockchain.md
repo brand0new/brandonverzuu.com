@@ -5,6 +5,10 @@ published: true
 date: 2021/02/23
 slug: "de-waarde-van-een-blockchain"
 tags: ["blockchain", "crypto", "finance"]
+image: "/articles/de-waarde-van-een-blockchain/cover.png"
+imageAuthor: "Stevebidmead"
+imageLicense: "CC0"
+imageSource: "https://commons.wikimedia.org/wiki/File:Gold_bullion_bars.jpg"
 ---
 
 Je ziet duizelingwekkende bedragen als je op een website zoals [**Coinmarketcap**](https://coinmarketcap.com/ "CoinMarketCap") kijkt. Hier vind je een overzicht van de totale waarde die momenteel geïnvesteerd is per digitale valuta.

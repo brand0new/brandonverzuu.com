@@ -5,6 +5,10 @@ published: true
 date: 2025/04/15
 slug: "maturity-models-and-tech"
 tags: ["maturity-model", "governance"]
+image: "/articles/maturity-models-and-tech/cover.png"
+imageAuthor: "Basile Morin"
+imageLicense: "CC BY-SA 4.0"
+imageSource: "https://commons.wikimedia.org/wiki/File:Wooden_staircase_steps_in_the_forest_of_Hallasan_Park_Eorimok_Trail_at_dusk_on_Jeju_Island_in_South_Korea.jpg"
 ---
 
 _A look at how a maturity model turns "what should we do next?" from a matter of taste into something you can put on a table._
