@@ -1,7 +1,7 @@
 <template>
   <NuxtLink :to="article.path" class="group">
     <article
-      class="from-porcelain-800 to-porcelain-950 relative overflow-hidden rounded-xl bg-gradient-to-br"
+      class="from-terracotta to-porcelain-950 relative overflow-hidden rounded-xl bg-gradient-to-br"
     >
       <!-- Background image. Only rendered when the article declares a cover in
            its frontmatter: this is a static build, so a guessed path for an
@@ -15,6 +15,14 @@
       ></div>
       <!-- Overlay -->
       <div class="absolute inset-0 z-0 bg-black/40"></div>
+      <!-- Cover image credit. Most open-license sources require attribution,
+           so this shows whenever the article set imageAuthor in frontmatter. -->
+      <span
+        v-if="article.imageAuthor"
+        class="absolute right-2 bottom-2 z-10 text-[10px] text-gray-300/80"
+      >
+        Photo: {{ article.imageAuthor }}
+      </span>
       <!-- Content -->
       <div class="relative z-10 m-8 p-4">
         <time

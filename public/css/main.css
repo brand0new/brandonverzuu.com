@@ -45,6 +45,11 @@
   --color-porcelain-800: #2f525d;
   --color-porcelain-900: #2b464f;
   --color-porcelain-950: #1d2e34;
+
+  /* Warm accent at roughly porcelain's complementary hue (~192° -> ~19°) —
+     used as the light tone in dithered article covers (see
+     scripts/generate-cover.mjs) and echoed here for the no-cover fallback. */
+  --color-terracotta: #d97a4d;
 }
 
 .prose {

@@ -4,7 +4,7 @@ description: "OpenAPI version 4 codenamed Moonwalk is scheduled in development. 
 published: true
 date: 2024/07/09
 slug: "everything-about-openapi-4"
-image: "/articles/everything-about-openapi-4/cover.jpg"
+image: "/articles/everything-about-openapi-4/cover.png"
 tags: ["openapi", "arazzo"]
 ---
 
