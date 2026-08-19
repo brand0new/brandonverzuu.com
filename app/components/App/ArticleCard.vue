@@ -15,6 +15,14 @@
       ></div>
       <!-- Overlay -->
       <div class="absolute inset-0 z-0 bg-black/40"></div>
+      <!-- Cover image credit. Most open-license sources require attribution,
+           so this shows whenever the article set imageAuthor in frontmatter. -->
+      <span
+        v-if="article.imageAuthor"
+        class="absolute right-2 bottom-2 z-10 text-[10px] text-gray-300/80"
+      >
+        Photo: {{ article.imageAuthor }}
+      </span>
       <!-- Content -->
       <div class="relative z-10 m-8 p-4">
         <time

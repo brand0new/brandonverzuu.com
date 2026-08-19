@@ -8,7 +8,8 @@
     "host": "nuxt dev --host",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "deploy": "wrangler pages deploy"
+    "deploy": "wrangler pages deploy",
+    "cover:generate": "node scripts/generate-cover.mjs"
   },
   "devDependencies": {
     "@iconify-json/lucide": "^1.2.123",
@@ -19,6 +20,7 @@
     "nuxt": "^4.5.2",
     "prettier": "^3.9.6",
     "prettier-plugin-tailwindcss": "^0.6.14",
+    "sharp": "^0.35.3",
     "wrangler": "^4.123.0"
   },
   "dependencies": {
