@@ -4,6 +4,7 @@ description: "Er is geen ontkomen meer aan onderhand. Wat weet jij van bitcoin?"
 published: true
 date: 2021/01/31
 slug: "begrijp-jij-bitcoin"
+image: "/articles/begrijp-jij-bitcoin/cover.png"
 tags: ["bitcoin", "blockchain", "crypto", "finance"]
 ---
 

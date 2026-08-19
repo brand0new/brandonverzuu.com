@@ -26,6 +26,10 @@ logs
 .npmrc
 .notes
 
+# Cover generator scratch files (cleaned up automatically, but ignore any
+# left behind by an interrupted run)
+scripts/generate-cover/.tmp/
+
 # Local env files
 .env
 .env.*

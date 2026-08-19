@@ -1,0 +1,131 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Variant B — Editorial Blueprint</title>
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@800,500&f[]=satoshi@500&f[]=telma@500&display=swap">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #0b0f14;
+    font-family: "Satoshi", sans-serif;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    align-items: center;
+  }
+  .label { color: #6cb0ee; font-family: "Telma", monospace; font-size: 13px; margin-bottom: 8px; align-self: flex-start; }
+
+  .card {
+    width: 1200px;
+    height: 630px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 4px;
+    background: #f2f7f9;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 72px;
+    border: 2px solid #1d2e34;
+  }
+
+  /* corner ticks, blueprint feel, no photography */
+  .tick { position: absolute; width: 28px; height: 28px; border: 2px solid #2b464f; }
+  .tick.tl { top: -2px; left: -2px; border-right: none; border-bottom: none; }
+  .tick.tr { top: -2px; right: -2px; border-left: none; border-bottom: none; }
+  .tick.bl { bottom: -2px; left: -2px; border-right: none; border-top: none; }
+  .tick.br { bottom: -2px; right: -2px; border-left: none; border-top: none; }
+
+  .kicker {
+    font-family: "Telma", monospace;
+    color: #407889;
+    font-size: 18px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border-bottom: 1px solid #a5cad4;
+    padding-bottom: 16px;
+  }
+
+  h1 {
+    font-family: "Cabinet Grotesk", sans-serif;
+    font-weight: 800;
+    color: #1d2e34;
+    font-size: 60px;
+    line-height: 1.05;
+    max-width: 950px;
+    margin-top: 24px;
+  }
+
+  .diagram-panel {
+    margin-top: 28px;
+    background: #ffffff;
+    border: 1.5px dashed #75aebb;
+    border-radius: 4px;
+    padding: 20px 24px;
+    font-family: monospace;
+    font-size: 13.5px;
+    line-height: 1.4;
+    color: #2f525d;
+    white-space: pre;
+    width: fit-content;
+  }
+
+  .footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+
+  .byline {
+    font-family: "Cabinet Grotesk", sans-serif;
+    font-weight: 500;
+    color: #1d2e34;
+    font-size: 22px;
+  }
+
+  .tag {
+    font-family: "Telma", monospace;
+    color: #2b464f;
+    font-size: 15px;
+    border: 1px solid #2b464f;
+    padding: 5px 12px;
+    border-radius: 2px;
+  }
+</style>
+</head>
+<body>
+
+<div>
+  <div class="label">variant B — editorial blueprint (with ASCII diagram panel)</div>
+  <div class="card">
+    <div class="tick tl"></div><div class="tick tr"></div><div class="tick bl"></div><div class="tick br"></div>
+    <div class="kicker">Fig. 03 — brandonverzuu.com / governance</div>
+    <h1>What Should We Do Next? Ask a Focus Area Maturity Model</h1>
+    <div class="diagram-panel">focus areas ──▶ requirements ──▶ backlog
+    │                │
+    ▼                ▼
+ vocabulary      defensible position</div>
+    <div class="footer">
+      <div class="byline">Brandon Verzuu</div>
+      <div class="tag">maturity-model · governance</div>
+    </div>
+  </div>
+</div>
+
+<div>
+  <div class="label">variant B — no diagram (typical article)</div>
+  <div class="card">
+    <div class="tick tl"></div><div class="tick tr"></div><div class="tick bl"></div><div class="tick br"></div>
+    <div class="kicker">Fig. 07 — brandonverzuu.com / crypto</div>
+    <h1>The Value of a Blockchain in African Finance</h1>
+    <div class="footer">
+      <div class="byline">Brandon Verzuu</div>
+      <div class="tag">blockchain · finance</div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

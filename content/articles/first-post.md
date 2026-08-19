@@ -4,6 +4,7 @@ description: "My reason for creating a site"
 published: true
 date: 2020/06/05
 slug: "why-create-a-personal-website"
+image: "/articles/why-create-a-personal-website/cover.png"
 tags: ["personal"]
 ---
 

@@ -4,6 +4,7 @@ description: "A short story on diving in head first"
 published: true
 date: 2020/06/25
 slug: "the-serverless-site-my-customer-needed"
+image: "/articles/the-serverless-site-my-customer-needed/cover.png"
 tags: ["design", "web-development"]
 ---
 

@@ -4,6 +4,7 @@ description: "Een ander doel voor blockchain naast financiële doeleneinden"
 published: true
 date: 2021/04/29
 slug: "blockchain-in-afrika"
+image: "/articles/blockchain-in-afrika/cover.png"
 tags: ["blockchain", "crypto", "finance", "africa"]
 ---
 

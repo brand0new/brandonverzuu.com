@@ -1,0 +1,139 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Variant A — Terminal Ledger</title>
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@800,500&f[]=satoshi@500&f[]=telma@500&display=swap">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #0b0f14;
+    font-family: "Satoshi", sans-serif;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    align-items: center;
+  }
+  .label { color: #6cb0ee; font-family: "Telma", monospace; font-size: 13px; margin-bottom: 8px; align-self: flex-start; }
+
+  .card {
+    width: 1200px;
+    height: 630px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 20px;
+    background: linear-gradient(160deg, #15213c 0%, #0b0f14 65%);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 64px;
+    border: 1px solid #1f2a3d;
+  }
+
+  /* subtle scanline / grid texture, brand not stock photo */
+  .card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(108,176,238,0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(108,176,238,0.06) 1px, transparent 1px);
+    background-size: 40px 40px;
+    mask-image: radial-gradient(ellipse at 70% 30%, black 0%, transparent 70%);
+  }
+
+  .kicker {
+    font-family: "Telma", monospace;
+    color: #4a91e7;
+    font-size: 20px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    z-index: 1;
+  }
+
+  h1 {
+    font-family: "Cabinet Grotesk", sans-serif;
+    font-weight: 800;
+    color: #f5f8fc;
+    font-size: 58px;
+    line-height: 1.08;
+    max-width: 900px;
+    z-index: 1;
+    margin-top: 20px;
+  }
+
+  .ascii {
+    z-index: 1;
+    position: absolute;
+    right: 64px;
+    top: 64px;
+    font-family: monospace;
+    font-size: 13px;
+    line-height: 1.35;
+    color: #40e854;
+    opacity: 0.85;
+    white-space: pre;
+  }
+
+  .footer {
+    z-index: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .byline {
+    font-family: "Satoshi", sans-serif;
+    color: #9bccf5;
+    font-size: 20px;
+    font-weight: 500;
+  }
+
+  .tag {
+    font-family: "Telma", monospace;
+    background: rgba(64, 232, 84, 0.12);
+    color: #7ff68d;
+    border: 1px solid rgba(64,232,84,0.3);
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 15px;
+  }
+</style>
+</head>
+<body>
+
+<div>
+  <div class="label">variant A — terminal ledger (with ASCII diagram inset)</div>
+  <div class="card">
+    <div class="kicker">brandonverzuu.com / governance</div>
+    <h1>Why Focus Areas Beat a Five-Level Ladder</h1>
+    <pre class="ascii">┌────────────┐
+│ API design │──┐
+└────────────┘  │
+┌────────────┐  ├──▶ ┌──────────┐
+│ versioning │──┘    │ requires │
+└────────────┘       └──────────┘
+┌────────────┐
+│ docs       │───────▶ stage 2</pre>
+    <div class="footer">
+      <div class="byline">Brandon Verzuu</div>
+      <div class="tag">maturity-model</div>
+    </div>
+  </div>
+</div>
+
+<div>
+  <div class="label">variant A — no diagram (typical article)</div>
+  <div class="card">
+    <div class="kicker">brandonverzuu.com / api</div>
+    <h1>Capturing API Changes with an Overlay</h1>
+    <div class="footer">
+      <div class="byline">Brandon Verzuu</div>
+      <div class="tag">openapi</div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

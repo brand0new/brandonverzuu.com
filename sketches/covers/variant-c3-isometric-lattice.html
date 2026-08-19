@@ -1,0 +1,232 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Variant C3 — Isometric Lattice</title>
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@800,500&f[]=satoshi@500&f[]=telma@500&display=swap">
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #0b0f14;
+    font-family: "Satoshi", sans-serif;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    align-items: center;
+  }
+  .label { color: #6cb0ee; font-family: "Telma", monospace; font-size: 13px; margin-bottom: 8px; align-self: flex-start; }
+
+  .card {
+    width: 1200px;
+    height: 630px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 24px;
+    background: #0b0f14;
+  }
+
+  /* Generative art: isometric wireframe lattice of nodes/edges, evoking a
+     dependency graph / focus-area matrix — thematically on-brand for the
+     writing (governance, requirements, systems), rendered as line art
+     rather than a literal diagram. */
+  .lattice { position: absolute; inset: 0; z-index: 0; opacity: 0.5; }
+
+  .overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+  }
+  .governance .overlay { background: radial-gradient(circle at 75% 30%, rgba(52,118,220,0.5) 0%, rgba(11,15,20,0.6) 45%, rgba(11,15,20,0.94) 100%); }
+  .crypto .overlay     { background: radial-gradient(circle at 75% 30%, rgba(13,172,33,0.42) 0%, rgba(11,15,20,0.6) 45%, rgba(11,15,20,0.94) 100%); }
+  .api .overlay        { background: radial-gradient(circle at 75% 30%, rgba(64,120,137,0.5) 0%, rgba(11,15,20,0.6) 45%, rgba(11,15,20,0.94) 100%); }
+
+  .content {
+    position: relative;
+    z-index: 2;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 64px;
+  }
+
+  .glyph {
+    width: 60px;
+    height: 60px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "Cabinet Grotesk", sans-serif;
+    font-weight: 800;
+    font-size: 26px;
+    color: #0b0f14;
+  }
+  .governance .glyph { background: #6cb0ee; }
+  .crypto .glyph { background: #7ff68d; }
+  .api .glyph { background: #a5cad4; }
+
+  h1 {
+    font-family: "Cabinet Grotesk", sans-serif;
+    font-weight: 800;
+    color: #ffffff;
+    font-size: 54px;
+    line-height: 1.08;
+    max-width: 720px;
+    margin-top: 20px;
+  }
+
+  .mermaid-panel {
+    position: absolute;
+    left: 64px;
+    top: 64px;
+    width: 380px;
+    background: rgba(11,15,20,0.5);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 12px;
+    padding: 14px;
+    backdrop-filter: blur(6px);
+  }
+  .mermaid-panel .mermaid { font-size: 11px; }
+
+  .footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .byline {
+    font-family: "Satoshi", sans-serif;
+    color: rgba(255,255,255,0.85);
+    font-size: 20px;
+    font-weight: 500;
+  }
+
+  .tag {
+    font-family: "Telma", monospace;
+    background: rgba(255,255,255,0.12);
+    color: #fff;
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 15px;
+  }
+</style>
+</head>
+<body>
+
+<div>
+  <div class="label">variant C3 — isometric lattice, mermaid diagram (top-left)</div>
+  <div class="card governance">
+    <div class="lattice" id="lattice-1"></div>
+    <div class="overlay"></div>
+    <div class="content">
+      <div class="glyph">FA</div>
+      <h1 style="align-self:flex-end; text-align:right;">Why Focus Areas Beat a Five-Level Ladder</h1>
+      <div class="footer">
+        <div class="byline">Brandon Verzuu</div>
+        <div class="tag">governance</div>
+      </div>
+    </div>
+    <div class="mermaid-panel">
+      <pre class="mermaid">
+graph TD
+  A[API design] --> C[requirements]
+  B[versioning] --> C
+  C --> D[stage 2]
+      </pre>
+    </div>
+  </div>
+</div>
+
+<div>
+  <div class="label">variant C3 — isometric lattice, no diagram (api tag)</div>
+  <div class="card api">
+    <div class="lattice" id="lattice-2"></div>
+    <div class="overlay"></div>
+    <div class="content">
+      <div class="glyph">{ }</div>
+      <h1 style="align-self:flex-end; text-align:right;">Capturing API Changes with an Overlay</h1>
+      <div class="footer">
+        <div class="byline">Brandon Verzuu</div>
+        <div class="tag">openapi</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: "dark",
+    themeVariables: {
+      background: "transparent",
+      primaryColor: "#3476dc",
+      primaryTextColor: "#ffffff",
+      primaryBorderColor: "#6cb0ee",
+      lineColor: "#9bccf5",
+      fontFamily: "Satoshi, sans-serif",
+    },
+  });
+
+  function generateLattice(containerId, seed, cols, rows) {
+    const svgNS = "http://www.w3.org/2000/svg";
+    const svg = document.createElementNS(svgNS, "svg");
+    svg.setAttribute("viewBox", "0 0 1200 630");
+    svg.setAttribute("width", "100%");
+    svg.setAttribute("height", "100%");
+
+    let rand = seed;
+    function next() {
+      rand = (rand * 9301 + 49297) % 233280;
+      return rand / 233280;
+    }
+
+    const nodes = [];
+    const spacingX = 1200 / cols;
+    const spacingY = 630 / rows;
+    for (let c = 0; c <= cols; c++) {
+      for (let r = 0; r <= rows; r++) {
+        const jx = (next() - 0.5) * spacingX * 0.4;
+        const jy = (next() - 0.5) * spacingY * 0.4;
+        nodes.push({ x: c * spacingX + jx, y: r * spacingY + jy, c, r });
+      }
+    }
+
+    // connect neighbors isometrically (right and down)
+    nodes.forEach(n => {
+      const right = nodes.find(o => o.c === n.c + 1 && o.r === n.r);
+      const down = nodes.find(o => o.c === n.c && o.r === n.r + 1);
+      const diag = nodes.find(o => o.c === n.c + 1 && o.r === n.r + 1);
+      [right, down, diag].forEach(target => {
+        if (target && next() > 0.25) {
+          const line = document.createElementNS(svgNS, "line");
+          line.setAttribute("x1", n.x); line.setAttribute("y1", n.y);
+          line.setAttribute("x2", target.x); line.setAttribute("y2", target.y);
+          line.setAttribute("stroke", "rgba(255,255,255,0.14)");
+          line.setAttribute("stroke-width", "1");
+          svg.appendChild(line);
+        }
+      });
+    });
+
+    nodes.forEach(n => {
+      if (next() > 0.5) {
+        const dot = document.createElementNS(svgNS, "circle");
+        dot.setAttribute("cx", n.x); dot.setAttribute("cy", n.y);
+        dot.setAttribute("r", 2.5 + next() * 2.5);
+        dot.setAttribute("fill", "rgba(255,255,255,0.28)");
+        svg.appendChild(dot);
+      }
+    });
+
+    document.getElementById(containerId).appendChild(svg);
+  }
+
+  generateLattice("lattice-1", 11, 9, 5);
+  generateLattice("lattice-2", 23, 9, 5);
+</script>
+
+</body>
+</html>

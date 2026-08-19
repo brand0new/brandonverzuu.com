@@ -1,0 +1,180 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Variant C2 — Organic Blob Field</title>
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@800,500&f[]=satoshi@500&f[]=telma@500&display=swap">
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #0b0f14;
+    font-family: "Satoshi", sans-serif;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    align-items: center;
+  }
+  .label { color: #6cb0ee; font-family: "Telma", monospace; font-size: 13px; margin-bottom: 8px; align-self: flex-start; }
+
+  .card {
+    width: 1200px;
+    height: 630px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 24px;
+    background: #0b0f14;
+  }
+
+  /* Generative art: soft overlapping blurred blobs (SVG filter), a common
+     modern "gradient mesh" brand look. Positions/sizes vary per card via
+     inline style so each article gets a unique but on-brand composition. */
+  .blobs { position: absolute; inset: 0; z-index: 0; filter: blur(50px); opacity: 0.9; }
+  .blob { position: absolute; border-radius: 50%; }
+
+  .overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: linear-gradient(180deg, rgba(11,15,20,0.15) 0%, rgba(11,15,20,0.55) 55%, rgba(11,15,20,0.95) 100%);
+  }
+
+  .content {
+    position: relative;
+    z-index: 2;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 64px;
+  }
+
+  .glyph {
+    width: 60px;
+    height: 60px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "Cabinet Grotesk", sans-serif;
+    font-weight: 800;
+    font-size: 26px;
+    color: #0b0f14;
+    background: rgba(255,255,255,0.9);
+  }
+
+  h1 {
+    font-family: "Cabinet Grotesk", sans-serif;
+    font-weight: 800;
+    color: #ffffff;
+    font-size: 54px;
+    line-height: 1.08;
+    max-width: 780px;
+    margin-top: 20px;
+    text-shadow: 0 2px 24px rgba(0,0,0,0.4);
+  }
+
+  .mermaid-panel {
+    position: absolute;
+    right: 64px;
+    top: 64px;
+    width: 420px;
+    background: rgba(11,15,20,0.6);
+    border: 1px solid rgba(255,255,255,0.14);
+    border-radius: 12px;
+    padding: 16px;
+    backdrop-filter: blur(10px);
+  }
+  .mermaid-panel .mermaid { font-size: 12px; }
+
+  .footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .byline {
+    font-family: "Satoshi", sans-serif;
+    color: rgba(255,255,255,0.85);
+    font-size: 20px;
+    font-weight: 500;
+  }
+
+  .tag {
+    font-family: "Telma", monospace;
+    background: rgba(255,255,255,0.12);
+    color: #fff;
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 15px;
+  }
+</style>
+</head>
+<body>
+
+<div>
+  <div class="label">variant C2 — organic blob field (governance), mermaid diagram</div>
+  <div class="card">
+    <div class="blobs">
+      <div class="blob" style="width:520px;height:520px;left:-80px;top:-100px;background:#3476dc;"></div>
+      <div class="blob" style="width:380px;height:380px;left:280px;top:120px;background:#6cb0ee;"></div>
+      <div class="blob" style="width:300px;height:300px;left:700px;top:-60px;background:#15213c;"></div>
+    </div>
+    <div class="overlay"></div>
+    <div class="content">
+      <div class="glyph">FA</div>
+      <h1>Why Focus Areas Beat a Five-Level Ladder</h1>
+      <div class="footer">
+        <div class="byline">Brandon Verzuu</div>
+        <div class="tag">governance</div>
+      </div>
+    </div>
+    <div class="mermaid-panel">
+      <pre class="mermaid">
+graph TD
+  A[API design] --> C[requirements]
+  B[versioning] --> C
+  C --> D[stage 2]
+      </pre>
+    </div>
+  </div>
+</div>
+
+<div>
+  <div class="label">variant C2 — organic blob field (crypto), no diagram</div>
+  <div class="card">
+    <div class="blobs">
+      <div class="blob" style="width:480px;height:480px;left:-60px;top:-80px;background:#0dac21;"></div>
+      <div class="blob" style="width:340px;height:340px;left:320px;top:150px;background:#7ff68d;"></div>
+      <div class="blob" style="width:280px;height:280px;left:760px;top:-40px;background:#0e3d13;"></div>
+    </div>
+    <div class="overlay"></div>
+    <div class="content">
+      <div class="glyph">₿</div>
+      <h1>The Value of a Blockchain in African Finance</h1>
+      <div class="footer">
+        <div class="byline">Brandon Verzuu</div>
+        <div class="tag">blockchain</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: "dark",
+    themeVariables: {
+      background: "transparent",
+      primaryColor: "#3476dc",
+      primaryTextColor: "#ffffff",
+      primaryBorderColor: "#6cb0ee",
+      lineColor: "#9bccf5",
+      fontFamily: "Satoshi, sans-serif",
+    },
+  });
+</script>
+
+</body>
+</html>

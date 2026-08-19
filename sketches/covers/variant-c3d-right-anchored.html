@@ -1,0 +1,295 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Variant C3d — Right-anchored ASCII Icon, Lattice Restored</title>
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@800,500&f[]=satoshi@500&f[]=telma@500&display=swap">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #0b0f14;
+    font-family: "Satoshi", sans-serif;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    align-items: center;
+  }
+  .label { color: #6cb0ee; font-family: "Telma", monospace; font-size: 13px; margin-bottom: 8px; align-self: flex-start; }
+
+  .card {
+    width: 1200px;
+    height: 630px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 24px;
+    background: #0b0f14;
+  }
+
+  /* Lattice brought back up in opacity so it reads as a real texture layer
+     again, not just a near-invisible base. */
+  .lattice { position: absolute; inset: 0; z-index: 0; opacity: 0.7; }
+
+  /* Icon anchored to the right edge with generous padding, at its native
+     aspect ratio (no stretch to fill) so the shape stays true to the
+     source icon. Vertically centered. */
+  .ascii-icon-wrap {
+    position: absolute;
+    z-index: 1;
+    right: 72px;
+    top: 0;
+    bottom: 0;
+    max-width: 560px;
+    display: flex;
+    align-items: center;
+  }
+  .ascii-icon {
+    font-family: "Telma", monospace;
+    white-space: pre;
+    line-height: 0.58;
+    letter-spacing: 0.08em;
+    font-size: 15px;
+    user-select: none;
+  }
+  .governance .ascii-icon { color: rgba(108,176,238,0.55); }
+  .crypto .ascii-icon { color: rgba(127,246,141,0.5); }
+  .api .ascii-icon { color: rgba(165,202,212,0.55); }
+
+  .overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+  }
+  .governance .overlay { background: linear-gradient(100deg, rgba(11,15,20,0.96) 0%, rgba(11,15,20,0.75) 30%, rgba(11,15,20,0.15) 62%, rgba(52,118,220,0.28) 100%); }
+  .crypto .overlay     { background: linear-gradient(100deg, rgba(11,15,20,0.96) 0%, rgba(11,15,20,0.75) 30%, rgba(11,15,20,0.15) 62%, rgba(13,172,33,0.22) 100%); }
+  .api .overlay        { background: linear-gradient(100deg, rgba(11,15,20,0.96) 0%, rgba(11,15,20,0.75) 30%, rgba(11,15,20,0.15) 62%, rgba(64,120,137,0.28) 100%); }
+
+  /* Second radial wash from bottom-left to keep the tag-color identity
+     without fighting the icon on the right. */
+  .wash { position: absolute; inset: 0; z-index: 2; mix-blend-mode: screen; }
+  .governance .wash { background: radial-gradient(circle at 10% 90%, rgba(52,118,220,0.35) 0%, transparent 55%); }
+  .crypto .wash { background: radial-gradient(circle at 10% 90%, rgba(13,172,33,0.3) 0%, transparent 55%); }
+  .api .wash { background: radial-gradient(circle at 10% 90%, rgba(64,120,137,0.35) 0%, transparent 55%); }
+
+  .content {
+    position: relative;
+    z-index: 3;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 64px;
+  }
+
+  .kicker {
+    font-family: "Telma", monospace;
+    color: rgba(255,255,255,0.7);
+    font-size: 17px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    font-family: "Cabinet Grotesk", sans-serif;
+    font-weight: 800;
+    color: #ffffff;
+    font-size: 54px;
+    line-height: 1.08;
+    max-width: 480px;
+    margin-top: 18px;
+    text-shadow: 0 2px 28px rgba(0,0,0,0.55);
+  }
+
+  .footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .byline {
+    font-family: "Satoshi", sans-serif;
+    color: rgba(255,255,255,0.85);
+    font-size: 20px;
+    font-weight: 500;
+  }
+
+  .tag {
+    font-family: "Telma", monospace;
+    background: rgba(255,255,255,0.14);
+    color: #fff;
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 15px;
+  }
+
+  .status { position: fixed; bottom: 10px; left: 10px; color: #555; font-family: monospace; font-size: 11px; }
+</style>
+</head>
+<body>
+
+<div>
+  <div class="label">variant C3d — right-anchored icon, native ratio, lattice restored (governance / scale)</div>
+  <div class="card governance">
+    <div class="lattice" id="lattice-1"></div>
+    <div class="ascii-icon-wrap"><pre class="ascii-icon" id="ascii-1"></pre></div>
+    <div class="overlay"></div>
+    <div class="wash"></div>
+    <div class="content">
+      <div class="kicker">brandonverzuu.com</div>
+      <h1>Why Focus Areas Beat a Five-Level Ladder</h1>
+      <div class="footer">
+        <div class="byline">Brandon Verzuu</div>
+        <div class="tag">governance</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div>
+  <div class="label">variant C3d — right-anchored icon (crypto / bitcoin)</div>
+  <div class="card crypto">
+    <div class="lattice" id="lattice-2"></div>
+    <div class="ascii-icon-wrap"><pre class="ascii-icon" id="ascii-2"></pre></div>
+    <div class="overlay"></div>
+    <div class="wash"></div>
+    <div class="content">
+      <div class="kicker">brandonverzuu.com</div>
+      <h1>The Value of a Blockchain in African Finance</h1>
+      <div class="footer">
+        <div class="byline">Brandon Verzuu</div>
+        <div class="tag">blockchain</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div>
+  <div class="label">variant C3d — right-anchored icon (api / webhook = openapi)</div>
+  <div class="card api">
+    <div class="lattice" id="lattice-3"></div>
+    <div class="ascii-icon-wrap"><pre class="ascii-icon" id="ascii-3"></pre></div>
+    <div class="overlay"></div>
+    <div class="wash"></div>
+    <div class="content">
+      <div class="kicker">brandonverzuu.com</div>
+      <h1>Capturing API Changes with an Overlay</h1>
+      <div class="footer">
+        <div class="byline">Brandon Verzuu</div>
+        <div class="tag">openapi</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="status" id="status">rendering icons...</div>
+
+<script>
+  // --- lattice ---
+  function generateLattice(containerId, seed, cols, rows) {
+    const svgNS = "http://www.w3.org/2000/svg";
+    const svg = document.createElementNS(svgNS, "svg");
+    svg.setAttribute("viewBox", "0 0 1200 630");
+    svg.setAttribute("width", "100%");
+    svg.setAttribute("height", "100%");
+    let rand = seed;
+    function next() { rand = (rand * 9301 + 49297) % 233280; return rand / 233280; }
+    const nodes = [];
+    const spacingX = 1200 / cols;
+    const spacingY = 630 / rows;
+    for (let c = 0; c <= cols; c++) {
+      for (let r = 0; r <= rows; r++) {
+        const jx = (next() - 0.5) * spacingX * 0.4;
+        const jy = (next() - 0.5) * spacingY * 0.4;
+        nodes.push({ x: c * spacingX + jx, y: r * spacingY + jy, c, r });
+      }
+    }
+    nodes.forEach(n => {
+      const right = nodes.find(o => o.c === n.c + 1 && o.r === n.r);
+      const down = nodes.find(o => o.c === n.c && o.r === n.r + 1);
+      const diag = nodes.find(o => o.c === n.c + 1 && o.r === n.r + 1);
+      [right, down, diag].forEach(target => {
+        if (target && next() > 0.25) {
+          const line = document.createElementNS(svgNS, "line");
+          line.setAttribute("x1", n.x); line.setAttribute("y1", n.y);
+          line.setAttribute("x2", target.x); line.setAttribute("y2", target.y);
+          line.setAttribute("stroke", "rgba(255,255,255,0.16)");
+          line.setAttribute("stroke-width", "1");
+          svg.appendChild(line);
+        }
+      });
+    });
+    nodes.forEach(n => {
+      if (next() > 0.5) {
+        const dot = document.createElementNS(svgNS, "circle");
+        dot.setAttribute("cx", n.x); dot.setAttribute("cy", n.y);
+        dot.setAttribute("r", 2.5 + next() * 2.5);
+        dot.setAttribute("fill", "rgba(255,255,255,0.32)");
+        svg.appendChild(dot);
+      }
+    });
+    document.getElementById(containerId).appendChild(svg);
+  }
+  generateLattice("lattice-1", 11, 9, 5);
+  generateLattice("lattice-2", 23, 9, 5);
+  generateLattice("lattice-3", 41, 9, 5);
+
+  // --- icon -> ASCII, native aspect ratio preserved, anchored right ---
+  const RAMP = " .:*#@"; // coarse 6-level ramp
+
+  // Character cell aspect ratio for this font/size (width:height), measured
+  // empirically for monospace at line-height 0.58 — used only to correct for
+  // character shape, not to distort the icon's own proportions.
+  const CHAR_ASPECT = 0.58;
+
+  function svgToAscii(url, targetId, cols) {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.crossOrigin = "anonymous";
+      img.onload = () => {
+        // Preserve the icon's true width:height ratio, only correcting for
+        // the monospace character cell not being square.
+        const rows = Math.round(cols * (img.height / img.width) * CHAR_ASPECT);
+        const canvas = document.createElement("canvas");
+        canvas.width = cols;
+        canvas.height = rows;
+        const ctx = canvas.getContext("2d");
+        ctx.clearRect(0, 0, cols, rows);
+        ctx.drawImage(img, 0, 0, cols, rows);
+        const data = ctx.getImageData(0, 0, cols, rows).data;
+        let out = "";
+        for (let y = 0; y < rows; y++) {
+          for (let x = 0; x < cols; x++) {
+            const i = (y * cols + x) * 4;
+            const alpha = data[i + 3] / 255;
+            const idx = Math.min(RAMP.length - 1, Math.floor(alpha * RAMP.length));
+            out += RAMP[idx];
+          }
+          out += "\n";
+        }
+        document.getElementById(targetId).textContent = out;
+        resolve();
+      };
+      img.onerror = reject;
+      img.src = url;
+    });
+  }
+
+  const icons = [
+    { id: "ascii-1", slug: "scale", cols: 40 },     // governance (wide icon, fewer cols)
+    { id: "ascii-2", slug: "bitcoin", cols: 46 },   // crypto (compact icon)
+    { id: "ascii-3", slug: "webhook", cols: 40 },   // openapi / api (wide icon, fewer cols)
+  ];
+
+  Promise.all(
+    icons.map(i =>
+      svgToAscii(`https://api.iconify.design/lucide/${i.slug}.svg?color=%23ffffff`, i.id, i.cols)
+    )
+  ).then(() => {
+    document.getElementById("status").textContent = "done";
+  }).catch(e => {
+    document.getElementById("status").textContent = "error: " + e;
+  });
+</script>
+
+</body>
+</html>

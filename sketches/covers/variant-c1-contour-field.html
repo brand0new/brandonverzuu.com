@@ -1,0 +1,221 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Variant C1 — Contour Field</title>
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@800,500&f[]=satoshi@500&f[]=telma@500&display=swap">
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #0b0f14;
+    font-family: "Satoshi", sans-serif;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    align-items: center;
+  }
+  .label { color: #6cb0ee; font-family: "Telma", monospace; font-size: 13px; margin-bottom: 8px; align-self: flex-start; }
+
+  .card {
+    width: 1200px;
+    height: 630px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 24px;
+    background: #0b0f14;
+  }
+
+  /* Generative background art: concentric topographic contour lines,
+     offset per card so no two look identical, purely vector/CSS — no photography. */
+  .contours {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+  .contours svg { width: 100%; height: 100%; }
+
+  /* Gradient overlay sits ON TOP of the art, tinted by tag */
+  .overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+  }
+  .governance .overlay { background: radial-gradient(circle at 15% 20%, rgba(52,118,220,0.55) 0%, rgba(11,15,20,0.55) 45%, rgba(11,15,20,0.92) 100%); }
+  .crypto .overlay     { background: radial-gradient(circle at 15% 20%, rgba(13,172,33,0.45) 0%, rgba(11,15,20,0.55) 45%, rgba(11,15,20,0.92) 100%); }
+  .api .overlay        { background: radial-gradient(circle at 15% 20%, rgba(64,120,137,0.55) 0%, rgba(11,15,20,0.55) 45%, rgba(11,15,20,0.92) 100%); }
+
+  .content {
+    position: relative;
+    z-index: 2;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 64px;
+  }
+
+  .glyph {
+    width: 60px;
+    height: 60px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "Cabinet Grotesk", sans-serif;
+    font-weight: 800;
+    font-size: 26px;
+    color: #0b0f14;
+  }
+  .governance .glyph { background: #6cb0ee; }
+  .crypto .glyph { background: #7ff68d; }
+  .api .glyph { background: #a5cad4; }
+
+  h1 {
+    font-family: "Cabinet Grotesk", sans-serif;
+    font-weight: 800;
+    color: #ffffff;
+    font-size: 54px;
+    line-height: 1.08;
+    max-width: 780px;
+    margin-top: 20px;
+  }
+
+  .mermaid-panel {
+    position: absolute;
+    right: 64px;
+    top: 64px;
+    width: 420px;
+    background: rgba(11,15,20,0.55);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 12px;
+    padding: 16px;
+    backdrop-filter: blur(6px);
+  }
+  .mermaid-panel .mermaid { font-size: 12px; }
+
+  .footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .byline {
+    font-family: "Satoshi", sans-serif;
+    color: rgba(255,255,255,0.85);
+    font-size: 20px;
+    font-weight: 500;
+  }
+
+  .tag {
+    font-family: "Telma", monospace;
+    background: rgba(255,255,255,0.12);
+    color: #fff;
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 15px;
+  }
+</style>
+</head>
+<body>
+
+<div>
+  <div class="label">variant C1 — contour field, mermaid diagram panel</div>
+  <div class="card governance">
+    <div class="contours" id="contours-1"></div>
+    <div class="overlay"></div>
+    <div class="content">
+      <div class="glyph">FA</div>
+      <h1>Why Focus Areas Beat a Five-Level Ladder</h1>
+      <div class="footer">
+        <div class="byline">Brandon Verzuu</div>
+        <div class="tag">governance</div>
+      </div>
+    </div>
+    <div class="mermaid-panel">
+      <pre class="mermaid">
+graph TD
+  A[API design] --> C[requirements]
+  B[versioning] --> C
+  C --> D[stage 2]
+      </pre>
+    </div>
+  </div>
+</div>
+
+<div>
+  <div class="label">variant C1 — contour field, no diagram</div>
+  <div class="card crypto">
+    <div class="contours" id="contours-2"></div>
+    <div class="overlay"></div>
+    <div class="content">
+      <div class="glyph">₿</div>
+      <h1>The Value of a Blockchain in African Finance</h1>
+      <div class="footer">
+        <div class="byline">Brandon Verzuu</div>
+        <div class="tag">blockchain</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: "dark",
+    themeVariables: {
+      background: "transparent",
+      primaryColor: "#3476dc",
+      primaryTextColor: "#ffffff",
+      primaryBorderColor: "#6cb0ee",
+      lineColor: "#9bccf5",
+      fontFamily: "Satoshi, sans-serif",
+    },
+  });
+
+  // Generate a simple contour-line field: concentric perturbed circles.
+  function generateContours(containerId, seed) {
+    const svgNS = "http://www.w3.org/2000/svg";
+    const svg = document.createElementNS(svgNS, "svg");
+    svg.setAttribute("viewBox", "0 0 1200 630");
+    svg.setAttribute("preserveAspectRatio", "xMidYMid slice");
+
+    let rand = seed;
+    function next() {
+      rand = (rand * 9301 + 49297) % 233280;
+      return rand / 233280;
+    }
+
+    const cx = 200 + next() * 200;
+    const cy = 150 + next() * 150;
+
+    for (let r = 40; r < 900; r += 55) {
+      const path = document.createElementNS(svgNS, "path");
+      let d = "";
+      const points = 48;
+      for (let i = 0; i <= points; i++) {
+        const angle = (i / points) * Math.PI * 2;
+        const wobble = Math.sin(angle * (3 + seed % 4) + r * 0.05) * (r * 0.06);
+        const rr = r + wobble;
+        const x = cx + Math.cos(angle) * rr;
+        const y = cy + Math.sin(angle) * rr * 0.72;
+        d += (i === 0 ? "M" : "L") + x.toFixed(1) + "," + y.toFixed(1) + " ";
+      }
+      d += "Z";
+      path.setAttribute("d", d);
+      path.setAttribute("fill", "none");
+      path.setAttribute("stroke", "rgba(255,255,255,0.09)");
+      path.setAttribute("stroke-width", "1.4");
+      svg.appendChild(path);
+    }
+
+    document.getElementById(containerId).appendChild(svg);
+  }
+
+  generateContours("contours-1", 7);
+  generateContours("contours-2", 3);
+</script>
+
+</body>
+</html>

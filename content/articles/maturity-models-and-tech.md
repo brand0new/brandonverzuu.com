@@ -4,6 +4,7 @@ description: "Every engagement eventually produces the same question from manage
 published: true
 date: 2025/04/15
 slug: "maturity-models-and-tech"
+image: "/articles/maturity-models-and-tech/cover.png"
 tags: ["maturity-model", "governance"]
 ---
 

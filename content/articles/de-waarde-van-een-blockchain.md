@@ -4,6 +4,7 @@ description: "Een betoog over de zoektocht naar de waarde van iets van nature di
 published: true
 date: 2021/02/23
 slug: "de-waarde-van-een-blockchain"
+image: "/articles/de-waarde-van-een-blockchain/cover.png"
 tags: ["blockchain", "crypto", "finance"]
 ---
 

@@ -1,0 +1,185 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1200px; height: 630px; overflow: hidden; }
+  body {
+    background: #0b0f14;
+    font-family: "Satoshi", sans-serif;
+  }
+
+  @font-face {
+    font-family: "Cabinet Grotesk";
+    src: url("__FONT_CABINET_GROTESK__") format("woff2");
+    font-weight: 800;
+  }
+  @font-face {
+    font-family: "Satoshi";
+    src: url("__FONT_SATOSHI__") format("woff2");
+    font-weight: 500;
+  }
+  @font-face {
+    font-family: "Telma";
+    src: url("__FONT_TELMA__") format("woff2");
+    font-weight: 500;
+  }
+
+  .card {
+    width: 1200px;
+    height: 630px;
+    position: relative;
+    overflow: hidden;
+    background: #0b0f14;
+  }
+
+  .lattice { position: absolute; inset: 0; z-index: 0; opacity: 0.7; }
+
+  .overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: linear-gradient(
+      100deg,
+      rgba(11, 15, 20, 0.96) 0%,
+      rgba(11, 15, 20, 0.75) 30%,
+      rgba(11, 15, 20, 0.15) 62%,
+      var(--tag-tint-strong) 100%
+    );
+  }
+
+  .wash {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    mix-blend-mode: screen;
+    background: radial-gradient(circle at 10% 90%, var(--tag-tint-soft) 0%, transparent 55%);
+  }
+
+  .content {
+    position: relative;
+    z-index: 2;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 64px;
+  }
+
+  .kicker {
+    font-family: "Telma", monospace;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 17px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    font-family: "Cabinet Grotesk", sans-serif;
+    font-weight: 800;
+    color: #ffffff;
+    font-size: 54px;
+    line-height: 1.08;
+    max-width: 720px;
+    margin-top: 18px;
+    text-shadow: 0 2px 28px rgba(0, 0, 0, 0.55);
+  }
+
+  .footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .byline {
+    font-family: "Satoshi", sans-serif;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 20px;
+    font-weight: 500;
+  }
+
+  .tag {
+    font-family: "Telma", monospace;
+    background: rgba(255, 255, 255, 0.14);
+    color: #fff;
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 15px;
+  }
+</style>
+</head>
+<body>
+  <div class="card" style="--tag-tint-strong: __TAG_TINT_STRONG__; --tag-tint-soft: __TAG_TINT_SOFT__;">
+    <div class="lattice" id="lattice"></div>
+    <div class="overlay"></div>
+    <div class="wash"></div>
+    <div class="content">
+      <div class="kicker">brandonverzuu.com</div>
+      <h1>__TITLE__</h1>
+      <div class="footer">
+        <div class="byline">Brandon Verzuu</div>
+        <div class="tag">__PRIMARY_TAG__</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Deterministic lattice generator: same seed always produces the same
+    // art for a given article, so regenerating a cover is idempotent.
+    function generateLattice(containerId, seed, cols, rows) {
+      const svgNS = "http://www.w3.org/2000/svg";
+      const svg = document.createElementNS(svgNS, "svg");
+      svg.setAttribute("viewBox", "0 0 1200 630");
+      svg.setAttribute("width", "100%");
+      svg.setAttribute("height", "100%");
+      let rand = seed;
+      function next() {
+        rand = (rand * 9301 + 49297) % 233280;
+        return rand / 233280;
+      }
+      const nodes = [];
+      const spacingX = 1200 / cols;
+      const spacingY = 630 / rows;
+      for (let c = 0; c <= cols; c++) {
+        for (let r = 0; r <= rows; r++) {
+          const jx = (next() - 0.5) * spacingX * 0.4;
+          const jy = (next() - 0.5) * spacingY * 0.4;
+          nodes.push({ x: c * spacingX + jx, y: r * spacingY + jy, c, r });
+        }
+      }
+      nodes.forEach((n) => {
+        const right = nodes.find((o) => o.c === n.c + 1 && o.r === n.r);
+        const down = nodes.find((o) => o.c === n.c && o.r === n.r + 1);
+        const diag = nodes.find((o) => o.c === n.c + 1 && o.r === n.r + 1);
+        [right, down, diag].forEach((target) => {
+          if (target && next() > 0.25) {
+            const line = document.createElementNS(svgNS, "line");
+            line.setAttribute("x1", n.x);
+            line.setAttribute("y1", n.y);
+            line.setAttribute("x2", target.x);
+            line.setAttribute("y2", target.y);
+            line.setAttribute("stroke", "rgba(255,255,255,0.16)");
+            line.setAttribute("stroke-width", "1");
+            svg.appendChild(line);
+          }
+        });
+      });
+      nodes.forEach((n) => {
+        if (next() > 0.5) {
+          const dot = document.createElementNS(svgNS, "circle");
+          dot.setAttribute("cx", n.x);
+          dot.setAttribute("cy", n.y);
+          dot.setAttribute("r", 2.5 + next() * 2.5);
+          dot.setAttribute("fill", "rgba(255,255,255,0.32)");
+          svg.appendChild(dot);
+        }
+      });
+      document.getElementById(containerId).appendChild(svg);
+    }
+
+    generateLattice("lattice", __SEED__, 9, 5);
+    document.title = "RENDER_READY";
+  </script>
+</body>
+</html>

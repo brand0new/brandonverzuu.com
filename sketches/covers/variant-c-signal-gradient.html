@@ -1,0 +1,143 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Variant C — Signal Gradient</title>
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@800,500&f[]=satoshi@500&f[]=telma@500&display=swap">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #0b0f14;
+    font-family: "Satoshi", sans-serif;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    align-items: center;
+  }
+  .label { color: #6cb0ee; font-family: "Telma", monospace; font-size: 13px; margin-bottom: 8px; align-self: flex-start; }
+
+  .card {
+    width: 1200px;
+    height: 630px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 64px;
+  }
+
+  /* accent gradient derived from the article's primary tag */
+  .card.governance { background: radial-gradient(circle at 20% 15%, #3476dc 0%, #15213c 55%, #0b0f14 100%); }
+  .card.crypto     { background: radial-gradient(circle at 20% 15%, #0dac21 0%, #0e3d13 55%, #0b0f14 100%); }
+  .card.api        { background: radial-gradient(circle at 20% 15%, #407889 0%, #1d2e34 55%, #0b0f14 100%); }
+
+  .glyph {
+    position: absolute;
+    top: 56px;
+    left: 64px;
+    width: 64px;
+    height: 64px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "Cabinet Grotesk", sans-serif;
+    font-weight: 800;
+    font-size: 28px;
+    color: #0b0f14;
+  }
+  .governance .glyph { background: #6cb0ee; }
+  .crypto .glyph { background: #7ff68d; }
+  .api .glyph { background: #a5cad4; }
+
+  .ascii-strip {
+    position: absolute;
+    top: 64px;
+    right: 64px;
+    font-family: monospace;
+    font-size: 12px;
+    line-height: 1.3;
+    color: rgba(255,255,255,0.55);
+    white-space: pre;
+    text-align: right;
+  }
+
+  h1 {
+    font-family: "Cabinet Grotesk", sans-serif;
+    font-weight: 800;
+    color: #ffffff;
+    font-size: 56px;
+    line-height: 1.08;
+    max-width: 880px;
+  }
+
+  .footer {
+    margin-top: 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .byline {
+    font-family: "Satoshi", sans-serif;
+    color: rgba(255,255,255,0.85);
+    font-size: 20px;
+    font-weight: 500;
+  }
+
+  .tag {
+    font-family: "Telma", monospace;
+    background: rgba(255,255,255,0.12);
+    color: #fff;
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 15px;
+  }
+</style>
+</head>
+<body>
+
+<div>
+  <div class="label">variant C — signal gradient, tag = color (with ASCII diagram)</div>
+  <div class="card governance">
+    <div class="glyph">FA</div>
+    <pre class="ascii-strip">[maturity-model]
+◇──◇──◆──◆──◆
+level 1 → level 5</pre>
+    <h1>Why Focus Areas Beat a Five-Level Ladder</h1>
+    <div class="footer">
+      <div class="byline">Brandon Verzuu</div>
+      <div class="tag">governance</div>
+    </div>
+  </div>
+</div>
+
+<div>
+  <div class="label">variant C — crypto tag, no diagram</div>
+  <div class="card crypto">
+    <div class="glyph">₿</div>
+    <h1>The Value of a Blockchain in African Finance</h1>
+    <div class="footer">
+      <div class="byline">Brandon Verzuu</div>
+      <div class="tag">blockchain</div>
+    </div>
+  </div>
+</div>
+
+<div>
+  <div class="label">variant C — api tag, no diagram</div>
+  <div class="card api">
+    <div class="glyph">{ }</div>
+    <h1>Capturing API Changes with an Overlay</h1>
+    <div class="footer">
+      <div class="byline">Brandon Verzuu</div>
+      <div class="tag">openapi</div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
