@@ -1,7 +1,7 @@
 <template>
   <NuxtLink :to="article.path" class="group">
     <article
-      class="from-porcelain-800 to-porcelain-950 relative overflow-hidden rounded-xl bg-gradient-to-br"
+      class="from-terracotta to-porcelain-950 relative overflow-hidden rounded-xl bg-gradient-to-br"
     >
       <!-- Background image. Only rendered when the article declares a cover in
            its frontmatter: this is a static build, so a guessed path for an

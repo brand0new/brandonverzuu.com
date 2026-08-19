@@ -59,7 +59,7 @@ async function main() {
       "Usage: node scripts/generate-cover.mjs (--url <image-url> | --file <local-path>) --slug <article-slug> " +
         "[--author <name>] [--license <spdx-or-name>] [--source <page-url>] " +
         "[--width 1200] [--height 630] [--light #d97a4d] [--dark #1d2e34] [--seed <string>] " +
-        "[--dither bayer|zhou-fang] [--bayer-size 4]",
+        "[--dither bayer|zhou-fang] [--bayer-size 4] [--pixel-size 3]",
     );
     process.exitCode = 1;
     return;
@@ -76,6 +76,11 @@ async function main() {
   const seed = args.seed ?? args.url ?? args.file;
   const ditherMode = args.dither ?? "bayer";
   const bayerSize = Number(args["bayer-size"] ?? 4);
+  // Each dithered "pixel" is rendered as a pixelSize x pixelSize block of
+  // the final image (dither at a reduced resolution, then upscale with
+  // nearest-neighbor) — bigger blocks read as a coarser, chunkier halftone;
+  // 1 dithers at full output resolution, one dot per real pixel.
+  const pixelSize = Number(args["pixel-size"] ?? 3);
 
   let sourceBuffer;
   if (args.file) {
@@ -90,8 +95,11 @@ async function main() {
     sourceBuffer = Buffer.from(await res.arrayBuffer());
   }
 
+  const ditherWidth = Math.max(1, Math.round(width / pixelSize));
+  const ditherHeight = Math.max(1, Math.round(height / pixelSize));
+
   const { data, info } = await sharp(sourceBuffer)
-    .resize(width, height, { fit: "cover", position: "attention" })
+    .resize(ditherWidth, ditherHeight, { fit: "cover", position: "attention" })
     .removeAlpha()
     .raw()
     .toBuffer({ resolveWithObject: true });
@@ -126,9 +134,12 @@ async function main() {
 
   // Only 2 colors in the output — an indexed palette PNG compresses this
   // far better than a lossy format would, with no dither-smearing artifacts.
+  // "nearest" upscaling turns each dithered pixel into a crisp pixelSize x
+  // pixelSize block instead of blurring it into a soft-edged blob.
   await sharp(rgb, {
     raw: { width: info.width, height: info.height, channels: 3 },
   })
+    .resize(width, height, { kernel: "nearest" })
     .png({ palette: true, colors: 2, compressionLevel: 9 })
     .toFile(outPath);
 
