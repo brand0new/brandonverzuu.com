@@ -1,13 +1,16 @@
 #!/usr/bin/env node
 // Fetches an open-license source image (or reads one already on disk) and
-// converts it into a stylized duotone article-card cover, dithered with the
-// Zhou-Fang variable-coefficient error-diffusion algorithm (see
-// scripts/lib/zhou-fang-*.mjs).
+// converts it into a stylized duotone article-card cover, dithered with
+// either the Bayer ordered-dither algorithm (default) or Zhou-Fang
+// variable-coefficient error diffusion — see scripts/lib/bayer-dither.mjs
+// and scripts/lib/zhou-fang-*.mjs.
 //
 // Usage:
 //   node scripts/generate-cover.mjs --url <image-url> --slug <article-slug> \
 //     --author "Jane Doe" --license "CC-BY-4.0" --source <page-url>
 //   node scripts/generate-cover.mjs --file <local-path> --slug <article-slug>
+//   node scripts/generate-cover.mjs --file <local-path> --slug <article-slug> \
+//     --dither zhou-fang
 //
 // Exactly one of --url / --file is required. Writes
 // public/articles/<slug>/cover.png and prints the frontmatter fields to
@@ -20,7 +23,9 @@
 import { mkdir, readFile } from "node:fs/promises";
 import path from "node:path";
 import sharp from "sharp";
-import { zhouFangDither, toLinearLuminance } from "./lib/zhou-fang-dither.mjs";
+import { toLinearLuminance } from "./lib/color.mjs";
+import { zhouFangDither } from "./lib/zhou-fang-dither.mjs";
+import { bayerDither } from "./lib/bayer-dither.mjs";
 
 function parseArgs(argv) {
   const args = {};
@@ -53,7 +58,8 @@ async function main() {
     console.error(
       "Usage: node scripts/generate-cover.mjs (--url <image-url> | --file <local-path>) --slug <article-slug> " +
         "[--author <name>] [--license <spdx-or-name>] [--source <page-url>] " +
-        "[--width 1200] [--height 630] [--light #e9f1f5] [--dark #1d2e34] [--seed <string>]",
+        "[--width 1200] [--height 630] [--light #d97a4d] [--dark #1d2e34] [--seed <string>] " +
+        "[--dither bayer|zhou-fang] [--bayer-size 4]",
     );
     process.exitCode = 1;
     return;
@@ -61,11 +67,15 @@ async function main() {
 
   const width = Number(args.width ?? 1200);
   const height = Number(args.height ?? 630);
-  // Brand duotone defaults: porcelain-100 / porcelain-950 (public/css/main.css),
-  // the same hue family as ArticleCard's no-cover fallback gradient.
-  const light = hexToRgb(args.light ?? "#e9f1f5");
+  // Complementary duotone defaults: porcelain-950 (public/css/main.css, the
+  // site's dark brand tone, hue ~192°) against a warm terracotta accent at
+  // roughly the complementary hue (~19°) — a warm highlight against the
+  // site's cool teal chrome, rather than a same-hue tint of it.
+  const light = hexToRgb(args.light ?? "#d97a4d");
   const dark = hexToRgb(args.dark ?? "#1d2e34");
   const seed = args.seed ?? args.url ?? args.file;
+  const ditherMode = args.dither ?? "bayer";
+  const bayerSize = Number(args["bayer-size"] ?? 4);
 
   let sourceBuffer;
   if (args.file) {
@@ -88,7 +98,19 @@ async function main() {
 
   const pixelCount = info.width * info.height;
   const luminance = toLinearLuminance(data, pixelCount, info.channels);
-  const bits = zhouFangDither(luminance, info.width, info.height, { seed });
+
+  let bits;
+  if (ditherMode === "zhou-fang") {
+    bits = zhouFangDither(luminance, info.width, info.height, { seed });
+  } else if (ditherMode === "bayer") {
+    bits = bayerDither(luminance, info.width, info.height, {
+      matrixSize: bayerSize,
+    });
+  } else {
+    throw new Error(
+      `Unknown --dither mode: ${ditherMode} (expected "bayer" or "zhou-fang")`,
+    );
+  }
 
   const rgb = Buffer.alloc(pixelCount * 3);
   for (let i = 0; i < pixelCount; i++) {
