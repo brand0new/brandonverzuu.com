@@ -1,20 +1,23 @@
 #!/usr/bin/env node
-// Fetches an open-license source image and converts it into a stylized
-// duotone article-card cover, dithered with the Zhou-Fang variable-
-// coefficient error-diffusion algorithm (see scripts/lib/zhou-fang-*.mjs).
+// Fetches an open-license source image (or reads one already on disk) and
+// converts it into a stylized duotone article-card cover, dithered with the
+// Zhou-Fang variable-coefficient error-diffusion algorithm (see
+// scripts/lib/zhou-fang-*.mjs).
 //
 // Usage:
 //   node scripts/generate-cover.mjs --url <image-url> --slug <article-slug> \
 //     --author "Jane Doe" --license "CC-BY-4.0" --source <page-url>
+//   node scripts/generate-cover.mjs --file <local-path> --slug <article-slug>
 //
-// Writes public/articles/<slug>/cover.png and prints the frontmatter
-// fields to paste into the article (image / imageAuthor / imageLicense /
-// imageSource — see content.config.ts).
+// Exactly one of --url / --file is required. Writes
+// public/articles/<slug>/cover.png and prints the frontmatter fields to
+// paste into the article (image / imageAuthor / imageLicense / imageSource
+// — see content.config.ts).
 //
 // Runs at build time only (Node, via `npm run cover:generate`) — nothing
 // here ships to the browser or runs on Cloudflare's edge.
 
-import { mkdir } from "node:fs/promises";
+import { mkdir, readFile } from "node:fs/promises";
 import path from "node:path";
 import sharp from "sharp";
 import { zhouFangDither, toLinearLuminance } from "./lib/zhou-fang-dither.mjs";
@@ -46,9 +49,9 @@ function hexToRgb(hex) {
 async function main() {
   const args = parseArgs(process.argv.slice(2));
 
-  if (!args.url || !args.slug) {
+  if ((!args.url && !args.file) || (args.url && args.file) || !args.slug) {
     console.error(
-      "Usage: node scripts/generate-cover.mjs --url <image-url> --slug <article-slug> " +
+      "Usage: node scripts/generate-cover.mjs (--url <image-url> | --file <local-path>) --slug <article-slug> " +
         "[--author <name>] [--license <spdx-or-name>] [--source <page-url>] " +
         "[--width 1200] [--height 630] [--light #e9f1f5] [--dark #1d2e34] [--seed <string>]",
     );
@@ -62,14 +65,20 @@ async function main() {
   // the same hue family as ArticleCard's no-cover fallback gradient.
   const light = hexToRgb(args.light ?? "#e9f1f5");
   const dark = hexToRgb(args.dark ?? "#1d2e34");
-  const seed = args.seed ?? args.url;
+  const seed = args.seed ?? args.url ?? args.file;
 
-  console.log(`Fetching ${args.url} ...`);
-  const res = await fetch(args.url);
-  if (!res.ok) {
-    throw new Error(`Fetch failed: ${res.status} ${res.statusText}`);
+  let sourceBuffer;
+  if (args.file) {
+    console.log(`Reading ${args.file} ...`);
+    sourceBuffer = await readFile(args.file);
+  } else {
+    console.log(`Fetching ${args.url} ...`);
+    const res = await fetch(args.url);
+    if (!res.ok) {
+      throw new Error(`Fetch failed: ${res.status} ${res.statusText}`);
+    }
+    sourceBuffer = Buffer.from(await res.arrayBuffer());
   }
-  const sourceBuffer = Buffer.from(await res.arrayBuffer());
 
   const { data, info } = await sharp(sourceBuffer)
     .resize(width, height, { fit: "cover", position: "attention" })
