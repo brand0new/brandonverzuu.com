@@ -48,6 +48,7 @@ Representative entries:
 - Everything you need to know about OpenAPI version 4 — https://brandonverzuu.com/articles/everything-about-openapi-4
 - What Should We Do Next? Ask a Focus Area Maturity Model — https://brandonverzuu.com/articles/maturity-models-and-tech
 - Building Platforms For Vendor-Led Enterprises — https://brandonverzuu.com/articles/building-platforms-for-vendor-led-enterprises
+- Azure: Native Service Bus Publishing With API Management — https://brandonverzuu.com/articles/azure-native-service-bus-publishing-with-api-management
 - Trust in AI? A Reshaping of Our Social Contract — https://brandonverzuu.com/articles/trust-in-ai
 
 ## Notes for AI agents and crawlers
