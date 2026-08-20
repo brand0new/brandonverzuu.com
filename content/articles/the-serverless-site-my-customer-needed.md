@@ -4,6 +4,10 @@ description: "A short story on diving in head first"
 published: true
 date: 2020/06/25
 slug: "the-serverless-site-my-customer-needed"
+image: "/articles/the-serverless-site-my-customer-needed/cover.png"
+imageAuthor: "Robert Scoble"
+imageLicense: "CC BY 2.0"
+imageSource: "https://commons.wikimedia.org/wiki/File:Centaur_server_room_(2293424530).jpg"
 tags: ["design", "web-development"]
 ---
 
