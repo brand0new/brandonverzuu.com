@@ -32,6 +32,7 @@ const description = "Here's some interesting stuff I've found on the internet.";
 useSeoMeta({
   title: "Bookmarks | Brandon Verzuu",
   description,
+  ogUrl: "https://brandonverzuu.com/bookmarks",
 });
 
 const bookmarks = [

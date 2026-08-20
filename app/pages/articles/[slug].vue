@@ -36,6 +36,7 @@ useSeoMeta({
   // declares no cover image.
   ogImage: () =>
     `https://brandonverzuu.com${article.value?.image ?? "/avatar.jpg"}`,
+  ogUrl: () => `https://brandonverzuu.com/articles/${slug}`,
   twitterCard: "summary_large_image",
   author: "Brandon Verzuu",
 });

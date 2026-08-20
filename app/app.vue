@@ -10,6 +10,12 @@
   </UApp>
 </template>
 
+<script setup lang="ts">
+// Applies a self-referencing canonical <link> to every route from one place
+// (see app/composables/useCanonical.ts) so it can't be missed on new pages.
+useCanonical();
+</script>
+
 <style>
 .page-enter-active,
 .page-leave-active {

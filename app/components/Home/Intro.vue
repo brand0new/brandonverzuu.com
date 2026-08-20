@@ -26,5 +26,6 @@ useSeoMeta({
   title: "Brandon Verzuu",
   description:
     "A compasionate cloud integration architect and software developer trying to understand stuff.",
+  ogUrl: "https://brandonverzuu.com/",
 });
 </script>

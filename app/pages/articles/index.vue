@@ -22,5 +22,6 @@ const { data: articles } = await useAsyncData("articles", () =>
 useSeoMeta({
   title: "Articles | Brandon Verzuu",
   description,
+  ogUrl: "https://brandonverzuu.com/articles",
 });
 </script>
