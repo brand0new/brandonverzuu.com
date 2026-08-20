@@ -3,6 +3,10 @@
     <div class="relative">
       <ClientOnly>
         <HomeDitherBackground v-if="route.path === '/'" />
+        <AppArticleDitherBackground
+          v-else-if="articleBackgroundImage"
+          :image="articleBackgroundImage"
+        />
       </ClientOnly>
       <AppNavbar />
       <div class="h-32"></div>
@@ -26,7 +30,13 @@ useCanonical();
 // background to that column. This wrapper spans the full viewport, so the
 // background can render edge-to-edge and behind AppNavbar (a `fixed`
 // element, so it always paints above regardless of DOM order/z-index).
+//
+// AppArticleDitherBackground follows the exact same placement approach for
+// article pages, sourcing its image from a shared useState the article page
+// sets — set here in app.vue rather than reaching into route.meta so it
+// stays reactive across client-side navigation between two article pages.
 const route = useRoute();
+const articleBackgroundImage = useArticleBackgroundImage();
 </script>
 
 <style>

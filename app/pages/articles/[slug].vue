@@ -10,6 +10,11 @@
       class="mx-1 rounded-full"
       variant="subtle"
     />
+    <!-- AppArticleDitherBackground (rendered in app.vue) measures this to
+         know where to fully fade out — it must finish fading before the
+         article body starts, mirroring HomeDitherBackground's own
+         boundary-detection logic against [data-dither-boundary]. -->
+    <div data-article-background-boundary></div>
     <ContentRenderer :value="article" />
   </article>
 </template>
@@ -17,6 +22,24 @@
 const slug = useRoute().params.slug as string;
 const { data: article } = await useAsyncData(`articles-${slug}`, () => {
   return queryCollection("articles").path(`/articles/${slug}`).first();
+});
+
+// Drives AppArticleDitherBackground in app.vue — see
+// composables/useArticleBackgroundImage.ts for why this is shared state
+// rather than a prop (the background layer lives outside this page's
+// <UContainer>). Only set when the article actually declares a cover;
+// articles without one simply render no background layer, same as
+// AppArticleCard's own fallback-to-gradient behaviour.
+const articleBackgroundImage = useArticleBackgroundImage();
+watch(
+  article,
+  (value) => {
+    articleBackgroundImage.value = value?.image ?? null;
+  },
+  { immediate: true },
+);
+onUnmounted(() => {
+  articleBackgroundImage.value = null;
 });
 
 useSeoMeta({
