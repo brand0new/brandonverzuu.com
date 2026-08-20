@@ -20,10 +20,12 @@
 </template>
 
 <script setup>
+usePersonSchema();
+
 useSeoMeta({
-  title: "Brandon Verzuu — Head of Innovation & Product",
+  title: "Brandon Verzuu — Cloud Integration, API Strategy & Emerging Tech",
   description:
-    "Head of Innovation & Product from Rosmalen, The Netherlands, with a background in cloud integration, API strategy, and web-based APIs. Writing about software, technology, and the things I don't yet understand.",
+    "Head of Innovation & Product from Rosmalen, The Netherlands. Practitioner writing on cloud integration, API governance and strategy, and how AI and blockchain reshape technology and people.",
   ogUrl: "https://brandonverzuu.com/",
 });
 </script>

@@ -3,6 +3,21 @@
     v-if="article"
     class="prose dark:prose-invert prose-blockquote:not-italic prose-img:rounded-lg mx-auto"
   >
+    <!-- Visible breadcrumb trail, paired with the BreadcrumbList schema
+         emitted by useArticleSchema — matching markup and structured data
+         is what search engines actually reward with a breadcrumb rich
+         result, an unmatched pair is often ignored. -->
+    <nav aria-label="Breadcrumb" class="not-prose mb-4">
+      <ol class="flex flex-wrap items-center gap-1 text-sm text-gray-500 dark:text-gray-400">
+        <li><NuxtLink to="/" class="hover:text-primary-500">Home</NuxtLink></li>
+        <li aria-hidden="true">/</li>
+        <li><NuxtLink to="/articles" class="hover:text-primary-500">Articles</NuxtLink></li>
+        <li aria-hidden="true">/</li>
+        <li class="text-gray-700 dark:text-gray-300" aria-current="page">
+          {{ article.title }}
+        </li>
+      </ol>
+    </nav>
     <h1 class="text-7xl font-extrabold">{{ article.title }}</h1>
     <UBadge
       v-for="tag in article.tags"
@@ -41,6 +56,25 @@ watch(
 onUnmounted(() => {
   articleBackgroundImage.value = null;
 });
+
+// BlogPosting + BreadcrumbList JSON-LD — only once the article has actually
+// resolved, since useArticleSchema needs real title/description/date values
+// rather than emitting a schema block for a not-yet-loaded page.
+watch(
+  article,
+  (value) => {
+    if (!value) return;
+    useArticleSchema({
+      title: value.title,
+      description: value.description,
+      slug,
+      date: String(value.date),
+      image: value.image,
+      tags: value.tags,
+    });
+  },
+  { immediate: true },
+);
 
 useSeoMeta({
   title: () =>

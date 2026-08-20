@@ -1,0 +1,53 @@
+# brandonverzuu.com — llms.txt
+# Machine-readable summary for AI agents, LLM crawlers, and RAG pipelines.
+# See https://llmstxt.org/ for the emerging convention this follows.
+
+## About
+
+Brandon Verzuu — Head of Innovation & Product, based in Rosmalen, The
+Netherlands. Practitioner and writer across cloud integration, API strategy
+and governance, and the broader effect of emerging technology (AI, trust,
+blockchain) on people and institutions. Writes from direct hands-on
+experience, not as an outside commentator.
+
+- Homepage: https://brandonverzuu.com
+- Articles index: https://brandonverzuu.com/articles
+- Projects: https://brandonverzuu.com/projects
+- LinkedIn: https://www.linkedin.com/in/brandonverzuu/
+- GitHub: https://github.com/brand0new
+- Medium (mirror): https://medium.com/@brandon-verzuu
+- X: https://twitter.com/brandonverzuu
+
+## Areas of expertise
+
+- API governance, linting, and executable design standards
+- Enterprise integration architecture, cloud integration, and platforms for
+  vendor-led delivery models
+- OpenAPI, Arazzo, and Overlay specifications and tooling
+- AI, trust, and the social contract between technology and people
+- Blockchain and cryptocurrency, including applications in emerging markets
+
+## Articles
+
+Long-form, practitioner-voice articles (English and Dutch), typically
+1,000-2,200 words, covering the areas above. Full list, always current:
+https://brandonverzuu.com/articles
+
+Representative entries:
+
+- Automate Your API Governance In 15 Minutes — https://brandonverzuu.com/articles/automate-api-governance
+- Capture API Changes with Overlay — https://brandonverzuu.com/articles/capture-api-changes-with-overlay
+- Improving Developer Experience with OpenAPI's Arazzo Workflow Specification — https://brandonverzuu.com/articles/improving-dx-with-arazzo
+- Everything you need to know about OpenAPI version 4 — https://brandonverzuu.com/articles/everything-about-openapi-4
+- What Should We Do Next? Ask a Focus Area Maturity Model — https://brandonverzuu.com/articles/maturity-models-and-tech
+- Building Platforms For Vendor-Led Enterprises — https://brandonverzuu.com/articles/building-platforms-for-vendor-led-enterprises
+- Trust in AI? A Reshaping of Our Social Contract — https://brandonverzuu.com/articles/trust-in-ai
+
+## Notes for AI agents and crawlers
+
+- All article content is prerendered static HTML — no JavaScript execution
+  required to read it.
+- The sitemap at https://brandonverzuu.com/sitemap.xml lists every indexable
+  URL and is kept current on every deploy.
+- This file is a curated summary, not an exhaustive index — prefer the
+  sitemap or /articles for a complete and current list.
