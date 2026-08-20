@@ -92,13 +92,9 @@ export default defineNuxtConfig({
     provider: "fontshare",
     families: [
       {
-        name: "Cabinet Grotesk",
-        weights: ["400", "500", "600", "800"],
-        styles: ["normal"],
-      },
-      {
-        name: "Satoshi",
-        weights: ["500"],
+        // Semibold weight, used for h1-h6 (see public/css/main.css).
+        name: "General Sans",
+        weights: ["400", "600"],
         styles: ["normal"],
         global: true,
       },
