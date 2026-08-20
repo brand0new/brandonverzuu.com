@@ -15,7 +15,21 @@
         </li>
       </ol>
     </nav>
-    <AppHeader class="mb-8" :title="cluster.title" :description="cluster.intro" />
+    <div class="mb-8 flex items-start gap-4">
+      <div
+        class="text-primary-600 dark:text-primary-400 bg-primary-500/10 flex-none rounded-lg p-3"
+      >
+        <client-only>
+          <Icon :name="cluster.icon" aria-hidden="true" class="h-7 w-7" />
+        </client-only>
+      </div>
+      <div>
+        <h1 class="text-7xl font-extrabold">{{ cluster.title }}</h1>
+        <p class="mt-6 text-base text-gray-600 dark:text-gray-400">
+          {{ cluster.intro }}
+        </p>
+      </div>
+    </div>
     <ul v-if="filteredArticles.length" class="space-y-8">
       <li v-for="(article, id) in filteredArticles" :key="id">
         <AppArticleCard :article="article" />
