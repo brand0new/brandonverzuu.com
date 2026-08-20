@@ -35,7 +35,7 @@
           <AppThemeToggle />
         </li>
         <li>
-          <UAvatar src="/avatar.jpg" />
+          <UAvatar src="/avatar.jpg" alt="Brandon Verzuu" />
         </li>
       </ul>
     </nav>
