@@ -1,10 +1,15 @@
 <template>
   <UApp>
-    <AppNavbar />
-    <div class="h-32"></div>
-    <UContainer class="mx-auto max-w-xl lg:max-w-2xl">
-      <NuxtPage />
-    </UContainer>
+    <div class="relative">
+      <ClientOnly>
+        <HomeDitherBackground v-if="route.path === '/'" />
+      </ClientOnly>
+      <AppNavbar />
+      <div class="h-32"></div>
+      <UContainer class="mx-auto max-w-xl lg:max-w-2xl">
+        <NuxtPage />
+      </UContainer>
+    </div>
     <div class="h-32"></div>
     <AppFooter />
   </UApp>
@@ -14,6 +19,14 @@
 // Applies a self-referencing canonical <link> to every route from one place
 // (see app/composables/useCanonical.ts) so it can't be missed on new pages.
 useCanonical();
+
+// HomeDitherBackground lives here (rather than in pages/index.vue) so it can
+// be positioned absolutely against this full-width wrapper — the page's own
+// content sits inside <UContainer class="max-w-2xl">, which would clip the
+// background to that column. This wrapper spans the full viewport, so the
+// background can render edge-to-edge and behind AppNavbar (a `fixed`
+// element, so it always paints above regardless of DOM order/z-index).
+const route = useRoute();
 </script>
 
 <style>
