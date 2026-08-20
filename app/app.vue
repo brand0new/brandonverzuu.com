@@ -8,7 +8,7 @@
         Skip to content
       </a>
       <ClientOnly>
-        <HomeDitherBackground v-if="route.path === '/'" />
+        <HomeDitherBackground v-if="showHeroDitherBackground" />
         <AppArticleDitherBackground
           v-else-if="articleBackgroundImage"
           :image="articleBackgroundImage"
@@ -43,6 +43,15 @@ useCanonical();
 // stays reactive across client-side navigation between two article pages.
 const route = useRoute();
 const articleBackgroundImage = useArticleBackgroundImage();
+
+// HomeDitherBackground (the animated terracotta noise hero) is shared by
+// any top-level index/hub page, not just "/" — currently that's the
+// homepage and the /topics index. Both place a [data-dither-boundary]
+// marker in their own template so the canvas knows where to stop fading
+// regardless of which page rendered it (see DitherBackground.vue).
+const showHeroDitherBackground = computed(
+  () => route.path === "/" || route.path === "/topics",
+);
 </script>
 
 <style>

@@ -23,6 +23,10 @@ export interface TopicCluster {
   intro: string;
   /** Article frontmatter tags that belong to this cluster. */
   tags: string[];
+  /** Iconify icon name (mage set, already bundled — see nuxt.config.ts
+   *  icon.clientBundle) shown on the /topics index card and the cluster's
+   *  own hub page, giving each theme a distinct at-a-glance identity. */
+  icon: string;
 }
 
 export const topicClusters: TopicCluster[] = [
@@ -42,7 +46,9 @@ export const topicClusters: TopicCluster[] = [
       "linting",
       "developer experience",
       "maturity-model",
+      "cloud-integration",
     ],
+    icon: "mage:server-fill",
   },
   {
     slug: "ai-trust-and-ethics",
@@ -52,6 +58,7 @@ export const topicClusters: TopicCluster[] = [
     intro:
       "I'm a tech-optimist, but optimism that never pays a cost isn't worth much. This is where I think through what trusting AI with more of our decisions actually asks of us — not the theoretical version, the one where someone has to decide how much autonomy is reasonable to hand over, and what happens when that trust is misplaced.",
     tags: ["ai", "social contract", "ethics", "technology"],
+    icon: "mage:robot-fill",
   },
   {
     slug: "blockchain-and-crypto",
@@ -61,5 +68,6 @@ export const topicClusters: TopicCluster[] = [
     intro:
       "Blockchain got sold as a solution looking for a problem for long enough that it's easy to dismiss outright — I don't think that's fair either. These articles are me working through what a blockchain actually does well, where the value genuinely sits, and where the technology gets applied for reasons that go beyond a token price.",
     tags: ["blockchain", "crypto", "bitcoin", "finance", "africa"],
+    icon: "mage:coin-a-fill",
   },
 ];
