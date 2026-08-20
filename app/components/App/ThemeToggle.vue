@@ -15,6 +15,7 @@ const isDark = computed({
   <UTooltip text="Toggle theme" :ui="{ popper: { strategy: 'absolute' } }">
     <button
       class="hover:text-primary-500 dark:hover:text-primary-400 relative flex items-center justify-center px-3 py-4 transition"
+      :aria-pressed="isDark"
       @click="isDark = !isDark"
     >
       <ClientOnly>

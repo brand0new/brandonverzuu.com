@@ -1,6 +1,12 @@
 <template>
   <UApp>
     <div class="relative">
+      <a
+        href="#main-content"
+        class="focus:bg-primary-600 sr-only z-[60] rounded-md px-4 py-2 text-white focus:not-sr-only focus:fixed focus:top-2 focus:left-2"
+      >
+        Skip to content
+      </a>
       <ClientOnly>
         <HomeDitherBackground v-if="route.path === '/'" />
         <AppArticleDitherBackground
@@ -10,7 +16,7 @@
       </ClientOnly>
       <AppNavbar />
       <div class="h-32"></div>
-      <UContainer class="mx-auto max-w-xl lg:max-w-2xl">
+      <UContainer id="main-content" class="mx-auto max-w-xl lg:max-w-2xl">
         <NuxtPage />
       </UContainer>
     </div>

@@ -6,14 +6,15 @@
     external
   >
     <div class="max-w-sm">
-      <h3
+      <h2
         :class="[
           'group-hover:text-primary-600',
           props.project.name.toLowerCase(),
         ]"
       >
         {{ props.project.name }}
-      </h3>
+        <span class="sr-only">(opens in new tab)</span>
+      </h2>
       <p class="text-sm text-gray-600 dark:text-gray-400">
         {{ props.project.description }}
       </p>

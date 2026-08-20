@@ -13,14 +13,17 @@
     <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
       Get notified when I publish something new, and unsubscribe at any time.
     </p>
-    <div class="mt-6 flex items-center gap-3">
+    <form class="mt-6 flex items-center gap-3" @submit.prevent>
+      <label for="newsletter-email" class="sr-only">Email address</label>
       <UInput
+        id="newsletter-email"
+        type="email"
         placeholder="Email Address"
         icon="i-heroicons-envelope"
         class="flex-1"
         size="lg"
       />
-      <UButton label="Join &rarr;" size="lg" color="black" />
-    </div>
+      <UButton type="submit" label="Join &rarr;" size="lg" color="black" />
+    </form>
   </div>
 </template>

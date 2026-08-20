@@ -17,7 +17,7 @@
             <span class="text-gray-700 dark:text-gray-200">
               {{ bookmark.label }}
             </span>
-            <span class="text-xs font-medium text-gray-400 dark:text-gray-600">
+            <span class="text-xs font-medium text-gray-500 dark:text-gray-400">
               {{ getHost(bookmark.url) }}
             </span>
           </div>
