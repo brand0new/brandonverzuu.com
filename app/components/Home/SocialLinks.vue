@@ -13,6 +13,7 @@
           class="group-hover:text-primary-600 text-sm text-gray-600 dark:text-gray-400"
         >
           {{ link.name }}
+          <span class="sr-only">(opens in new tab)</span>
         </p>
         <div
           class="flex-1 border-b border-dashed border-gray-300 group-hover:border-gray-700 dark:border-gray-800"

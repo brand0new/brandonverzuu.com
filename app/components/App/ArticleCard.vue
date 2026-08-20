@@ -39,9 +39,9 @@
           </span>
           {{ getReadableDate(article.date) }}
         </time>
-        <h3 class="group-hover:text-primary-400 text-white dark:text-white">
+        <h2 class="group-hover:text-primary-400 text-white dark:text-white">
           {{ article.title }}
-        </h3>
+        </h2>
         <p class="relative z-10 mt-2 text-sm text-gray-100 dark:text-gray-200">
           {{ article.description }}
         </p>
