@@ -62,6 +62,11 @@ const items = [
     icon: "mage:book-text-fill",
   },
   {
+    name: "Topics",
+    path: "/topics",
+    icon: "mage:tag-fill",
+  },
+  {
     name: "Projects",
     path: "/projects",
     icon: "mage:folder-2-fill",

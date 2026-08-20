@@ -12,6 +12,7 @@ experience, not as an outside commentator.
 
 - Homepage: https://brandonverzuu.com
 - Articles index: https://brandonverzuu.com/articles
+- Topics (curated by theme): https://brandonverzuu.com/topics
 - Projects: https://brandonverzuu.com/projects
 - LinkedIn: https://www.linkedin.com/in/brandonverzuu/
 - GitHub: https://github.com/brand0new
@@ -32,6 +33,12 @@ experience, not as an outside commentator.
 Long-form, practitioner-voice articles (English and Dutch), typically
 1,000-2,200 words, covering the areas above. Full list, always current:
 https://brandonverzuu.com/articles
+
+Grouped by theme into three curated hubs, always current:
+
+- API Governance & Integration Architecture — https://brandonverzuu.com/topics/api-governance-integration
+- AI, Trust & the Social Contract — https://brandonverzuu.com/topics/ai-trust-and-ethics
+- Blockchain & Cryptocurrency — https://brandonverzuu.com/topics/blockchain-and-crypto
 
 Representative entries:
 

@@ -43,6 +43,7 @@ export default defineNuxtConfig({
         "mage:book-text-fill",
         "mage:bookmark-fill",
         "mage:folder-2-fill",
+        "mage:tag-fill",
         "mage:github",
         "mage:home-fill",
         "mage:linkedin",

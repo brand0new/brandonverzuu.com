@@ -6,10 +6,16 @@
         <AppArticleCard :article="article" />
       </li>
     </ul>
-    <div class="mt-6 flex items-center justify-center text-sm">
+    <div class="mt-6 flex items-center justify-center gap-6 text-sm">
       <UButton
         label="All Articles &rarr;"
         to="/articles"
+        variant="link"
+        color="primary"
+      />
+      <UButton
+        label="Browse by Topic &rarr;"
+        to="/topics"
         variant="link"
         color="primary"
       />
