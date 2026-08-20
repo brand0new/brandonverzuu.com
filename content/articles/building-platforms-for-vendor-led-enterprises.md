@@ -4,6 +4,9 @@ description: "Why customers whose integration work is delivered by external vend
 published: true
 date: 2026/08/20
 slug: "building-platforms-for-vendor-led-enterprises"
+image: "/articles/building-platforms-for-vendor-led-enterprises/cover.png"
+imageLicense: "Public Domain"
+imageSource: "https://commons.wikimedia.org/wiki/File:Original_Blueprint_of_United_States_National_Agricultural_Library.jpg"
 tags: ["governance", "api", "developer experience", "maturity-model"]
 ---
 
