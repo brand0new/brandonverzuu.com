@@ -10,7 +10,20 @@ export default defineNuxtConfig({
     },
   },
 
-  modules: ["@nuxt/ui", "@nuxt/icon", "@nuxt/image", "@nuxt/content"],
+  modules: [
+    "@nuxt/ui",
+    "@nuxt/icon",
+    "@nuxt/image",
+    "@nuxt/content",
+    "@nuxtjs/sitemap",
+  ],
+
+  // Required by @nuxtjs/sitemap to emit absolute <loc> URLs and by the
+  // robots.txt route (see public/robots.txt) that points crawlers at it.
+  site: {
+    url: "https://brandonverzuu.com",
+    name: "Brandon Verzuu",
+  },
 
   icon: {
     // This is a purely static build with no server/edge runtime, so icons
