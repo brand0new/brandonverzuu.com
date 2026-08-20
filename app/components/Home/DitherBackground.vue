@@ -11,7 +11,7 @@
   <canvas
     ref="canvasEl"
     aria-hidden="true"
-    class="pointer-events-none absolute inset-x-0 top-0 -z-10 w-full opacity-45 dark:opacity-55"
+    class="pointer-events-none absolute inset-x-0 top-0 -z-10 w-full opacity-60 dark:opacity-55"
     :style="{ height: `${height}px` }"
   ></canvas>
 </template>
@@ -39,8 +39,18 @@ const height = ref(600);
 // Matches the article-cover duotone (public/css/main.css --color-terracotta /
 // --color-porcelain-950). Kept as plain hex here since this runs before any
 // CSS custom property lookup would be meaningful on a bare canvas.
+//
+// Dark-mode pair, composited at 55% opacity over a near-black page — this
+// combination reads with strong contrast there. Alpha-compositing the same
+// pair over a *white* page instead washes both tones toward pastel gray
+// (measured ~1.6:1 dot-to-dot contrast at the old 45% light-mode opacity —
+// the pattern nearly disappeared). NEAR_BLACK below is a warmer, near-black
+// "off" tone that stays dark even after alpha blending onto white, paired
+// with a higher light-mode opacity (see template above) so the pattern
+// stays legible against a white background.
 const LIGHT = [217, 122, 77]; // terracotta
 const DARK = [29, 46, 52]; // porcelain-950
+const NEAR_BLACK = [20, 15, 12]; // warm near-black "off" tone for light mode
 
 const CELL = 7; // px per dithered "pixel" — chunky, matches cover.png's pixelSize feel
 const FPS = 14; // fast enough to visibly read as motion, still deliberately steppy
@@ -101,8 +111,10 @@ function draw(canvas: HTMLCanvasElement) {
   ctx.clearRect(0, 0, cssWidth, cssHeight);
 
   const isDark = document.documentElement.classList.contains("dark");
-  const on = isDark ? LIGHT : DARK;
-  const off = isDark ? DARK : LIGHT;
+  // "on" pixel is terracotta in both themes; only the "off" tone and the
+  // overall opacity (set on the <canvas> element) change per theme.
+  const on = LIGHT;
+  const off = isDark ? DARK : NEAR_BLACK;
 
   for (let row = 0; row < rows; row++) {
     const bayerRow = BAYER_4X4[row % 4];
