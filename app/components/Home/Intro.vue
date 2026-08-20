@@ -11,9 +11,9 @@
       Integration, web-based APIs and API strategy development.
     </p>
     <p class="text-gray-900 dark:text-gray-400">
-      Compasionate about software development and technology in general. I love
-      diving into things I don't understand in order to dissect, understand and
-      make them accessible for others.
+      Compassionate about software development and technology in general. I
+      love diving into things I don't understand in order to dissect,
+      understand and make them accessible for others.
     </p>
     <p class="text-gray-900 dark:text-gray-400">
       I don't spent enough time writing on this site...
@@ -23,9 +23,9 @@
 
 <script setup>
 useSeoMeta({
-  title: "Brandon Verzuu",
+  title: "Brandon Verzuu — Cloud Integration Architect & Developer",
   description:
-    "A compasionate cloud integration architect and software developer trying to understand stuff.",
+    "Solution architect from Rosmalen, The Netherlands, specializing in cloud integration, API strategy, and web-based APIs. Writing about software, technology, and the things I don't yet understand.",
   ogUrl: "https://brandonverzuu.com/",
 });
 </script>

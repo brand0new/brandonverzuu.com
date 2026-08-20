@@ -1,6 +1,9 @@
 <template>
   <main class="min-h-screen">
-    <div class="space-y-24">
+    <div class="relative space-y-24">
+      <ClientOnly>
+        <HomeDitherBackground />
+      </ClientOnly>
       <HomeIntro />
       <HomeSocialLinks />
       <HomeFeaturedProjects />
