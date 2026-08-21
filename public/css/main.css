@@ -51,12 +51,16 @@
      scripts/generate-cover.mjs) and echoed here for the no-cover fallback. */
   --color-terracotta: #d97a4d;
 
-  /* Darker terracotta for light-theme headings. Full-brightness terracotta
-     only hits ~3:1 contrast against a white page (fails WCAG AA for normal
-     text), so headings use this deepened shade in light mode only — dark
-     mode headings keep their previous (unstyled) color, unrelated to this
-     variable. See the html:not(.dark) h1-h6 rules below. */
-  --color-terracotta-heading: #8f431f;
+  /* Brighter, punchier terracotta for light-theme headings. Full-brightness
+     terracotta (--color-terracotta, #d97a4d) only hits ~3:1 contrast
+     against a white page (fails WCAG AA for normal text), so headings use
+     this deepened-but-still-vivid shade in light mode only — dark mode
+     headings keep their previous (unstyled) color, unrelated to this
+     variable. #b8451a lands at 5.38:1 (AA pass with headroom) while
+     reading distinctly brighter/more saturated than the original #8f431f
+     (7:1, but noticeably brownish/muted) — see the html:not(.dark) h1-h6
+     rules below. */
+  --color-terracotta-heading: #b8451a;
 }
 
 .prose {
