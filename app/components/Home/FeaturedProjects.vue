@@ -14,6 +14,7 @@
         to="/projects"
         variant="link"
         color="primary"
+        class="text-primary-700 dark:text-primary-400"
       />
     </div>
   </div>

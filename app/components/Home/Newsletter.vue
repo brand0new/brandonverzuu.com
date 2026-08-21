@@ -2,11 +2,11 @@
   <div>
     <div class="mb-6 flex items-center gap-3">
       <div
-        class="text-primary-500 bg-primary-500/10 flex-none rounded-full p-1"
+        class="text-primary-600 bg-primary-500/10 dark:text-primary-500 flex-none rounded-full p-1"
       >
         <div class="h-1.5 w-1.5 rounded-full bg-current"></div>
       </div>
-      <h2 class="text-xs font-semibold text-gray-400 uppercase">
+      <h2 class="text-xs font-semibold text-gray-500 uppercase dark:text-gray-400">
         STAY IN TOUCH
       </h2>
     </div>

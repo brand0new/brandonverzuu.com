@@ -23,7 +23,7 @@
             :name="link.icon"
             size="25"
             mode="svg"
-            class="text-primary-400 group-hover:text-primary-600"
+            class="text-primary-600 group-hover:text-primary-700 dark:text-primary-400 dark:group-hover:text-primary-600"
           ></UIcon>
         </client-only>
       </NuxtLink>

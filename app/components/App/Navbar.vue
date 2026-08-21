@@ -8,7 +8,7 @@
           <UTooltip :text="item.name">
             <ULink
               :to="item.path"
-              class="hover:text-primary-500 dark:hover:text-primary-400 relative flex items-center justify-center px-3 py-4 transition"
+              class="hover:text-primary-600 dark:hover:text-primary-400 relative flex items-center justify-center px-3 py-4 transition"
               active-class="text-primary-600 dark:text-primary-400"
             >
               <client-only>
