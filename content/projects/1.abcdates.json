@@ -4,5 +4,7 @@
   "description": "Get ideas for dates based on the alphabet",
   "thumbnail": "/projects/abcdates.svg",
   "status": "WIP",
-  "opensource": false
+  "opensource": false,
+  "accentColor": "#fe6e8b",
+  "accentFont": "Telma"
 }

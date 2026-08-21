@@ -46,11 +46,12 @@ const articleBackgroundImage = useArticleBackgroundImage();
 
 // HomeDitherBackground (the animated terracotta noise hero) is shared by
 // any top-level index/hub page, not just "/" — currently that's the
-// homepage and the /topics index. Both place a [data-dither-boundary]
+// homepage, /topics, and /projects. Each places a [data-dither-boundary]
 // marker in their own template so the canvas knows where to stop fading
 // regardless of which page rendered it (see DitherBackground.vue).
-const showHeroDitherBackground = computed(
-  () => route.path === "/" || route.path === "/topics",
+const HERO_DITHER_ROUTES = new Set(["/", "/topics", "/projects"]);
+const showHeroDitherBackground = computed(() =>
+  HERO_DITHER_ROUTES.has(route.path),
 );
 </script>
 

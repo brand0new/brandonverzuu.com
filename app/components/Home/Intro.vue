@@ -27,5 +27,11 @@ useSeoMeta({
   description:
     "Head of Innovation & Product from Rosmalen, The Netherlands. Practitioner writing on cloud integration, API governance and strategy, and how AI and blockchain reshape technology and people.",
   ogUrl: "https://brandonverzuu.com/",
+  // Falls back to the avatar so social previews of the homepage itself
+  // resolve to a real file instead of 404ing — see articles/[slug].vue for
+  // the origin of this pattern, now applied site-wide on every page that
+  // has no page-specific hero image of its own.
+  ogImage: "https://brandonverzuu.com/avatar.jpg",
+  twitterCard: "summary_large_image",
 });
 </script>

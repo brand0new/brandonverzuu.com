@@ -33,6 +33,11 @@ useSeoMeta({
   title: "Bookmarks | Brandon Verzuu",
   description,
   ogUrl: "https://brandonverzuu.com/bookmarks",
+  // Falls back to the avatar so social previews resolve to a real file
+  // instead of 404ing — see articles/[slug].vue for the origin of this
+  // pattern, now applied to every index page that has no page-specific hero.
+  ogImage: "https://brandonverzuu.com/avatar.jpg",
+  twitterCard: "summary_large_image",
 });
 
 const bookmarks = [
