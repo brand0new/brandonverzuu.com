@@ -29,7 +29,7 @@
             :label="props.project.status"
             variant="subtle"
             size="sm"
-            class="rounded-full"
+            class="rounded-full text-porcelain-700 dark:text-porcelain-300"
           />
           <UBadge
             v-if="props.project.opensource"

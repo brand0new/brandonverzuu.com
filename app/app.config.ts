@@ -31,5 +31,19 @@ export default defineAppConfig({
     container: {
       base: "max-w-sm",
     },
+
+    prose: {
+      // Default in-body article link color (@nuxt/ui's ProseA component)
+      // uses the raw `primary` (porcelain-500, #5394a4) CSS var, which only
+      // hits 3.42:1 contrast against a white page — fails WCAG AA's 4.5:1
+      // threshold for normal-size text (confirmed via axe-core audit on
+      // /articles/trust-in-ai and /articles/building-platforms-for-vendor-led-enterprises,
+      // the two articles with in-body links). Override to a darker shade in
+      // light mode only; dark mode's default already has enough contrast
+      // against a near-black page, so it keeps the original class.
+      a: {
+        base: "text-primary-700 dark:text-primary border-b border-transparent hover:border-primary-700 dark:hover:border-primary font-medium rounded-xs outline-primary/25 focus-visible:outline-3 focus-visible:has-[>code]:outline-0 [&>code]:border-dashed [&>code]:outline-primary/25 focus-visible:[&>code]:outline-3 hover:[&>code]:border-primary-700 dark:hover:[&>code]:border-primary hover:[&>code]:text-primary-700 dark:hover:[&>code]:text-primary focus-visible:[&>code]:border-primary-700 dark:focus-visible:[&>code]:border-primary focus-visible:[&>code]:text-primary-700 dark:focus-visible:[&>code]:text-primary",
+      },
+    },
   },
 });

@@ -22,7 +22,7 @@
           {{ cluster.summary }}
         </p>
         <span
-          class="mt-3 inline-block text-xs font-medium text-gray-400 dark:text-gray-500"
+          class="mt-3 inline-block text-xs font-medium text-gray-500"
         >
           {{ articleCount }} {{ articleCount === 1 ? "article" : "articles" }}
         </span>

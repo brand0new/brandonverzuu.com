@@ -12,12 +12,14 @@
         to="/articles"
         variant="link"
         color="primary"
+        class="text-primary-700 dark:text-primary-400"
       />
       <UButton
         label="Browse by Topic &rarr;"
         to="/topics"
         variant="link"
         color="primary"
+        class="text-primary-700 dark:text-primary-400"
       />
     </div>
   </div>
