@@ -2,7 +2,7 @@
   <main v-if="cluster" class="min-h-screen">
     <nav aria-label="Breadcrumb" class="mb-4">
       <ol
-        class="flex flex-wrap items-center gap-1 text-sm text-gray-500 dark:text-gray-400"
+        class="flex flex-wrap items-center gap-1.5 text-sm font-medium text-gray-600 dark:text-gray-400"
       >
         <li><NuxtLink to="/" class="hover:text-primary-600">Home</NuxtLink></li>
         <li aria-hidden="true">/</li>
@@ -17,15 +17,13 @@
     </nav>
     <div class="mb-8 flex items-start gap-4">
       <div
-        class="text-primary-600 dark:text-primary-400 bg-primary-500/10 flex-none rounded-lg p-3"
+        class="bg-primary-500/10 flex-none rounded-lg p-3"
       >
-        <client-only>
-          <Icon :name="cluster.icon" aria-hidden="true" class="h-7 w-7" />
-        </client-only>
+        <AppTopicBinaryIcon :keyword="cluster.binaryKeyword" :font-size="9" />
       </div>
       <div class="min-w-0">
         <h1>{{ cluster.title }}</h1>
-        <p class="mt-6 text-base text-gray-600 dark:text-gray-400">
+        <p class="mt-6 text-lg leading-relaxed text-gray-700 dark:text-gray-400">
           {{ cluster.intro }}
         </p>
       </div>

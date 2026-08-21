@@ -7,10 +7,20 @@
            its frontmatter: this is a static build, so a guessed path for an
            article without a cover is a hard 404 in production rather than a
            silently empty image. Articles without one fall back to the gradient
-           on the wrapper above. -->
+           on the wrapper above.
+
+           Light-mode-only brightness/saturation boost: the cover PNGs are a
+           single duotone (terracotta dots + near-black porcelain-950 base)
+           generated once and shared across both themes (generate-cover.mjs
+           has no per-theme variant). That near-black base reads correctly
+           against dark mode's own near-black page, but feels heavy/muddy on
+           a white light-mode page — brightness-125 lifts the dark base
+           tone without blowing out the terracotta highlights, saturate-110
+           keeps the terracotta from washing out as it lifts. Dark mode
+           keeps the original unfiltered image. -->
       <div
         v-if="article.image"
-        class="absolute inset-0 z-0 bg-cover bg-center"
+        class="absolute inset-0 z-0 bg-cover bg-center brightness-125 saturate-110 dark:brightness-100 dark:saturate-100"
         :style="{ backgroundImage: `url(${article.image})` }"
       ></div>
       <!-- Overlay -->

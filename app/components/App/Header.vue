@@ -3,7 +3,7 @@
     <h1>
       {{ title }}
     </h1>
-    <p class="mt-6 text-base text-gray-600 dark:text-gray-400">
+    <p class="mt-6 text-lg leading-relaxed text-gray-700 dark:text-gray-400">
       {{ description }}
     </p>
   </div>
