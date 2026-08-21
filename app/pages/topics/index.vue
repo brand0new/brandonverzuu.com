@@ -1,11 +1,6 @@
 <template>
   <main class="min-h-screen">
-    <div class="mb-12 space-y-4 text-center">
-      <h1 class="dark:text-gray-100">Topics</h1>
-      <p class="mx-auto max-w-md text-base text-gray-600 dark:text-gray-400">
-        {{ description }}
-      </p>
-    </div>
+    <AppHeader class="mb-12" :title="title" :description="description" />
     <!-- HomeDitherBackground (rendered in app.vue for this route) measures
          this to know where to fully fade out — mirrors the homepage's own
          boundary marker so the terracotta hero always finishes fading
@@ -20,6 +15,7 @@
 </template>
 
 <script setup lang="ts">
+const title = "Topics";
 const description =
   "My writing organised by theme rather than publish date — cloud integration and API governance, AI and trust, and blockchain, each grouped into one place.";
 
