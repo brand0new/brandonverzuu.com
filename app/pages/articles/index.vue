@@ -1,6 +1,10 @@
 <template>
   <main class="min-h-screen">
     <AppHeader class="mb-8" title="Articles" :description="description" />
+    <!-- HomeDitherBackground (rendered in app.vue for this route) measures
+         this to know where to fully fade out — same boundary marker used by
+         every other top-level page (/, /topics, /projects, /bookmarks). -->
+    <div data-dither-boundary></div>
     <ul class="space-y-8">
       <li v-for="(article, id) in articles" :key="id">
         <AppArticleCard :article="article" />

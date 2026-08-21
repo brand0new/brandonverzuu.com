@@ -30,6 +30,12 @@
         </p>
       </div>
     </div>
+    <!-- HomeDitherBackground (rendered in app.vue for this route) measures
+         this to know where to fully fade out — same boundary marker used by
+         every other top-level page. Placed after the header block (unlike
+         AppHeader-based pages) since this page has its own custom
+         icon+title header rather than the shared component. -->
+    <div data-dither-boundary></div>
     <ul v-if="filteredArticles.length" class="space-y-8">
       <li v-for="(article, id) in filteredArticles" :key="id">
         <AppArticleCard :article="article" />

@@ -44,14 +44,16 @@ useCanonical();
 const route = useRoute();
 const articleBackgroundImage = useArticleBackgroundImage();
 
-// HomeDitherBackground (the animated terracotta noise hero) is shared by
-// any top-level index/hub page, not just "/" — currently that's the
-// homepage, /topics, and /projects. Each places a [data-dither-boundary]
-// marker in their own template so the canvas knows where to stop fading
-// regardless of which page rendered it (see DitherBackground.vue).
-const HERO_DITHER_ROUTES = new Set(["/", "/topics", "/projects"]);
-const showHeroDitherBackground = computed(() =>
-  HERO_DITHER_ROUTES.has(route.path),
+// HomeDitherBackground (the animated terracotta noise hero) is now the
+// hero treatment for every page except individual article posts, which
+// keep their own per-article cover-derived background (see
+// AppArticleDitherBackground below) — that's a deliberate, content-specific
+// visual, not an omission. Every other route places a
+// [data-dither-boundary] marker in its own template so the canvas knows
+// where to stop fading regardless of which page rendered it (see
+// DitherBackground.vue).
+const showHeroDitherBackground = computed(
+  () => !route.path.startsWith("/articles/"),
 );
 </script>
 

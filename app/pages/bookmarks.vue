@@ -1,6 +1,10 @@
 <template>
-  <main>
+  <main class="min-h-screen">
     <AppHeader class="mb-8" title="Bookmarks" :description="description" />
+    <!-- HomeDitherBackground (rendered in app.vue for this route) measures
+         this to know where to fully fade out — same boundary marker used by
+         every other top-level page (/, /topics, /projects, /articles). -->
+    <div data-dither-boundary></div>
     <ul class="space-y-5">
       <li v-for="bookmark in bookmarks" :key="bookmark.id">
         <a

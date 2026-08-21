@@ -4,10 +4,10 @@
        in), so it spans edge-to-edge and sits behind AppNavbar (a `fixed`
        element that always paints above regardless of z-index here). Height
        is computed at runtime to reach the [data-dither-boundary] marker,
-       which any top-level hub page (currently the homepage and /topics)
-       places just before its "next section" starts, so the fade always
-       finishes before that section regardless of viewport size or content
-       reflow. -->
+       which every top-level page except individual article posts places
+       just before its "next section" starts (see app.vue), so the fade
+       always finishes before that section regardless of viewport size or
+       content reflow. -->
   <canvas
     ref="canvasEl"
     aria-hidden="true"
