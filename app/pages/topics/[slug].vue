@@ -23,8 +23,8 @@
           <Icon :name="cluster.icon" aria-hidden="true" class="h-7 w-7" />
         </client-only>
       </div>
-      <div>
-        <h1 class="text-7xl font-extrabold">{{ cluster.title }}</h1>
+      <div class="min-w-0">
+        <h1>{{ cluster.title }}</h1>
         <p class="mt-6 text-base text-gray-600 dark:text-gray-400">
           {{ cluster.intro }}
         </p>

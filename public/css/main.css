@@ -125,22 +125,35 @@ html:not(.dark) .prose h6 {
   color: var(--color-terracotta-heading) !important;
 }
 
+/* Fluid heading sizes: clamp(min, preferred, max) scales smoothly between a
+   mobile floor and the original desktop sizes, using viewport width (vw) in
+   the preferred term. Previously these were flat px values that ignored
+   viewport size entirely — harmless for short headings, but this site's
+   /topics pages have long titles ("API Governance & Integration
+   Architecture") that, combined with a flex row lacking min-w-0, caused a
+   horizontal overflow on mobile (h1 held to its full 55px desktop size
+   regardless of a 390px viewport). The min-w-0 fix (see
+   pages/topics/[slug].vue) addresses the overflow directly; clamp() here
+   additionally keeps long titles from wrapping into 4-5 cramped lines on
+   small screens, which was the actual "mobile-friendly" ask. Max values
+   match the original flat px sizes exactly, so desktop/tablet rendering is
+   unchanged. */
 h1 {
-  font-size: 55.24px;
+  font-size: clamp(2.25rem, 6vw + 1rem, 55.24px);
 }
 
 h2 {
-  font-size: 38px;
+  font-size: clamp(1.75rem, 4vw + 1rem, 38px);
 }
 
 h3 {
-  font-size: 31px;
+  font-size: clamp(1.5rem, 3vw + 1rem, 31px);
 }
 
 h4 {
-  font-size: 26px;
+  font-size: clamp(1.25rem, 2.5vw + 1rem, 26px);
 }
 
 h5 {
-  font-size: 22px;
+  font-size: clamp(1.125rem, 2vw + 1rem, 22px);
 }
