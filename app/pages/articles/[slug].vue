@@ -18,7 +18,7 @@
         </li>
       </ol>
     </nav>
-    <h1 class="text-7xl font-extrabold">{{ article.title }}</h1>
+    <h1>{{ article.title }}</h1>
     <UBadge
       v-for="tag in article.tags"
       :label="tag"
