@@ -50,6 +50,13 @@
      used as the light tone in dithered article covers (see
      scripts/generate-cover.mjs) and echoed here for the no-cover fallback. */
   --color-terracotta: #d97a4d;
+
+  /* Darker terracotta for light-theme headings. Full-brightness terracotta
+     only hits ~3:1 contrast against a white page (fails WCAG AA for normal
+     text), so headings use this deepened shade in light mode only — dark
+     mode headings keep their previous (unstyled) color, unrelated to this
+     variable. See the html:not(.dark) h1-h6 rules below. */
+  --color-terracotta-heading: #8f431f;
 }
 
 .prose {
@@ -71,6 +78,51 @@ h5,
 h6 {
   font-family: "General Sans", sans-serif;
   font-weight: 600;
+}
+
+/* Heading accent color lives in @layer base so it loses to any Tailwind
+   utility class (e.g. ArticleCard.vue's `text-white` on cover-image
+   overlays) rather than winning the cascade just by being unlayered CSS —
+   Tailwind v4 utilities sit in @layer utilities, and unlayered rules beat
+   layered ones regardless of specificity, so without this the overlay
+   headings would incorrectly turn terracotta instead of staying white.
+   Scoped to `html:not(.dark)` (the color-mode module toggles a `.dark`
+   class on <html>) so dark theme keeps its previous, unstyled heading
+   color — this accent is light-theme only. */
+@layer base {
+  html:not(.dark) h1,
+  html:not(.dark) h2,
+  html:not(.dark) h3,
+  html:not(.dark) h4,
+  html:not(.dark) h5,
+  html:not(.dark) h6 {
+    color: var(--color-terracotta-heading);
+  }
+}
+
+/* Article pages wrap their content in Tailwind Typography's .prose, which
+   sets its own heading color via a `:where()`-wrapped selector. Neither
+   raising specificity (`.prose h1` vs. `.prose :where(h1)`) nor layer
+   placement reliably wins here: CSS layers resolve by LAYER ORDER first,
+   and Tailwind Typography's plugin apparently injects its own rules into a
+   layer position that beats a same-named `@layer components` block written
+   later in this file, regardless of the selector's specificity within that
+   layer (confirmed via CDP: `.prose h1` was present as a matched rule with
+   higher specificity than typography's `:where()` selector, yet computed
+   color still resolved to typography's gray-900). `!important` sidesteps
+   layer-order entirely and is the correct escape hatch for deliberately
+   overriding a third-party plugin's default here.
+
+   Light theme only (`html:not(.dark)`, matching the bare h1-h6 rule above)
+   — dark theme article headings keep Typography's previous default color,
+   unchanged. */
+html:not(.dark) .prose h1,
+html:not(.dark) .prose h2,
+html:not(.dark) .prose h3,
+html:not(.dark) .prose h4,
+html:not(.dark) .prose h5,
+html:not(.dark) .prose h6 {
+  color: var(--color-terracotta-heading) !important;
 }
 
 h1 {
