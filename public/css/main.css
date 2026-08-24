@@ -61,6 +61,26 @@
      (7:1, but noticeably brownish/muted) — see the html:not(.dark) h1-h6
      rules below. */
   --color-terracotta-heading: #b8451a;
+
+  /* Body-text token: bolder weight + theme-adjusted color for readability
+     (darker in light mode, lighter in dark mode than the previous
+     Tailwind gray-900/gray-700/gray-400 utilities scattered across
+     Home/Intro.vue, App/Header.vue, and topics/[slug].vue). Contrast
+     verified via WCAG relative-luminance formula against realistic page
+     backgrounds: light #262626 vs white ~15:1, dark #d4d4d4 vs Nuxt UI's
+     default dark bg (~neutral-900, #171717) ~11.4:1 — both comfortably
+     exceed AA's 4.5:1 floor, so this is a visual-weight change, not a
+     contrast-failure fix. */
+  --color-body-light: #262626;
+  --color-body-dark: #d4d4d4;
+}
+
+.body-text {
+  font-weight: 500;
+  color: var(--color-body-light);
+}
+.dark .body-text {
+  color: var(--color-body-dark);
 }
 
 .prose {
@@ -127,6 +147,19 @@ html:not(.dark) .prose h4,
 html:not(.dark) .prose h5,
 html:not(.dark) .prose h6 {
   color: var(--color-terracotta-heading) !important;
+}
+
+/* Article body copy (Tailwind Typography's .prose p/li) gets the same
+   body-text treatment as the rest of the site's body copy (see .body-text
+   above) — bolder weight, theme-adjusted color. Needs !important in both
+   themes for the same layer-order reason as the heading override above:
+   Typography's `:where()` rules win regardless of selector specificity. */
+.prose :where(p, li):not(:where([class~="not-prose"] *)) {
+  font-weight: 500 !important;
+  color: var(--color-body-light) !important;
+}
+.dark .prose :where(p, li):not(:where([class~="not-prose"] *)) {
+  color: var(--color-body-dark) !important;
 }
 
 /* Fluid heading sizes: clamp(min, preferred, max) scales smoothly between a

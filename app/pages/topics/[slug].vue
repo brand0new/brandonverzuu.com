@@ -23,7 +23,7 @@
       </div>
       <div class="min-w-0">
         <h1>{{ cluster.title }}</h1>
-        <p class="mt-6 text-lg leading-relaxed text-gray-700 dark:text-gray-400">
+        <p class="body-text mt-6 text-lg leading-relaxed">
           {{ cluster.intro }}
         </p>
       </div>
