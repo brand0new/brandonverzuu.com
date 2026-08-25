@@ -11,7 +11,7 @@
   <canvas
     ref="canvasEl"
     aria-hidden="true"
-    class="pointer-events-none absolute inset-x-0 top-0 -z-10 w-full opacity-60 dark:opacity-55"
+    class="pointer-events-none absolute inset-x-0 top-0 -z-10 w-full opacity-90 dark:opacity-55"
     :style="{ height: `${height}px` }"
   ></canvas>
 </template>
@@ -41,16 +41,22 @@ const height = ref(600);
 // CSS custom property lookup would be meaningful on a bare canvas.
 //
 // Dark-mode pair, composited at 55% opacity over a near-black page — this
-// combination reads with strong contrast there. Alpha-compositing the same
-// pair over a *white* page instead washes both tones toward pastel gray
-// (measured ~1.6:1 dot-to-dot contrast at the old 45% light-mode opacity —
-// the pattern nearly disappeared). NEAR_BLACK below is a warmer, near-black
-// "off" tone that stays dark even after alpha blending onto white, paired
-// with a higher light-mode opacity (see template above) so the pattern
-// stays legible against a white background.
+// combination reads with strong contrast there.
+//
+// Light-mode pair: terracotta "on" dots against a near-white "off" tone
+// (matching the page's own #fff background almost exactly) rather than the
+// near-black pairing dark mode uses. Off-cells blend into the white page
+// and effectively disappear, leaving the terracotta dots reading as warm
+// flecks scattered across white — a distinct, lighter-feeling variant of
+// the same dither algorithm, rather than the dark-mode pairing's original
+// (and starkly different) high-contrast dark/orange look. Opacity bumped
+// higher than the old dark-off pairing (see template below) since a
+// white-on-white "off" cell contributes nothing to overall visual density
+// — all of this variant's presence comes from the "on" dots alone, so it
+// needs more of them showing through to read as clearly as before.
 const LIGHT = [217, 122, 77]; // terracotta
 const DARK = [29, 46, 52]; // porcelain-950
-const NEAR_BLACK = [20, 15, 12]; // warm near-black "off" tone for light mode
+const OFF_WHITE = [251, 251, 248]; // near-white "off" tone for the light-mode variant
 
 const CELL = 7; // px per dithered "pixel" — chunky, matches cover.png's pixelSize feel
 const FPS = 14; // fast enough to visibly read as motion, still deliberately steppy
@@ -114,7 +120,7 @@ function draw(canvas: HTMLCanvasElement) {
   // "on" pixel is terracotta in both themes; only the "off" tone and the
   // overall opacity (set on the <canvas> element) change per theme.
   const on = LIGHT;
-  const off = isDark ? DARK : NEAR_BLACK;
+  const off = isDark ? DARK : OFF_WHITE;
 
   for (let row = 0; row < rows; row++) {
     const bayerRow = BAYER_4X4[row % 4];
