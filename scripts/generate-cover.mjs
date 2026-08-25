@@ -58,7 +58,7 @@ async function main() {
     console.error(
       "Usage: node scripts/generate-cover.mjs (--url <image-url> | --file <local-path>) --slug <article-slug> " +
         "[--author <name>] [--license <spdx-or-name>] [--source <page-url>] " +
-        "[--width 1200] [--height 630] [--light #d97a4d] [--dark #1d2e34] [--seed <string>] " +
+        "[--width 1200] [--height 630] [--light #d97a4d] [--dark #1d2e34] [--light-bg #fbfbf8] [--seed <string>] " +
         "[--dither bayer|zhou-fang] [--bayer-size 4] [--pixel-size 3]",
     );
     process.exitCode = 1;
@@ -73,6 +73,15 @@ async function main() {
   // site's cool teal chrome, rather than a same-hue tint of it.
   const light = hexToRgb(args.light ?? "#d97a4d");
   const dark = hexToRgb(args.dark ?? "#1d2e34");
+  // Near-white "off" tone for the light-theme cover variant (--light-bg),
+  // matching Home/DitherBackground.vue's OFF_WHITE exactly so the article
+  // cards' dither texture reads as the same visual language as the
+  // homepage hero background in light mode, rather than two different
+  // "off" tones that happen to both be pale. Dark theme's variant reuses
+  // the existing `dark` value above (its own "off" tone was always fine
+  // against a near-black page — no visual change needed there, only
+  // light mode gets a second variant).
+  const lightBg = hexToRgb(args["light-bg"] ?? "#fbfbf8");
   const seed = args.seed ?? args.url ?? args.file;
   const ditherMode = args.dither ?? "bayer";
   const bayerSize = Number(args["bayer-size"] ?? 4);
@@ -128,9 +137,23 @@ async function main() {
     rgb[i * 3 + 2] = b;
   }
 
+  // Same dither bit pattern, remapped to the light-theme "off" tone instead
+  // of `dark` — a second output file (cover-light.png) rather than
+  // overwriting cover.png, so dark theme keeps using the original
+  // terracotta/porcelain-950 duotone unchanged and ArticleCard.vue picks
+  // between the two at render time based on the active color mode.
+  const rgbLight = Buffer.alloc(pixelCount * 3);
+  for (let i = 0; i < pixelCount; i++) {
+    const [r, g, b] = bits[i] ? light : lightBg;
+    rgbLight[i * 3] = r;
+    rgbLight[i * 3 + 1] = g;
+    rgbLight[i * 3 + 2] = b;
+  }
+
   const outDir = path.join("public", "articles", args.slug);
   await mkdir(outDir, { recursive: true });
   const outPath = path.join(outDir, "cover.png");
+  const outPathLight = path.join(outDir, "cover-light.png");
 
   // Only 2 colors in the output — an indexed palette PNG compresses this
   // far better than a lossy format would, with no dither-smearing artifacts.
@@ -143,7 +166,15 @@ async function main() {
     .png({ palette: true, colors: 2, compressionLevel: 9 })
     .toFile(outPath);
 
+  await sharp(rgbLight, {
+    raw: { width: info.width, height: info.height, channels: 3 },
+  })
+    .resize(width, height, { kernel: "nearest" })
+    .png({ palette: true, colors: 2, compressionLevel: 9 })
+    .toFile(outPathLight);
+
   console.log(`Wrote ${outPath}`);
+  console.log(`Wrote ${outPathLight}`);
   console.log("\nAdd to the article's frontmatter:\n");
   console.log(`image: "/articles/${args.slug}/cover.png"`);
   if (args.author) console.log(`imageAuthor: "${args.author}"`);
