@@ -51,16 +51,27 @@
      scripts/generate-cover.mjs) and echoed here for the no-cover fallback. */
   --color-terracotta: #d97a4d;
 
-  /* Brighter, punchier terracotta for light-theme headings. Full-brightness
-     terracotta (--color-terracotta, #d97a4d) only hits ~3:1 contrast
-     against a white page (fails WCAG AA for normal text), so headings use
-     this deepened-but-still-vivid shade in light mode only — dark mode
-     headings keep their previous (unstyled) color, unrelated to this
-     variable. #b8451a lands at 5.38:1 (AA pass with headroom) while
-     reading distinctly brighter/more saturated than the original #8f431f
-     (7:1, but noticeably brownish/muted) — see the html:not(.dark) h1-h6
-     rules below. */
+  /* Terracotta heading accent — RETAINED as a distinct color token used only
+     by App/TopicBinaryIcon.vue's light-mode text color (an unrelated
+     design choice, not a heading), even though headings themselves no
+     longer use it (see --color-heading-light below). Kept under this name
+     rather than renamed/removed so TopicBinaryIcon.vue's existing
+     text-terracotta-heading class doesn't need touching. #b8451a lands at
+     5.38:1 against white (AA pass) while reading distinctly
+     brighter/more saturated than a duller alternative — see
+     TopicBinaryIcon.vue for the full contrast rationale in that context. */
   --color-terracotta-heading: #b8451a;
+
+  /* Heading color, light theme only — headings previously used the
+     terracotta-heading accent above; per direct request, switched to
+     near-black instead. Not pure #000 (harsher, slightly clinical against
+     this page's warm porcelain/off-white palette than a true black) —
+     #171717 matches Nuxt UI's own default near-black dark-mode background
+     tone, giving headings a "black" read without introducing a second,
+     unrelated near-black shade into the palette. Dark mode headings are
+     unaffected (see html:not(.dark) scoping on the h1-h6/.prose rules
+     below) — they keep their previous (unstyled/default) color. */
+  --color-heading-light: #171717;
 
   /* Body-text token: bolder weight + theme-adjusted color for readability
      (darker in light mode, lighter in dark mode than the previous
@@ -104,15 +115,15 @@ h6 {
   font-weight: 600;
 }
 
-/* Heading accent color lives in @layer base so it loses to any Tailwind
-   utility class (e.g. ArticleCard.vue's `text-white` on cover-image
-   overlays) rather than winning the cascade just by being unlayered CSS —
-   Tailwind v4 utilities sit in @layer utilities, and unlayered rules beat
-   layered ones regardless of specificity, so without this the overlay
-   headings would incorrectly turn terracotta instead of staying white.
-   Scoped to `html:not(.dark)` (the color-mode module toggles a `.dark`
-   class on <html>) so dark theme keeps its previous, unstyled heading
-   color — this accent is light-theme only. */
+/* Heading color lives in @layer base so it loses to any Tailwind utility
+   class (e.g. ArticleCard.vue's `text-white` on cover-image overlays)
+   rather than winning the cascade just by being unlayered CSS — Tailwind
+   v4 utilities sit in @layer utilities, and unlayered rules beat layered
+   ones regardless of specificity, so without this the overlay headings
+   would incorrectly turn black instead of staying white. Scoped to
+   `html:not(.dark)` (the color-mode module toggles a `.dark` class on
+   <html>) so dark theme keeps its previous, unstyled heading color — this
+   is light-theme only. */
 @layer base {
   html:not(.dark) h1,
   html:not(.dark) h2,
@@ -120,7 +131,7 @@ h6 {
   html:not(.dark) h4,
   html:not(.dark) h5,
   html:not(.dark) h6 {
-    color: var(--color-terracotta-heading);
+    color: var(--color-heading-light);
   }
 }
 
@@ -146,7 +157,7 @@ html:not(.dark) .prose h3,
 html:not(.dark) .prose h4,
 html:not(.dark) .prose h5,
 html:not(.dark) .prose h6 {
-  color: var(--color-terracotta-heading) !important;
+  color: var(--color-heading-light) !important;
 }
 
 /* Article body copy (Tailwind Typography's .prose p/li) gets the same
