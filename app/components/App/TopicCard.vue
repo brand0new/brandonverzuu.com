@@ -3,11 +3,7 @@
     <article
       class="relative flex items-start gap-4 rounded-xl border border-gray-200 p-5 transition-colors group-hover:border-gray-300 dark:border-white/10 dark:group-hover:border-white/20"
     >
-      <div
-        class="bg-primary-500/10 flex-none rounded-lg p-3"
-      >
-        <AppTopicBinaryIcon :keyword="cluster.binaryKeyword" :font-size="7" />
-      </div>
+      <AppTopicBinaryIcon :keyword="cluster.binaryKeyword" :font-size="7" />
       <div class="min-w-0 flex-1">
         <div class="flex items-center justify-between gap-2">
           <h2
