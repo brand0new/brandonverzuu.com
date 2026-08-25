@@ -16,11 +16,7 @@
       </ol>
     </nav>
     <div class="mb-8 flex items-start gap-4">
-      <div
-        class="bg-primary-500/10 flex-none rounded-lg p-3"
-      >
-        <AppTopicBinaryIcon :keyword="cluster.binaryKeyword" :font-size="9" />
-      </div>
+      <AppTopicBinaryIcon :keyword="cluster.binaryKeyword" :font-size="9" />
       <div class="min-w-0">
         <h1>{{ cluster.title }}</h1>
         <p class="body-text mt-6 text-lg leading-relaxed">
