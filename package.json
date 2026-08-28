@@ -9,7 +9,8 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "deploy": "wrangler pages deploy",
-    "cover:generate": "node scripts/generate-cover.mjs"
+    "cover:generate": "node scripts/generate-cover.mjs",
+    "scrub:fingerprint": "node scripts/scrub-fingerprint.mjs"
   },
   "devDependencies": {
     "@iconify-json/lucide": "^1.2.123",
