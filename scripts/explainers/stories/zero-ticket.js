@@ -19,6 +19,7 @@ const CAPTIONS = [
   "Before: people carry the governance. After: the platform does.",
 ];
 
+const HEADLINE = "Building platforms for vendor-led enterprises"; // feed format only
 const CY = 300; // centre line of the single-row scenes
 const N = {
   vendor: { v: "neutral", icon: "briefcase-fill", label: "Vendor" },
@@ -61,8 +62,12 @@ function render(t) {
   let sc = 0; for (let i = SCENES - 1; i >= 0; i--) if (t >= SC[i]) { sc = i; break; }
   const S = (i) => SC[i], T = SC[SCENES];
 
-  chrome("Zero-ticket integration", sc, SCENES);
+  chrome("Zero-ticket integration", sc, SCENES, HEADLINE);
   caption(CAPTIONS[sc], sc, SCENES, lvl(t, S(sc) + 0.3, 0.5, S(sc + 1) - 0.6, 0.45), sc >= 3 ? C.p300 : C.terra);
+  stage(() => scenes(t, S, T));
+}
+
+function scenes(t, S, T) {
 
   // The vendor: one node that travels through scenes 1-3, then breaks apart.
   if (t < S(3)) {
@@ -189,5 +194,6 @@ function render(t) {
 window.STORY = {
   duration: SC[SCENES],
   poster: 31.5, // the held before/after comparison
+  end: SC[SCENES] - 0.75, // last fully composed moment: where a non-looping cut stops
   render,
 };

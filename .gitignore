@@ -33,3 +33,4 @@ logs
 
 # Licensed font files for local explainer renders (scripts/explainers/README.md)
 scripts/explainers/fonts/
+scripts/explainers/out/

@@ -12,7 +12,13 @@
 // Everything is a pure function of time `t` (seconds), so any frame can be
 // rendered on its own and the video is deterministic.
 
-const W = 1280, H = 720, CELL = 7, FPS_D = 14;
+const CELL = 7, FPS_D = 14;
+// Two formats share every story: "landscape" (1280×720, the article embed)
+// and "feed" (1080×1350, 4:5 for social feeds). Stories draw their scenes in
+// landscape coordinates inside stage(); in the feed format the stage is
+// scaled into the middle of the frame and the chrome is laid out around it.
+const FORMAT = window.FORMAT === "feed" ? "feed" : "landscape";
+const FEED = FORMAT === "feed";
 const B = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
 const C = {
   ground: "#09090b", surface: "#18181b", zinc700: "#3f3f46", zinc800: "#27272a", line: "#52525c",
@@ -20,7 +26,9 @@ const C = {
   p300: "#a5cad4", p400: "#75aebb", p700: "#35616f", p950: "#1d2e34", terra: "#d97a4d",
 };
 const SANS = "'General Sans', system-ui, sans-serif";
-const ctx = document.getElementById("c").getContext("2d");
+const canvas = document.getElementById("c");
+const ctx = canvas.getContext("2d");
+const W = canvas.width, H = canvas.height;
 
 // ---------- time and maths ----------
 const clamp = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v));
@@ -201,34 +209,68 @@ function line(x1, x2, y, color, l, dash) {
   ctx.beginPath(); ctx.moveTo(x1, y); ctx.lineTo(lerp(x1, x2, easeOut(l)), y); ctx.stroke(); ctx.restore();
 }
 
-// ---------- chrome: header, captions, progress ----------
-// Type is sized for the article embed (~576 CSS px wide), where the frame is
-// shown at roughly 45% scale: 40px captions read as ~18px on the page.
-function chrome(title, scene, scenes) {
-  eyebrow(ctx, title, 64, 40, C.gray400, 16);
-  for (let i = 0; i < scenes; i++) {
-    ctx.fillStyle = i < scene ? C.p700 : i === scene ? C.p400 : C.zinc800;
-    ctx.fillRect(1216 - (scenes - i) * 46 + 6, 668, 40, 5);
-  }
+// ---------- chrome: header, stage, captions, progress ----------
+// Type is sized for where each format is seen. Landscape: the ~576 CSS px
+// article embed shows the frame at roughly 45%, so 40px captions read as
+// ~18px. Feed: a phone shows the 1080px frame at roughly 35%, so captions
+// are 54px.
+
+// Feed stage: the landscape scene area (y 90-540) scaled by 0.86 around the
+// 64px left margin, so landscape x 64 stays at feed x 64, into y 360-747 of
+// the 1080×1350 frame.
+const STAGE = { margin: 64, sy: 90, sh: 450, s: 0.86, y: 360 };
+function stage(fn) {
+  if (!FEED) { fn(); return; }
+  ctx.save();
+  ctx.beginPath(); ctx.rect(0, STAGE.y, W, STAGE.sh * STAGE.s); ctx.clip();
+  ctx.translate(STAGE.margin * (1 - STAGE.s), STAGE.y - STAGE.sy * STAGE.s); ctx.scale(STAGE.s, STAGE.s);
+  fn(); ctx.restore();
 }
-// Caption block anchored to the bottom-left: "0N / 0M" eyebrow over one or
-// two lines of 40px text, dithered in and out as a whole.
-function caption(text, scene, scenes, level, color) {
-  if (level <= 0) return;
-  font(ctx, 600, 40);
-  // Balance the lines: narrow the measure while the line count holds, so a
-  // two-line caption never ends on a single orphaned word.
-  let lines = wrap(ctx, text, 860);
-  for (let w = 840; lines.length > 1 && w > 400; w -= 20) {
-    const tighter = wrap(ctx, text, w);
+function balancedWrap(g, text, maxW) {
+  // Narrow the measure while the line count holds, so a multi-line block
+  // never ends on a single orphaned word.
+  let lines = wrap(g, text, maxW);
+  for (let w = maxW - 20; lines.length > 1 && w > maxW / 2; w -= 20) {
+    const tighter = wrap(g, text, w);
     if (tighter.length !== lines.length) break;
     lines = tighter;
   }
-  const top = 632 - (lines.length - 1) * 48;
-  revealRect(level, 60, top - 34, 900, 690 - (top - 34), () => {
-    eyebrow(ctx, `${String(scene + 1).padStart(2, "0")} / ${String(scenes).padStart(2, "0")}`, 64, top - 30, color, 16);
-    font(ctx, 600, 40); ctx.fillStyle = C.white; ctx.textAlign = "left"; ctx.textBaseline = "top";
-    lines.forEach((l, i) => ctx.fillText(l, 64, top + i * 48));
+  return lines;
+}
+function chrome(title, scene, scenes, headline) {
+  if (!FEED) {
+    eyebrow(ctx, title, 64, 40, C.gray400, 16);
+    for (let i = 0; i < scenes; i++) {
+      ctx.fillStyle = i < scene ? C.p700 : i === scene ? C.p400 : C.zinc800;
+      ctx.fillRect(1216 - (scenes - i) * 46 + 6, 668, 40, 5);
+    }
+    return;
+  }
+  eyebrow(ctx, title, 64, 96, C.gray400, 22);
+  if (headline) {
+    font(ctx, 600, 46); ctx.fillStyle = C.white; ctx.textAlign = "left"; ctx.textBaseline = "top";
+    balancedWrap(ctx, headline, 952).forEach((l, i) => ctx.fillText(l, 64, 140 + i * 56));
+  }
+  font(ctx, 400, 22); ctx.fillStyle = C.gray400; ctx.textAlign = "left"; ctx.textBaseline = "top";
+  ctx.fillText("brandonverzuu.com", 64, 1258);
+  for (let i = 0; i < scenes; i++) {
+    ctx.fillStyle = i < scene ? C.p700 : i === scene ? C.p400 : C.zinc800;
+    ctx.fillRect(1016 - (scenes - i) * 60 + 8, 1268, 52, 6);
+  }
+}
+// Caption block: "0N / 0M" eyebrow over balanced lines, dithered in and out
+// as a whole. Landscape anchors it bottom-left; feed sets it under the stage.
+function caption(text, scene, scenes, level, color) {
+  if (level <= 0) return;
+  const size = FEED ? 54 : 40, lh = FEED ? 64 : 48, eb = FEED ? 22 : 16;
+  font(ctx, 600, size);
+  const lines = balancedWrap(ctx, text, FEED ? 952 : 860);
+  const top = FEED ? 880 : 632 - (lines.length - 1) * 48;
+  const ebTop = top - (FEED ? 40 : 30);
+  revealRect(level, 60, ebTop - 4, FEED ? 960 : 900, top + lines.length * lh - ebTop + 8, () => {
+    eyebrow(ctx, `${String(scene + 1).padStart(2, "0")} / ${String(scenes).padStart(2, "0")}`, 64, ebTop, color, eb);
+    font(ctx, 600, size); ctx.fillStyle = C.white; ctx.textAlign = "left"; ctx.textBaseline = "top";
+    lines.forEach((l, i) => ctx.fillText(l, 64, top + i * lh));
   });
 }
 function clear() {

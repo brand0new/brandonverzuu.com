@@ -1,15 +1,24 @@
 #!/usr/bin/env node
-// Renders an animated explainer (scripts/explainers/stories/<story>.js) to the
-// files an article embeds: a silent looping H.264 MP4, a VP9 WebM and a
-// poster PNG. See scripts/explainers/README.md.
+// Renders an animated explainer (scripts/explainers/stories/<story>.js).
+//
+// landscape (default): the files an article embeds, a silent looping VP9 WebM
+//   and H.264 MP4 at 1280×720 plus a poster PNG, written to
+//   public/articles/<slug>/.
+// feed: one 1080×1350 (4:5) H.264 MP4 for social feeds that ends cleanly on
+//   the story's last composed frame instead of looping. It is not a site
+//   asset, so it goes to scripts/explainers/out/ (git-ignored), never public/.
+//
+// See scripts/explainers/README.md.
 //
 // Usage:
 //   npm run explainer:render -- <story> --slug <article-slug>
 //   npm run explainer:render -- zero-ticket --slug building-platforms-for-vendor-led-enterprises
 //   npm run explainer:render -- zero-ticket --stills 3,12,31.5 --out /tmp/review
+//   npm run explainer:render -- zero-ticket --format feed
 //
 // Options:
-//   --slug <slug>     write to public/articles/<slug>/ (default output)
+//   --format <f>      landscape (default) or feed
+//   --slug <slug>     landscape: write to public/articles/<slug>/
 //   --out <dir>       write to this directory instead
 //   --fps <n>         frame rate (default 30)
 //   --fonts <dir>     folder holding GeneralSans-Regular.woff2 and
@@ -50,9 +59,16 @@ const story = args._[0];
 if (!story) fail("name a story, e.g. `npm run explainer:render -- zero-ticket --slug <slug>`");
 const storyFile = path.join(here, "stories", `${story}.js`);
 if (!existsSync(storyFile)) fail(`no story at ${path.relative(root, storyFile)}`);
+const format = args.format ?? "landscape";
+if (!["landscape", "feed"].includes(format)) fail(`unknown --format ${format} (landscape or feed)`);
+const feed = format === "feed";
+const size = feed ? { width: 1080, height: 1350 } : { width: 1280, height: 720 };
 const stills = args.stills ? String(args.stills).split(",").map(Number) : null;
-const outDir = args.out ? path.resolve(args.out) : args.slug ? path.join(root, "public/articles", args.slug) : null;
+const outDir = args.out ? path.resolve(args.out)
+  : feed ? path.join(here, "out")
+  : args.slug ? path.join(root, "public/articles", args.slug) : null;
 if (!outDir) fail("pass --slug <article-slug> or --out <dir>");
+if (feed && outDir.startsWith(path.join(root, "public"))) fail("the feed cut is not a site asset; don't write it under public/");
 const fps = Number(args.fps ?? 30);
 if (!stills && spawnSync("ffmpeg", ["-version"]).status !== 0) fail("ffmpeg is not on PATH");
 
@@ -77,13 +93,13 @@ const [kit, storySrc] = await Promise.all([readFile(path.join(here, "kit.js"), "
 
 const html = `<!doctype html><html><head><meta charset="utf-8">${fontCss}
 <style>html,body{margin:0;background:#09090b}canvas{display:block}</style></head>
-<body><canvas id="c" width="1280" height="720"></canvas>
-<script>window.ICONS=${JSON.stringify(iconBodies)};</script>
+<body><canvas id="c" width="${size.width}" height="${size.height}"></canvas>
+<script>window.FORMAT=${JSON.stringify(format)};window.ICONS=${JSON.stringify(iconBodies)};</script>
 <script>${kit}\n${storySrc}</script></body></html>`;
 
 const browser = await chromium.launch();
 try {
-  const page = await browser.newPage({ viewport: { width: 1280, height: 720 } });
+  const page = await browser.newPage({ viewport: size });
   const errors = [];
   page.on("pageerror", (e) => errors.push(e.message));
   await page.setContent(html, { waitUntil: "load" });
@@ -96,20 +112,25 @@ try {
 
   const frame = (t) => page.evaluate((t) => { window.STORY.render(t); return document.getElementById("c").toDataURL("image/png"); }, t);
   const png = (dataUrl) => Buffer.from(dataUrl.split(",")[1], "base64");
-  const { duration, poster } = await page.evaluate(() => ({ duration: window.STORY.duration, poster: window.STORY.poster }));
+  const { duration, poster, end } = await page.evaluate(() => ({ duration: window.STORY.duration, poster: window.STORY.poster, end: window.STORY.end }));
+  // The feed cut plays up to the story's last composed moment, then holds it
+  // for 2 s: a clean ending, since feeds don't loop seamlessly.
+  const HOLD = 2;
+  const length = feed ? (end ?? duration) + HOLD : duration;
+  const timeAt = (t) => (feed ? Math.min(t, end ?? duration) : t);
   await mkdir(outDir, { recursive: true });
 
   if (stills) {
     for (const t of stills) {
-      const file = path.join(outDir, `${story}-${t}s.png`);
+      const file = path.join(outDir, `${story}-${format}-${t}s.png`);
       await writeFile(file, png(await frame(t)));
       console.log(`wrote ${path.relative(process.cwd(), file)}`);
     }
   } else {
     const frames = await mkdtemp(path.join(tmpdir(), `explainer-${story}-`));
-    const n = Math.round(duration * fps);
+    const n = Math.round(length * fps);
     for (let i = 0; i < n; i++) {
-      await writeFile(path.join(frames, `f${String(i).padStart(5, "0")}.png`), png(await frame(i / fps)));
+      await writeFile(path.join(frames, `f${String(i).padStart(5, "0")}.png`), png(await frame(timeAt(i / fps))));
       if (i % fps === 0) process.stdout.write(`\rrendering ${i}/${n} frames`);
     }
     process.stdout.write(`\rrendered ${n} frames            \n`);
@@ -121,15 +142,27 @@ try {
       if (r.status !== 0) fail(`ffmpeg failed for ${file}`);
       console.log(`wrote ${path.relative(process.cwd(), file)}`);
     };
-    // H.264 High profile, 4:2:0, moov atom up front for progressive playback.
-    encode(path.join(outDir, "explainer.mp4"), ["-c:v", "libx264", "-preset", "slow", "-crf", "16", "-tune", "animation", "-pix_fmt", "yuv420p", "-movflags", "+faststart", "-an"]);
-    // VP9 constant quality; offered first by AppArticleExplainer.
-    encode(path.join(outDir, "explainer.webm"), ["-c:v", "libvpx-vp9", "-b:v", "0", "-crf", "30", "-row-mt", "1", "-pix_fmt", "yuv420p", "-an"]);
-    await writeFile(path.join(outDir, "explainer-poster.png"), png(await frame(poster)));
-    console.log(`wrote ${path.relative(process.cwd(), path.join(outDir, "explainer-poster.png"))}`);
+    if (feed) {
+      // Feeds transcode on upload; H.264 + AAC is the most predictable input.
+      // The audio track is silence, present only because some platforms
+      // handle video-only files less reliably.
+      const file = path.join(outDir, `${story}-feed-4x5.mp4`);
+      const r = spawnSync("ffmpeg", [...input, "-f", "lavfi", "-i", "anullsrc=channel_layout=stereo:sample_rate=48000",
+        "-c:v", "libx264", "-preset", "slow", "-crf", "18", "-tune", "animation", "-profile:v", "high", "-pix_fmt", "yuv420p",
+        "-c:a", "aac", "-b:a", "128k", "-shortest", "-movflags", "+faststart", file], { stdio: "inherit" });
+      if (r.status !== 0) fail(`ffmpeg failed for ${file}`);
+      console.log(`wrote ${path.relative(process.cwd(), file)}`);
+    } else {
+      // H.264 High profile, 4:2:0, moov atom up front for progressive playback.
+      encode(path.join(outDir, "explainer.mp4"), ["-c:v", "libx264", "-preset", "slow", "-crf", "16", "-tune", "animation", "-pix_fmt", "yuv420p", "-movflags", "+faststart", "-an"]);
+      // VP9 constant quality; offered first by AppArticleExplainer.
+      encode(path.join(outDir, "explainer.webm"), ["-c:v", "libvpx-vp9", "-b:v", "0", "-crf", "30", "-row-mt", "1", "-pix_fmt", "yuv420p", "-an"]);
+      await writeFile(path.join(outDir, "explainer-poster.png"), png(await frame(poster)));
+      console.log(`wrote ${path.relative(process.cwd(), path.join(outDir, "explainer-poster.png"))}`);
+    }
     await rm(frames, { recursive: true, force: true });
 
-    if (args.slug) {
+    if (args.slug && !feed) {
       const base = `/articles/${args.slug}`;
       console.log(`\nFront matter:\nexplainerVideo: "${base}/explainer.mp4"\nexplainerVideoWebm: "${base}/explainer.webm"\nexplainerPoster: "${base}/explainer-poster.png"\nexplainerAlt: "<describe the story for screen readers>"`);
     }

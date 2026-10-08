@@ -12,8 +12,9 @@ reveals stepped at 14 fps instead of opacity fades.
 - `kit.js` — shared drawing primitives: dither reveals, nodes, sprites, the
   dissolve effect, ambient streams and halos, captions and the progress strip.
 - `stories/<name>.js` — one file per explainer. It lays out its scenes and
-  sets `window.STORY = { duration, poster, render(t) }`. `render` must be a
-  pure function of `t` (seconds) so any frame renders on its own.
+  sets `window.STORY = { duration, poster, end, render(t) }`. `render` must be
+  a pure function of `t` (seconds) so any frame renders on its own; `end` is
+  the last fully composed moment, where the non-looping feed cut stops.
 - `render.mjs` — loads the kit and a story into headless Chromium, steps it
   frame by frame and encodes the outputs with ffmpeg.
 
@@ -28,6 +29,9 @@ npm run explainer:render -- zero-ticket --stills 3,12,31.5 --out /tmp/review
 
 # Final render into public/articles/<slug>/
 npm run explainer:render -- zero-ticket --slug building-platforms-for-vendor-led-enterprises
+
+# 4:5 cut for social feeds, into scripts/explainers/out/ (git-ignored)
+npm run explainer:render -- zero-ticket --format feed
 ```
 
 The final render writes `explainer.mp4`, `explainer.webm` and
@@ -45,6 +49,10 @@ render fails rather than falling back to another typeface.
 
 ## Output formats
 
+Two formats share every story. Each produces only the files listed here.
+
+### Landscape: the article embed (`public/articles/<slug>/`)
+
 | File | Codec | Why |
 | --- | --- | --- |
 | `explainer.webm` | VP9, CRF 30, 4:2:0 | Offered first: smallest file, and the only option in browsers built without an H.264 decoder. |
@@ -58,6 +66,19 @@ Cloudflare Pages serves files up to 25 MiB, far above these sizes.
 AV1 is deliberately left out. For a clip this small it would only save a few
 hundred kilobytes, and Safari decodes it only on devices with AV1 hardware,
 so it couldn't replace either existing file.
+
+### Feed: native upload to LinkedIn and similar (`scripts/explainers/out/`)
+
+| File | Codec | Why |
+| --- | --- | --- |
+| `<story>-feed-4x5.mp4` | H.264 High, CRF 18, 1080×1350, 30 fps, silent AAC track, faststart | 4:5 takes the most room a feed gives a video on mobile. H.264 + AAC is the input feeds transcode most predictably; the audio track is silence. |
+
+The feed cut is laid out around the same scenes: the article headline on
+top, the scenes scaled into the middle, 54px captions below and the site
+domain at the bottom. It plays once and holds its last composed frame for
+2 s instead of looping, because feeds don't loop seamlessly. It never goes
+under `public/`: it is uploaded by hand, not served by the site. Upload it
+natively rather than linking to it; feeds give native video more reach.
 
 ## Writing a new story
 
@@ -73,3 +94,7 @@ so it couldn't replace either existing file.
    to the frame that sums the story up.
 5. Type is sized for the embed: 40px captions and 26px node labels render
    at roughly 18px and 12px on the page. Don't go smaller.
+6. Draw scenes in landscape coordinates inside `stage()`, and keep their
+   content between y 90 and y 540, the band the feed format shows. Chrome
+   and captions go through `chrome()` and `caption()`, which lay themselves
+   out per format.
