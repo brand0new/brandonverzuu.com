@@ -9,6 +9,10 @@ imageAuthor: "André Karwath aka Aka"
 imageLicense: "CC BY-SA 2.5"
 imageSource: "https://commons.wikimedia.org/wiki/File:Lightning_cloud_to_cloud_(aka).jpg"
 tags: ["api", "cloud-integration"]
+explainerVideo: "/articles/azure-native-service-bus-publishing-with-api-management/explainer.mp4"
+explainerVideoWebm: "/articles/azure-native-service-bus-publishing-with-api-management/explainer.webm"
+explainerPoster: "/articles/azure-native-service-bus-publishing-with-api-management/explainer-poster.png"
+explainerAlt: "Animated explainer. An API call often needs to start work in the background, so teams build a Function app whose only job is to forward the request from API Management to Service Bus. With the native send-service-bus-message policy, API Management publishes to Service Bus itself and the Function disappears. The client gets a 201 Created straight away while the work happens later. The policy is one-way, so a client that needs a reply should keep using forward-request. The final frame compares the bridge you maintain with the native policy."
 ---
 
 If you work in the Azure ecosystem, you've probably built this same piece of connective tissue more than once: an Azure Function or a Logic App whose only job is to bridge a synchronous API call into an asynchronous Service Bus message. It works, but it's another component to build, deploy and maintain for something that's really just plumbing.

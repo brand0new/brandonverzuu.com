@@ -6,6 +6,10 @@ date: 2024/07/09
 slug: "everything-about-openapi-4"
 image: "/articles/everything-about-openapi-4/cover.png"
 tags: ["openapi", "arazzo"]
+explainerVideo: "/articles/everything-about-openapi-4/explainer.mp4"
+explainerVideoWebm: "/articles/everything-about-openapi-4/explainer.webm"
+explainerPoster: "/articles/everything-about-openapi-4/explainer-poster.png"
+explainerAlt: "Animated explainer, subject to change because OpenAPI 4 was still in development. OpenAPI 3 starts from HTTP paths and methods, so shared responses such as 404 and 5XX repeat under every method. Moonwalk starts from what the API does, with named requests such as createPet and getPets. Shared responses are declared once, for a path or for the whole API, and deployments get their own section with their own security per environment. The final frame compares OpenAPI 3 with OpenAPI 4."
 ---
 
 OpenAPI version 4 — named ‘Moonwalk’ — is scheduled to for release by the end of 2024. Are there plans related to #LLMs? Is there a complete overhaul? What will become of our beloved #OpenAPISpecification?

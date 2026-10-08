@@ -9,6 +9,10 @@ image: "/articles/begrijp-jij-bitcoin/cover.png"
 imageAuthor: "Tiberiandusk"
 imageLicense: "CC BY-SA 4.0"
 imageSource: "https://commons.wikimedia.org/wiki/File:Physical_Bitcoin_2011_Casascius_1_Bitcoin_Coin_Token.png"
+explainerVideo: "/articles/begrijp-jij-bitcoin/explainer.mp4"
+explainerVideoWebm: "/articles/begrijp-jij-bitcoin/explainer.webm"
+explainerPoster: "/articles/begrijp-jij-bitcoin/explainer-poster.png"
+explainerAlt: "Geanimeerde uitleg. Digitaal is alles te kopiëren, dus zonder controle kun je dezelfde munt twee keer uitgeven: Ann stuurt Bob 1 bitcoin en probeert dezelfde bitcoin ook naar Cas te sturen. Bitcoin legt alle transacties vast in een keten van blokken, en duizenden volledige nodes houden elk een kopie bij en controleren elke transactie. De tweede uitgave valt meteen op en wordt geweigerd. Het laatste beeld vergelijkt een digitale munt zonder keten met bitcoin."
 ---
 
 Je moet aardig je best hebben gedaan om in de afgelopen 10 jaar (!) nog niets over bitcoin gehoord te hebben. Misschien heb je al eens wat erover gelezen. Die ene - rare - neef overhoort op een verjaardag. Of misschien heb je een mailtje gehad met daarin een bekende Nederlander die dé investeringstrategie heeft waarmee je gegarandeerd miljonair gaat worden.
