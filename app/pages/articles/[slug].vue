@@ -30,6 +30,13 @@
          article body starts, mirroring HomeDitherBackground's own
          boundary-detection logic against [data-dither-boundary]. -->
     <div data-article-background-boundary></div>
+    <AppArticleExplainer
+      v-if="article.explainerVideo"
+      :src="article.explainerVideo"
+      :webm="article.explainerVideoWebm"
+      :poster="article.explainerPoster"
+      :alt="article.explainerAlt"
+    />
     <ContentRenderer :value="article" />
   </article>
 </template>

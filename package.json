@@ -10,7 +10,8 @@
     "preview": "nuxt preview",
     "deploy": "wrangler pages deploy",
     "cover:generate": "node scripts/generate-cover.mjs",
-    "scrub:fingerprint": "node scripts/scrub-fingerprint.mjs"
+    "scrub:fingerprint": "node scripts/scrub-fingerprint.mjs",
+    "explainer:render": "node scripts/explainers/render.mjs"
   },
   "devDependencies": {
     "@iconify-json/lucide": "^1.2.123",
@@ -20,6 +21,7 @@
     "@nuxtjs/sitemap": "^8.3.4",
     "@tailwindcss/typography": "^0.5.20",
     "nuxt": "^4.5.2",
+    "playwright": "1.56.1",
     "prettier": "^3.9.6",
     "prettier-plugin-tailwindcss": "^0.6.14",
     "sharp": "^0.35.5",
