@@ -277,3 +277,166 @@ function clear() {
   ctx.setTransform(1, 0, 0, 1, 0, 0);
   ctx.fillStyle = C.ground; ctx.fillRect(0, 0, W, H);
 }
+
+// ---------- data-driven stories ----------
+// Most explainers are built from the same vocabulary: nodes, chips, cards,
+// lines, streams, halos and a packet. defineStory() turns a scene list into
+// window.STORY, so a story file is data plus captions. Elements are drawn in
+// landscape coordinates (inside stage(); keep them within y 90-540) and in
+// list order, so put halos and streams before the nodes they surround.
+//
+// Element fields shared by every type:
+//   at     seconds after its scene starts to dither in (default 0.4)
+//   span   number of scenes it stays on screen (default 1); it dithers out
+//          0.6 s before the last of those scenes ends
+// Types:
+//   node   { n: {v, icon, label, sub}, x, y, compact, dissolveAt, dir }
+//          x, y = tile centre; dissolveAt (seconds after its scene starts)
+//          breaks it into terracotta particles — the one particle effect,
+//          for a story beat that means something leaving
+//   chip   { x, y, w, h, text, icon, v, mono, center, size, dissolveAt }
+//   card   { x, y, w, h, title, icon, v, lines: [str | {text, color, mono}], mono, size, lh }
+//   text   { x, y, text, size, color, weight, mono, w }
+//   eyebrow { x, y, text, color }
+//   line   { x1, x2, y, color, dash, arrow }  draws itself in over 0.6 s
+//   stream { x1, x2, y, color, density, seed, rows }
+//   halo   { around: [x, y, compact] } or { x, y, w, h }, pad, color, level
+//   packet { x1, x2, y, color, dur }  a solid cell with a dithered trail
+const MONO = "'JetBrains Mono', 'SFMono-Regular', Menlo, Consolas, 'DejaVu Sans Mono', monospace";
+const TONE = { terra: C.terra, porc: C.p300, neutral: C.gray400, line: C.line, p400: C.p400, white: C.white, text: C.text };
+const tone = (c, fallback) => (c ? TONE[c] || c : fallback);
+
+function chipDraw(g, e) {
+  const v = V[e.v || "porc"];
+  rbox(g, 2, 2, e.w, e.h, e.r ?? 12, v);
+  const size = e.size || (e.mono ? 18 : 20);
+  g.font = `${e.mono ? 600 : 600} ${size}px ${e.mono ? MONO : SANS}`;
+  g.fillStyle = tone(e.color, e.v === "porc" || !e.v ? "#e9f1f5" : C.text);
+  g.textBaseline = "middle";
+  if (e.icon) icon(g, e.icon, 2 + 18, 2 + e.h / 2 - 13, 26, v.ic);
+  if (e.center && !e.icon) { g.textAlign = "center"; g.fillText(e.text, 2 + e.w / 2, 2 + e.h / 2 + 1); }
+  else { g.textAlign = "left"; g.fillText(e.text, 2 + (e.icon ? 58 : 20), 2 + e.h / 2 + 1); }
+}
+function cardDraw(g, e) {
+  const v = V[e.v || "neutral"];
+  rbox(g, 2, 2, e.w, e.h, 16, v);
+  const x = 2 + 24; let y = 2 + 22;
+  if (e.icon) icon(g, e.icon, x, y - 2, 28, v.ic);
+  if (e.title) {
+    font(g, 600, 22); g.fillStyle = C.white; g.textAlign = "left"; g.textBaseline = "top";
+    g.fillText(e.title, e.icon ? x + 40 : x, y + 2); y += 50;
+  }
+  (e.lines || []).forEach((l, i) => {
+    const L = typeof l === "string" ? { text: l } : l, mono = L.mono ?? e.mono;
+    g.font = `${mono ? 600 : 400} ${e.size || (mono ? 19 : 21)}px ${mono ? MONO : SANS}`;
+    g.fillStyle = tone(L.color, C.text); g.textAlign = "left"; g.textBaseline = "top";
+    g.fillText(L.text, x, y + i * (e.lh || 34));
+  });
+}
+function arrowLine(x1, x2, y, color, p, dash, head) {
+  if (p <= 0) return;
+  const dir = Math.sign(x2 - x1) || 1, tip = lerp(x1, x2, easeOut(p));
+  ctx.save(); ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = 2; ctx.lineCap = "round";
+  if (dash) ctx.setLineDash([6, 6]);
+  ctx.beginPath(); ctx.moveTo(x1, y); ctx.lineTo(head ? tip - dir * 6 : tip, y); ctx.stroke();
+  if (head) { ctx.setLineDash([]); ctx.beginPath(); ctx.moveTo(tip, y); ctx.lineTo(tip - dir * 10, y - 5); ctx.lineTo(tip - dir * 10, y + 5); ctx.closePath(); ctx.fill(); }
+  ctx.restore();
+}
+function packetAt(x1, x2, y, p, color) {
+  for (let j = 8; j >= 0; j--) {
+    const k = p - j * 0.025; if (k <= 0 || k >= 1) continue;
+    const x = lerp(x1, x2, easeInOut(k));
+    if (j === 0) { ctx.fillStyle = color; ctx.fillRect(snap(x - 10), snap(y - 10), 21, 21); }
+    else ditherFill(x - 10, y - 10, 21, 21, color, 0.7 - j * 0.07);
+  }
+}
+const elKey = (e) => e.key || JSON.stringify([e.type, e.n, e.x, e.y, e.w, e.h, e.text, e.title, e.lines, e.icon, e.v, e.mono, e.compact]);
+
+function drawEl(e, t, s0, end) {
+  const at = s0 + (e.at ?? 0.4);
+  if (t < at - 0.01 && e.type !== "stream") return;
+  const L = lvl(t, at, e.dur ?? 0.6, end - 0.6, 0.45);
+  const dz = e.dissolveAt != null ? s0 + e.dissolveAt : null;
+  const spr = (s, x, y) => {
+    if (dz !== null && t >= dz) dissolve(s, x, y, clamp((t - dz) / 2.2), C.terra, e.dir || -1);
+    else drawSprite(s, x, y, L);
+  };
+  switch (e.type) {
+    case "node": {
+      const s = (e.compact ? cnodeSprite : nodeSprite)(elKey(e), e.n);
+      spr(s, e.x - s.w / 2, e.y - (e.compact ? TILE2 : TILE) / 2); break;
+    }
+    case "chip": spr(sprite(elKey(e), e.w + 4, e.h + 4, (g) => chipDraw(g, e)), e.x - 2, e.y - 2); break;
+    case "card": spr(sprite(elKey(e), e.w + 4, e.h + 4, (g) => cardDraw(g, e)), e.x - 2, e.y - 2); break;
+    case "text": {
+      const size = e.size || 22, w = e.w || 900;
+      const rx = e.align === "center" ? e.x - w / 2 : e.align === "right" ? e.x - w : e.x - 4;
+      revealRect(L, rx, e.y - 4, w + 8, size + 14, () => {
+        ctx.font = `${e.weight || 600} ${size}px ${e.mono ? MONO : SANS}`; ctx.fillStyle = tone(e.color, C.text);
+        ctx.textAlign = e.align || "left"; ctx.textBaseline = "top"; ctx.fillText(e.text, e.x, e.y);
+      }); break;
+    }
+    case "eyebrow": revealRect(L, e.x - 4, e.y - 4, 640, 26, () => eyebrow(ctx, e.text, e.x, e.y, tone(e.color, C.gray400), 16)); break;
+    case "line": {
+      const p = clamp((t - at) / (e.draw ?? 0.6));
+      revealRect(L, Math.min(e.x1, e.x2) - 12, e.y - 10, Math.abs(e.x2 - e.x1) + 24, 20,
+        () => arrowLine(e.x1, e.x2, e.y, tone(e.color, C.line), p, e.dash, e.arrow)); break;
+    }
+    case "stream": {
+      const ramp = Math.min(clamp((t - at) / 0.8), 1 - clamp((t - (end - 0.6)) / 0.4));
+      stream(e.x1, e.x2, e.y, t, tone(e.color, C.p300), (e.density ?? 0.7) * ramp, e.seed || 7, e.speed || 160, e.rows ?? 3); break;
+    }
+    case "halo": {
+      let { x, y, w, h } = e;
+      if (e.around) { const [cx, cy, compact] = e.around, k = compact ? TILE2 : TILE; x = cx - k / 2; y = cy - k / 2; w = h = k; }
+      const ramp = clamp((t - at) / 0.8);
+      halo(x, y, w, h, e.pad || (e.around && e.around[2] ? 32 : 56), tone(e.color, C.terra), Math.min(L, ramp * (e.level ?? 0.5))); break;
+    }
+    case "packet": {
+      const p = (t - at) / (e.dur ?? 1.2);
+      if (p > 0 && p < 1.3) packetAt(e.x1, e.x2, e.y, p, tone(e.color, C.p300)); break;
+    }
+  }
+}
+
+// The closing comparison: two rows of compact nodes, "before" on top in
+// terracotta, "after" below in porcelain. Nodes: {icon, label, sub, v}; a
+// node with v "terra" gets a flickering halo. 3 or 4 nodes per row.
+function compareEls(before, after) {
+  const els = [];
+  const row = (r, y, ebY, ebColor, t0, isAfter) => {
+    els.push({ type: "eyebrow", x: 64, y: ebY, text: r.label, color: ebColor, at: t0 });
+    const n = r.nodes.length, xs = r.nodes.map((_, i) => 200 + i * (860 / (n - 1)));
+    r.nodes.forEach((nd, i) => { if (nd.v === "terra") els.push({ type: "halo", around: [xs[i], y, true], at: t0 + 0.6 + i * 0.3, level: 0.4 }); });
+    if (isAfter) els.push({ type: "stream", x1: xs[0] + 56, x2: xs[n - 1] - 56, y, color: "porc", density: 0.45, rows: 1, seed: 21, at: t0 + 1.4 });
+    for (let i = 0; i < n - 1; i++) {
+      const next = r.nodes[i + 1];
+      els.push({ type: "line", x1: xs[i] + 52, x2: xs[i + 1] - 52, y, at: t0 + 0.7 + i * 0.3, arrow: true,
+        color: isAfter ? "p400" : next.v === "terra" ? "terra" : "line", dash: !isAfter && next.v === "terra" });
+    }
+    r.nodes.forEach((nd, i) => els.push({ type: "node", compact: true, x: xs[i], y, at: t0 + 0.2 + i * 0.3, n: { v: nd.v || "neutral", icon: nd.icon, label: nd.label, sub: nd.sub } }));
+  };
+  row(before, 190, 104, C.terra, 0.3, false);
+  row(after, 420, 336, C.p300, 2.0, true);
+  return els;
+}
+
+function defineStory(def) {
+  const SC = [0];
+  def.scenes.forEach((s) => SC.push(SC[SC.length - 1] + s.dur));
+  const N = def.scenes.length, T = SC[N];
+  function render(t) {
+    setTime(t); clear();
+    let sc = 0; for (let i = N - 1; i >= 0; i--) if (t >= SC[i]) { sc = i; break; }
+    const s = def.scenes[sc];
+    chrome(def.title, sc, N, def.headline);
+    caption(s.caption, sc, N, lvl(t, SC[sc] + 0.3, 0.5, SC[sc + 1] - 0.6, 0.45), s.tone === "porc" ? C.p300 : C.terra);
+    stage(() => {
+      def.scenes.forEach((sd, i) => sd.els.forEach((e) => {
+        const end = SC[Math.min(N, i + (e.span || 1))];
+        if (t >= SC[i] && t < end) drawEl(e, t, SC[i], end);
+      }));
+    });
+  }
+  window.STORY = { duration: T, poster: SC[N - 1] + (def.posterOffset ?? 5), end: T - 0.75, render };
+}

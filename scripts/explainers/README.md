@@ -9,14 +9,32 @@ reveals stepped at 14 fps instead of opacity fades.
 
 ## Files
 
-- `kit.js` — shared drawing primitives: dither reveals, nodes, sprites, the
-  dissolve effect, ambient streams and halos, captions and the progress strip.
-- `stories/<name>.js` — one file per explainer. It lays out its scenes and
-  sets `window.STORY = { duration, poster, end, render(t) }`. `render` must be
-  a pure function of `t` (seconds) so any frame renders on its own; `end` is
-  the last fully composed moment, where the non-looping feed cut stops.
+- `kit.js` — shared drawing primitives (dither reveals, nodes, sprites, the
+  dissolve effect, ambient streams and halos, captions, the progress strip)
+  and `defineStory()`, which turns a list of scenes into a story. The element
+  types it understands are documented above `defineStory()` in the file.
+- `stories/<name>.js` — one file per explainer. Most are data: a call to
+  `defineStory({ title, headline, scenes })`, ending with `compareEls()` for
+  the before/after frame. `zero-ticket.js` is hand-written and sets
+  `window.STORY = { duration, poster, end, render(t) }` itself. Either way,
+  rendering is a pure function of `t` (seconds), so any frame renders on its
+  own; `end` is the last fully composed moment, where the non-looping feed
+  cut stops.
 - `render.mjs` — loads the kit and a story into headless Chromium, steps it
   frame by frame and encodes the outputs with ffmpeg.
+
+Current stories:
+
+| Story | Article |
+| --- | --- |
+| `zero-ticket` | `building-platforms-for-vendor-led-enterprises` |
+| `api-governance` | `automate-api-governance` |
+| `service-bus` | `azure-native-service-bus-publishing-with-api-management` |
+| `overlay` | `capture-api-changes-with-overlay` |
+| `arazzo` | `improving-dx-with-arazzo` |
+| `openapi-4` | `everything-about-openapi-4` |
+| `bitcoin` | `begrijp-jij-bitcoin` (Dutch) |
+| `maturity-model` | `maturity-models-and-tech` |
 
 ## Rendering
 
@@ -82,16 +100,18 @@ natively rather than linking to it; feeds give native video more reach.
 
 ## Writing a new story
 
-1. Copy `stories/zero-ticket.js` and keep its structure: a `SC` array of
-   scene start times (the last value is the loop length), one caption per
-   scene, and elements that dither in after their scene starts and out about
-   0.6 s before it ends.
+1. Copy a `defineStory()` story such as `stories/api-governance.js`. Each
+   scene has a duration, a caption, a tone (`terra` for the problem, `porc`
+   for the resolution) and its elements; elements dither in at `at` seconds
+   after their scene starts and out 0.6 s before it ends, or stay for
+   several scenes with `span`. Keep six scenes and end with `compareEls()`,
+   so every explainer closes on a before/after frame readers can compare.
 2. Give each scene one idea and one or two focal elements. Hold each caption
    for at least 4 s.
 3. Keep particles for moments that mean something (the vendor leaving, in
    zero-ticket). Everything else uses the standard dither reveal.
-4. End the last scene empty so the loop restarts cleanly, and set `poster`
-   to the frame that sums the story up.
+4. The last scene must end empty so the loop restarts cleanly (defineStory
+   handles this, and uses the comparison frame as the poster).
 5. Type is sized for the embed: 40px captions and 26px node labels render
    at roughly 18px and 12px on the page. Don't go smaller.
 6. Draw scenes in landscape coordinates inside `stage()`, and keep their
