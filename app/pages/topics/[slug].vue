@@ -24,9 +24,6 @@
         </p>
       </div>
     </div>
-    <!-- Placed by hand since this page has its own icon+title header rather
-         than AppHeader (which renders the boundary itself). -->
-    <AppDitherBoundary />
     <ul v-if="filteredArticles.length" class="space-y-8">
       <li v-for="(article, id) in filteredArticles" :key="id">
         <AppArticleCard :article="article" />

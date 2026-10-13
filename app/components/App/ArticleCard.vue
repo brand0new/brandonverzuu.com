@@ -18,7 +18,7 @@
            than requiring a second frontmatter field per article — see
            scripts/generate-cover.mjs and scripts/backfill-cover-light.mjs
            for how cover-light.png is produced (terracotta dots recolored
-           against App/DitherBackground.vue's own light-mode off-white
+           against App/DitherCanvas.vue's own light-mode off-white
            tone, keeping the two dither treatments visually consistent).
 
            No brightness/saturate filter on the light variant — that hack

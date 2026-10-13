@@ -7,9 +7,7 @@
       >
         Skip to content
       </a>
-      <ClientOnly>
-        <AppDitherBackground />
-      </ClientOnly>
+      <AppPageBackground :image="articleCover" />
       <AppNavbar />
       <div class="h-32"></div>
       <UContainer id="main-content" class="mx-auto max-w-xl lg:max-w-2xl">
@@ -26,17 +24,26 @@
 // (see app/composables/useCanonical.ts) so it can't be missed on new pages.
 useCanonical();
 
-// AppDitherBackground (the animated terracotta noise hero) is the background
-// for every route. It lives here rather than in each page so it can be
-// positioned absolutely against this full-width wrapper — the page's own
-// content sits inside <UContainer class="max-w-2xl">, which would clip the
-// background to that column. This wrapper spans the full viewport, so the
-// background can render edge-to-edge and behind AppNavbar (a `fixed`
-// element, so it always paints above regardless of DOM order/z-index).
+// AppPageBackground is the background for every route. It lives here rather
+// than in each page so it can be positioned absolutely against this
+// full-width wrapper — the page's own content sits inside
+// <UContainer class="max-w-2xl">, which would clip the background to that
+// column (and the page transition's transform would re-anchor it mid-
+// navigation). Not wrapped in <ClientOnly>, so it's part of the prerendered
+// HTML instead of appearing after hydration.
 //
-// Each page marks where the fade ends with <AppDitherBoundary />, which
-// AppHeader renders automatically — new pages built on AppHeader get the
-// background with no extra setup.
+// Individual article posts show their own dithered cover instead of the
+// animated field. The path is derived from the route by the cover
+// convention (scripts/generate-cover.mjs always writes
+// public/articles/<slug>/cover.png, and the note-to-article skill makes a
+// cover mandatory) rather than read from the article's frontmatter: the
+// page's data loads after app.vue has already rendered, so it can't be
+// known here in time for the prerendered HTML.
+const route = useRoute();
+const articleCover = computed(() => {
+  const slug = route.path.match(/^\/articles\/([^/]+)\/?$/)?.[1];
+  return slug ? `/articles/${slug}/cover.png` : null;
+});
 </script>
 
 <style>

@@ -1,8 +1,5 @@
 <template>
-  <!-- Attrs (e.g. the page's bottom margin) go on the header block, not the
-       boundary marker, so the marker sits *after* that spacing — the same
-       spot pages used to place it by hand. -->
-  <div v-bind="$attrs">
+  <div>
     <h1>
       {{ title }}
     </h1>
@@ -14,12 +11,9 @@
       </slot>
     </div>
   </div>
-  <AppDitherBoundary />
 </template>
 
 <script setup>
-defineOptions({ inheritAttrs: false });
-
 defineProps({
   title: {
     type: String,

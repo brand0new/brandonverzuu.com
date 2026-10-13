@@ -74,7 +74,7 @@ async function main() {
   const light = hexToRgb(args.light ?? "#d97a4d");
   const dark = hexToRgb(args.dark ?? "#1d2e34");
   // Near-white "off" tone for the light-theme cover variant (--light-bg),
-  // matching App/DitherBackground.vue's OFF_WHITE exactly so the article
+  // matching App/DitherCanvas.vue's OFF_WHITE exactly so the article
   // cards' dither texture reads as the same visual language as the
   // homepage hero background in light mode, rather than two different
   // "off" tones that happen to both be pale. Dark theme's variant reuses

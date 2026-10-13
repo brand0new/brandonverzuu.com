@@ -25,9 +25,6 @@
       class="mx-1 rounded-full"
       variant="subtle"
     />
-    <!-- Placed by hand since the article header (breadcrumb, title, tags)
-         isn't AppHeader — the background fades out before the body. -->
-    <AppDitherBoundary />
     <ContentRenderer :value="article" />
   </article>
 </template>
