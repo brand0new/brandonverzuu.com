@@ -129,8 +129,9 @@ function draw(canvas: HTMLCanvasElement) {
       const value = noise(col, row, seed);
       const [r, g, b] = value >= threshold ? on : off;
       // Fade the whole field out over its full height, fully transparent by
-      // the very bottom (which is pinned to the Featured Projects boundary),
-      // so it never bleeds into that section.
+      // the very bottom (which is pinned to the page's [data-dither-boundary]
+      // marker, right after its title + intro), so it never bleeds into the
+      // content below.
       const fade = Math.max(0, 1 - row / (rows - 1 || 1));
       ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${fade})`;
       ctx.fillRect(col * CELL, row * CELL, CELL, CELL);

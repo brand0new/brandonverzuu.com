@@ -5,28 +5,10 @@
     >
       <h1 class="mb-0 md:text-left dark:text-gray-100">Hi, I'm Brandon!</h1>
     </div>
-    <!-- Backdrop panel: the animated dither background (HomeDitherBackground,
-         see app.vue) sits directly behind this text with no separation
-         layer, which made the intro hard to read wherever the pattern got
-         busy or light-toned. Same blur language as AppNavbar's existing
-         backdrop-blur so it stays visually consistent with the rest of the
-         hero rather than introducing a new treatment.
-
-         Width: the parent UContainer (app.vue) uses responsive padding
-         (px-4 sm:px-6 lg:px-8), so a flat -m-4 only pulled back 16px at
-         every breakpoint — 16px short of the lg:px-8 gap, leaving this
-         panel narrower than AppNavbar's own max-w-2xl box (measured via
-         CDP: 640px vs Navbar's 672px at a 1400px viewport). Matching
-         negative margins per breakpoint (-mx-4 sm:-mx-6 lg:-mx-8) make the
-         panel's outer edge land exactly on the container's outer edge —
-         i.e. exactly as wide as the navbar — at every breakpoint, not
-         just the one this was eyeballed at.
-
-         Padding bumped from p-4 to p-6 for more breathing room around the
-         text, per feedback that the block felt tight. -->
-    <div
-      class="-mx-4 -mt-4 -mb-4 space-y-4 rounded-xl bg-white/60 p-6 backdrop-blur-sm sm:-mx-6 lg:-mx-8 dark:bg-black/40"
-    >
+    <!-- No backdrop panel: the intro sits directly on the dither hero, the
+         same way AppHeader's title + description do on every other
+         top-level page, so the homepage hero reads identically to them. -->
+    <div class="space-y-4">
       <p class="body-text">
         I am Head of Innovation & Product, based in Rosmalen, The Netherlands.
         I help organisations shape how they innovate and integrate their
