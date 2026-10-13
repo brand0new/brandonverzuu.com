@@ -28,6 +28,9 @@ Current skills:
   procedure and `style-guide.md` for the voice contract. Read `docs/note-to-article.md`
   first for the one-time human-side setup (labels, the Shortcut, the two separate
   tokens involved).
+- **`skills/new-review/`** — the content contract for a review in
+  `content/reviews/`. Brandon writes reviews by hand; use this when helping him
+  add one, and never supply the rating or verdict yourself.
 
 ## Onboarding step: set up the scheduled writing job
 

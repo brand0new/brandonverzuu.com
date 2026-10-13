@@ -11,11 +11,13 @@
 //   node scripts/generate-cover.mjs --file <local-path> --slug <article-slug>
 //   node scripts/generate-cover.mjs --file <local-path> --slug <article-slug> \
 //     --dither zhou-fang
+//   node scripts/generate-cover.mjs --url <art-url> --slug <review-slug> \
+//     --collection reviews --author "Studio" --source <press-kit-url>
 //
 // Exactly one of --url / --file is required. Writes
-// public/articles/<slug>/cover.png and prints the frontmatter fields to
-// paste into the article (image / imageAuthor / imageLicense / imageSource
-// — see content.config.ts).
+// public/<collection>/<slug>/cover.png (collection defaults to "articles")
+// and prints the frontmatter fields to paste into the entry (image /
+// imageAuthor / imageLicense / imageSource — see content.config.ts).
 //
 // Runs at build time only (Node, via `npm run cover:generate`) — nothing
 // here ships to the browser or runs on Cloudflare's edge.
@@ -51,13 +53,23 @@ function hexToRgb(hex) {
   return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
 }
 
+// Only collections whose detail pages derive their cover from the route
+// (see app.vue); any other value would write a cover nothing reads.
+const COLLECTIONS = ["articles", "reviews"];
+
 async function main() {
   const args = parseArgs(process.argv.slice(2));
+  const collection = args.collection ?? "articles";
 
-  if ((!args.url && !args.file) || (args.url && args.file) || !args.slug) {
+  if (
+    (!args.url && !args.file) ||
+    (args.url && args.file) ||
+    !args.slug ||
+    !COLLECTIONS.includes(collection)
+  ) {
     console.error(
-      "Usage: node scripts/generate-cover.mjs (--url <image-url> | --file <local-path>) --slug <article-slug> " +
-        "[--author <name>] [--license <spdx-or-name>] [--source <page-url>] " +
+      "Usage: node scripts/generate-cover.mjs (--url <image-url> | --file <local-path>) --slug <slug> " +
+        "[--collection articles|reviews] [--author <name>] [--license <spdx-or-name>] [--source <page-url>] " +
         "[--width 1200] [--height 630] [--light #d97a4d] [--dark #1d2e34] [--light-bg #fbfbf8] [--seed <string>] " +
         "[--dither bayer|zhou-fang] [--bayer-size 4] [--pixel-size 3]",
     );
@@ -150,7 +162,7 @@ async function main() {
     rgbLight[i * 3 + 2] = b;
   }
 
-  const outDir = path.join("public", "articles", args.slug);
+  const outDir = path.join("public", collection, args.slug);
   await mkdir(outDir, { recursive: true });
   const outPath = path.join(outDir, "cover.png");
   const outPathLight = path.join(outDir, "cover-light.png");
@@ -175,8 +187,8 @@ async function main() {
 
   console.log(`Wrote ${outPath}`);
   console.log(`Wrote ${outPathLight}`);
-  console.log("\nAdd to the article's frontmatter:\n");
-  console.log(`image: "/articles/${args.slug}/cover.png"`);
+  console.log("\nAdd to the frontmatter:\n");
+  console.log(`image: "/${collection}/${args.slug}/cover.png"`);
   if (args.author) console.log(`imageAuthor: "${args.author}"`);
   if (args.license) console.log(`imageLicense: "${args.license}"`);
   if (args.source) console.log(`imageSource: "${args.source}"`);
