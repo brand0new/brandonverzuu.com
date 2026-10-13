@@ -6,6 +6,10 @@ date: 2025/01/27
 slug: "capture-api-changes-with-overlay"
 image: "/articles/capture-api-changes-with-overlay/cover.png"
 tags: ["overlay", "openapi", "api", "governance"]
+explainerVideo: "/articles/capture-api-changes-with-overlay/explainer.mp4"
+explainerVideoWebm: "/articles/capture-api-changes-with-overlay/explainer.webm"
+explainerPoster: "/articles/capture-api-changes-with-overlay/explainer-poster.png"
+explainerAlt: "Animated explainer. An endpoint in an OpenAPI description is flagged as deprecated, but nothing tells consumers when it goes away: there is no Sunset date and no Deprecation header. An overlay describes the change once, with a JSONPath target that matches every deprecated endpoint and an update that adds Deprecation, Sunset and Link headers. Applied in the pipeline, every flagged endpoint gets the headers in the final description. The limits: overlays are not schema-aware, use RFC 9535 JSONPath, and few tools support them yet. The final frame compares headers added by hand per API with one overlay."
 ---
 
 In Dutch, we have a saying: _“Aan de weg timmeren,”_ which literally translates to _“Carpeting the road.”_ It’s used to describe someone who makes consistent progress. This phrase comes to mind whenever I see posts from the OpenAPI Initiative or those involved with the organisation.

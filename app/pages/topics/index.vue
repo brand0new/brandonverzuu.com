@@ -1,11 +1,6 @@
 <template>
   <main class="min-h-screen">
     <AppHeader class="mb-12" :title="title" :description="description" />
-    <!-- HomeDitherBackground (rendered in app.vue for this route) measures
-         this to know where to fully fade out — mirrors the homepage's own
-         boundary marker so the terracotta hero always finishes fading
-         before the topic cards start, regardless of viewport size. -->
-    <div data-dither-boundary></div>
     <ul class="space-y-4">
       <li v-for="cluster in clustersWithCounts" :key="cluster.slug">
         <AppTopicCard :cluster="cluster" :article-count="cluster.count" />

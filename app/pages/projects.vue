@@ -1,11 +1,6 @@
 <template>
   <main class="min-h-screen">
     <AppHeader class="mb-12" title="Projects" :description="description" />
-    <!-- HomeDitherBackground (rendered in app.vue for this route) measures
-         this to know where to fully fade out — mirrors the homepage's and
-         /topics' own boundary marker so the terracotta hero always finishes
-         fading before the project cards start, regardless of viewport size. -->
-    <div data-dither-boundary></div>
     <!-- auto-rows-fr sizes every row to the tallest card, so cards match
          across rows as well as within one; ProjectCard fills its cell. -->
     <ul class="grid auto-rows-fr gap-4 sm:grid-cols-2">

@@ -43,6 +43,16 @@ export default defineContentConfig({
         imageSource: z.string().optional(),
         slug: z.string().optional(),
         tags: z.array(z.string()).optional(),
+        // Optional looping explainer video shown above the article body
+        // (AppArticleExplainer): an MP4 (H.264) plus an optional WebM (VP9)
+        // offered first. The poster is its still frame, also shown
+        // to readers who prefer reduced motion; the alt text describes the
+        // animation's story for screen readers, since its captions are
+        // burned into the frames.
+        explainerVideo: z.string().optional(),
+        explainerVideoWebm: z.string().optional(),
+        explainerPoster: z.string().optional(),
+        explainerAlt: z.string().optional(),
       }),
     }),
   },

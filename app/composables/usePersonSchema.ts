@@ -4,7 +4,7 @@
 // Medium, and X via `sameAs`, and states the professional identity/expertise
 // areas in a machine-parseable form rather than only prose.
 //
-// Kept as a dedicated composable (not inlined in Home/Intro.vue) so the
+// Kept as a dedicated composable (not inlined in pages/index.vue) so the
 // schema payload has one source of truth if it needs to be referenced from
 // more than one place later (e.g. a future /about page).
 export function usePersonSchema() {

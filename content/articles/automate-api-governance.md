@@ -6,6 +6,10 @@ date: 2025/01/02
 slug: "automate-api-governance"
 image: "/articles/automate-api-governance/cover.png"
 tags: ["governance", "linting"]
+explainerVideo: "/articles/automate-api-governance/explainer.mp4"
+explainerVideoWebm: "/articles/automate-api-governance/explainer.webm"
+explainerPoster: "/articles/automate-api-governance/explainer-poster.png"
+explainerAlt: "Animated explainer. API governance often lives in meetings and documents, and by the time teams build, half of it is forgotten, so an API description ships with inconsistent casing and missing descriptions. The decisions are split: binary ones such as casing, descriptions, responses and structure, and design ones such as operations, parameters and endpoints. A linter ruleset enforces the binary ones on every commit, failing the pipeline on errors and warning on hints, while design decisions stay a conversation coached by an enablement team. The final frame compares governance in meetings with governance in the pipeline."
 ---
 
 There’s a quote from Arnaud Lauret — author of The Design of Web APIs — during his [talk on API Governance at Nordic APIs](https://www.youtube.com/watch?v=EMLCNqx80W4&t=1s&pp=ygUSbm9yZGljIGFwaXMgYXJuYXVk) that has stuck with me for a while now:

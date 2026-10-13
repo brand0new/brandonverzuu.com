@@ -7,13 +7,7 @@
       >
         Skip to content
       </a>
-      <ClientOnly>
-        <HomeDitherBackground v-if="showHeroDitherBackground" />
-        <AppArticleDitherBackground
-          v-else-if="articleBackgroundImage"
-          :image="articleBackgroundImage"
-        />
-      </ClientOnly>
+      <AppPageBackground :image="articleCover" />
       <AppNavbar />
       <div class="h-32"></div>
       <UContainer id="main-content" class="mx-auto max-w-xl lg:max-w-2xl">
@@ -30,31 +24,26 @@
 // (see app/composables/useCanonical.ts) so it can't be missed on new pages.
 useCanonical();
 
-// HomeDitherBackground lives here (rather than in pages/index.vue) so it can
-// be positioned absolutely against this full-width wrapper — the page's own
-// content sits inside <UContainer class="max-w-2xl">, which would clip the
-// background to that column. This wrapper spans the full viewport, so the
-// background can render edge-to-edge and behind AppNavbar (a `fixed`
-// element, so it always paints above regardless of DOM order/z-index).
+// AppPageBackground is the background for every route. It lives here rather
+// than in each page so it can be positioned absolutely against this
+// full-width wrapper — the page's own content sits inside
+// <UContainer class="max-w-2xl">, which would clip the background to that
+// column (and the page transition's transform would re-anchor it mid-
+// navigation). Not wrapped in <ClientOnly>, so it's part of the prerendered
+// HTML instead of appearing after hydration.
 //
-// AppArticleDitherBackground follows the exact same placement approach for
-// article pages, sourcing its image from a shared useState the article page
-// sets — set here in app.vue rather than reaching into route.meta so it
-// stays reactive across client-side navigation between two article pages.
+// Individual article posts show their own dithered cover instead of the
+// animated field. The path is derived from the route by the cover
+// convention (scripts/generate-cover.mjs always writes
+// public/articles/<slug>/cover.png, and the note-to-article skill makes a
+// cover mandatory) rather than read from the article's frontmatter: the
+// page's data loads after app.vue has already rendered, so it can't be
+// known here in time for the prerendered HTML.
 const route = useRoute();
-const articleBackgroundImage = useArticleBackgroundImage();
-
-// HomeDitherBackground (the animated terracotta noise hero) is now the
-// hero treatment for every page except individual article posts, which
-// keep their own per-article cover-derived background (see
-// AppArticleDitherBackground below) — that's a deliberate, content-specific
-// visual, not an omission. Every other route places a
-// [data-dither-boundary] marker in its own template so the canvas knows
-// where to stop fading regardless of which page rendered it (see
-// DitherBackground.vue).
-const showHeroDitherBackground = computed(
-  () => !route.path.startsWith("/articles/"),
-);
+const articleCover = computed(() => {
+  const slug = route.path.match(/^\/articles\/([^/]+)\/?$/)?.[1];
+  return slug ? `/articles/${slug}/cover.png` : null;
+});
 </script>
 
 <style>
