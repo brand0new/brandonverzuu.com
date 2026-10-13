@@ -73,7 +73,7 @@ const props = defineProps({
 const titleStyle = computed(() => ({
   ...(props.project.accentColor ? { color: props.project.accentColor } : {}),
   ...(props.project.accentFont
-    ? { fontFamily: props.project.accentFont }
+    ? { fontFamily: `"${props.project.accentFont}", sans-serif` }
     : {}),
 }));
 const avatarStyle = computed(() =>
