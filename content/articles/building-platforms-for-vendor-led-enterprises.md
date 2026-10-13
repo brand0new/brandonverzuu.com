@@ -8,6 +8,10 @@ image: "/articles/building-platforms-for-vendor-led-enterprises/cover.png"
 imageLicense: "Public Domain"
 imageSource: "https://commons.wikimedia.org/wiki/File:Original_Blueprint_of_United_States_National_Agricultural_Library.jpg"
 tags: ["governance", "api", "developer experience", "maturity-model"]
+explainerVideo: "/articles/building-platforms-for-vendor-led-enterprises/explainer.mp4"
+explainerVideoWebm: "/articles/building-platforms-for-vendor-led-enterprises/explainer.webm"
+explainerPoster: "/articles/building-platforms-for-vendor-led-enterprises/explainer-poster.png"
+explainerAlt: "Animated explainer. A vendor builds your integration, and every question they have becomes a ticket for your integration team. At go-live the vendor leaves and your team inherits what was built. An integration platform with discovery, docs and diagrams, SDK generation, early validation, one unified API and canonical mapping takes its place, so the next vendor goes straight through with zero tickets. The final frame compares before, where people carry the governance, with after, where the platform does."
 ---
 
 _A lot of my customers don't build their own integrations. They hire someone who does, for the length of a project, and then that someone leaves._

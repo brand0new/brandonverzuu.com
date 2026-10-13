@@ -9,6 +9,10 @@ image: "/articles/maturity-models-and-tech/cover.png"
 imageAuthor: "Basile Morin"
 imageLicense: "CC BY-SA 4.0"
 imageSource: "https://commons.wikimedia.org/wiki/File:Wooden_staircase_steps_in_the_forest_of_Hallasan_Park_Eorimok_Trail_at_dusk_on_Jeju_Island_in_South_Korea.jpg"
+explainerVideo: "/articles/maturity-models-and-tech/explainer.mp4"
+explainerVideoWebm: "/articles/maturity-models-and-tech/explainer.webm"
+explainerPoster: "/articles/maturity-models-and-tech/explainer-poster.png"
+explainerAlt: "Animated explainer. Asked what to do next, everyone in an organisation gives a different answer, and a five-level maturity ladder squeezes the uneven landscape into a single number. A focus area maturity model gives each area, such as API design, versioning, security, documentation and lifecycle, its own stages. Checkable requirements place each area, and the next reasonable moves light up. The unmet requirements for those moves become the backlog. The final frame compares a matter of opinion with a route."
 ---
 
 _A look at how a maturity model turns "what should we do next?" from a matter of taste into something you can put on a table._

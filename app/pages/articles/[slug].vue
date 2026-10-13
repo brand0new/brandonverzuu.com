@@ -25,6 +25,13 @@
       class="mx-1 rounded-full"
       variant="subtle"
     />
+    <AppArticleExplainer
+      v-if="article.explainerVideo"
+      :src="article.explainerVideo"
+      :webm="article.explainerVideoWebm"
+      :poster="article.explainerPoster"
+      :alt="article.explainerAlt"
+    />
     <ContentRenderer :value="article" />
   </article>
 </template>

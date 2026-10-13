@@ -6,6 +6,10 @@ date: 2024/06/17
 slug: "improving-dx-with-arazzo"
 image: "/articles/improving-dx-with-arazzo/cover.png"
 tags: ["openapi", "arazzo", "api", "developer experience"]
+explainerVideo: "/articles/improving-dx-with-arazzo/explainer.mp4"
+explainerVideoWebm: "/articles/improving-dx-with-arazzo/explainer.webm"
+explainerPoster: "/articles/improving-dx-with-arazzo/explainer-poster.png"
+explainerAlt: "Animated explainer. OpenAPI lists every operation but not the order to call them in, so consumers guess or ask a colleague. An Arazzo workflow declares the steps in order, here a pushed authorization request, an authorization code and a token exchange, each with success criteria, passing outputs along until an access token comes out. The workflow is readable by people and by machines, including language models. The final frame compares OpenAPI alone with OpenAPI plus Arazzo."
 ---
 
 _We explore how OpenAPI’s Arazzo Specification attempts to redefine API documentation by clarifying call sequences and dependencies improving Developer Experience._
