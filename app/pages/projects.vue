@@ -6,7 +6,9 @@
          /topics' own boundary marker so the terracotta hero always finishes
          fading before the project cards start, regardless of viewport size. -->
     <div data-dither-boundary></div>
-    <ul class="grid gap-4 sm:grid-cols-2">
+    <!-- auto-rows-fr sizes every row to the tallest card, so cards match
+         across rows as well as within one; ProjectCard fills its cell. -->
+    <ul class="grid auto-rows-fr gap-4 sm:grid-cols-2">
       <li v-for="(project, id) in projects" :key="id">
         <AppProjectCard :project="project" />
       </li>
