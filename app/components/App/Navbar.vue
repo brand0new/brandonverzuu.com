@@ -67,6 +67,11 @@ const items = [
     icon: "mage:tag-fill",
   },
   {
+    name: "Reviews",
+    path: "/reviews",
+    icon: "mage:star-fill",
+  },
+  {
     name: "Projects",
     path: "/projects",
     icon: "mage:folder-2-fill",

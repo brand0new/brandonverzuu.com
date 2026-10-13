@@ -50,6 +50,7 @@ export default defineNuxtConfig({
         "mage:linkedin",
         "mage:medium",
         "mage:moon-fill",
+        "mage:star-fill",
         "mage:sun",
         "mage:x",
       ],
