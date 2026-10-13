@@ -1,23 +1,17 @@
 <template>
-  <!-- Purely decorative — positioned absolutely against app.vue's full-width
-       wrapper (not the width-constrained UContainer the page content sits
-       in), so it spans edge-to-edge and sits behind AppNavbar (a `fixed`
-       element that always paints above regardless of z-index here). Height
-       is computed at runtime to reach the [data-dither-boundary] marker,
-       which every top-level page except individual article posts places
-       just before its "next section" starts (see app.vue), so the fade
-       always finishes before that section regardless of viewport size or
-       content reflow. -->
+  <!-- Fills AppPageBackground's frame, which owns the position, height and
+       fade. Starts transparent and eases in once the first frame is drawn,
+       rather than popping in — the canvas is in the prerendered HTML but
+       stays blank until client JS paints it. -->
   <canvas
     ref="canvasEl"
-    aria-hidden="true"
-    class="pointer-events-none absolute inset-x-0 top-0 -z-10 w-full opacity-90 dark:opacity-55"
-    :style="{ height: `${height}px` }"
+    class="absolute inset-0 h-full w-full transition-opacity duration-500"
+    :class="painted ? 'opacity-90 dark:opacity-55' : 'opacity-0'"
   ></canvas>
 </template>
 
 <script setup lang="ts">
-// A drifting Bayer-dithered noise field behind the homepage hero.
+// A drifting Bayer-dithered noise field behind every page's header.
 //
 // Deliberately the same *algorithm* as scripts/lib/bayer-dither.mjs (see
 // that file for the construction/citation) so the hero texture reads as the
@@ -34,7 +28,7 @@
 // clearly perceptible at a glance, not a barely-there ambient effect.
 
 const canvasEl = ref<HTMLCanvasElement | null>(null);
-const height = ref(600);
+const painted = ref(false);
 
 // Matches the article-cover duotone (public/css/main.css --color-terracotta /
 // --color-porcelain-950). Kept as plain hex here since this runs before any
@@ -86,17 +80,6 @@ function noise(x: number, y: number, t: number) {
   return (v + 2) / 4; // normalize roughly into [0, 1]
 }
 
-function measureHeight() {
-  const boundary = document.querySelector("[data-dither-boundary]");
-  if (!boundary) return;
-  const rect = boundary.getBoundingClientRect();
-  // getBoundingClientRect() is viewport-relative; the canvas is positioned
-  // absolute against a wrapper that starts at the same point as the page,
-  // so adding the current scroll position gives the boundary's distance
-  // from the top of that wrapper/page.
-  height.value = Math.max(200, Math.round(rect.top + window.scrollY));
-}
-
 function draw(canvas: HTMLCanvasElement) {
   const ctx = canvas.getContext("2d");
   if (!ctx) return;
@@ -128,14 +111,13 @@ function draw(canvas: HTMLCanvasElement) {
       const threshold = (bayerRow[col % 4] + 0.5) / 16;
       const value = noise(col, row, seed);
       const [r, g, b] = value >= threshold ? on : off;
-      // Fade the whole field out over its full height, fully transparent by
-      // the very bottom (which is pinned to the Featured Projects boundary),
-      // so it never bleeds into that section.
-      const fade = Math.max(0, 1 - row / (rows - 1 || 1));
-      ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${fade})`;
+      // No per-row fade here: AppPageBackground's CSS mask fades this and
+      // the static article cover identically.
+      ctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
       ctx.fillRect(col * CELL, row * CELL, CELL, CELL);
     }
   }
+  painted.value = true;
 }
 
 function loop(timestamp: number) {
@@ -151,37 +133,28 @@ function loop(timestamp: number) {
   }
 }
 
-function handleResize() {
-  measureHeight();
-  if (canvasEl.value) draw(canvasEl.value);
-}
-
 onMounted(() => {
   reduceMotion = window.matchMedia(
     "(prefers-reduced-motion: reduce)",
   ).matches;
 
-  measureHeight();
-
-  // The boundary marker's position depends on content below it (fonts
-  // loading, images loading, layout shifts) settling — re-measure whenever
-  // the page's layout changes, not just once on mount.
-  resizeObserver = new ResizeObserver(() => handleResize());
-  resizeObserver.observe(document.body);
-
+  // The frame's height is fixed in CSS, so only a width change (viewport
+  // resize) needs a redraw — needed mainly for reduced motion, where there
+  // is no animation loop to pick the new size up on its next frame.
+  resizeObserver = new ResizeObserver(() => {
+    if (canvasEl.value) draw(canvasEl.value);
+  });
   if (canvasEl.value) {
+    resizeObserver.observe(canvasEl.value);
     draw(canvasEl.value); // always paint one frame, even for reduced motion
   }
   if (!reduceMotion) {
     raf = requestAnimationFrame(loop);
   }
-
-  window.addEventListener("resize", handleResize);
 });
 
 onUnmounted(() => {
   cancelAnimationFrame(raf);
   resizeObserver?.disconnect();
-  window.removeEventListener("resize", handleResize);
 });
 </script>
