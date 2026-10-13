@@ -3,11 +3,10 @@
        wrapper (not the width-constrained UContainer the page content sits
        in), so it spans edge-to-edge and sits behind AppNavbar (a `fixed`
        element that always paints above regardless of z-index here). Height
-       is computed at runtime to reach the [data-dither-boundary] marker,
-       which every top-level page except individual article posts places
-       just before its "next section" starts (see app.vue), so the fade
-       always finishes before that section regardless of viewport size or
-       content reflow. -->
+       is computed at runtime to reach the page's <AppDitherBoundary />
+       marker (rendered by AppHeader, or placed by hand after a custom
+       header block), so the fade always finishes before the page's content
+       starts regardless of viewport size or content reflow. -->
   <canvas
     ref="canvasEl"
     aria-hidden="true"
@@ -17,7 +16,7 @@
 </template>
 
 <script setup lang="ts">
-// A drifting Bayer-dithered noise field behind the homepage hero.
+// A drifting Bayer-dithered noise field behind every page's header.
 //
 // Deliberately the same *algorithm* as scripts/lib/bayer-dither.mjs (see
 // that file for the construction/citation) so the hero texture reads as the
@@ -179,6 +178,13 @@ onMounted(() => {
 
   window.addEventListener("resize", handleResize);
 });
+
+// Mounted once in app.vue for every route, so it isn't remounted on
+// client-side navigation — re-measure once the new page (and its boundary
+// marker) is in place, since the body size alone may not change.
+const nuxtApp = useNuxtApp();
+nuxtApp.hook("page:finish", () => nextTick(handleResize));
+nuxtApp.hook("page:transition:finish", () => nextTick(handleResize));
 
 onUnmounted(() => {
   cancelAnimationFrame(raf);

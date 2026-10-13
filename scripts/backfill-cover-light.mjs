@@ -18,7 +18,7 @@ import { readdir } from "node:fs/promises";
 import path from "node:path";
 import sharp from "sharp";
 
-const LIGHT_BG = [251, 251, 248]; // matches Home/DitherBackground.vue's OFF_WHITE
+const LIGHT_BG = [251, 251, 248]; // matches App/DitherBackground.vue's OFF_WHITE
 const TERRACOTTA = [217, 122, 77]; // the "on" tone every cover.png uses
 
 async function processOne(slug) {
