@@ -102,9 +102,14 @@ export default defineNuxtConfig({
         global: true,
       },
       {
+        // Abcdates' project card title (content/projects/1.abcdates.json
+        // `accentFont`). That's an inline style from content data, which
+        // @nuxt/fonts' CSS scanner never sees, so without `global` no
+        // @font-face is emitted and the title silently falls back.
         name: "Telma",
         weights: ["500"],
         styles: ["normal"],
+        global: true,
       },
     ],
   },

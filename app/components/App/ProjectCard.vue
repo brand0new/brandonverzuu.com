@@ -1,12 +1,12 @@
 <template>
   <NuxtLink
-    class="group block"
+    class="group block h-full"
     :to="props.project.url"
     target="_blank"
     external
   >
     <article
-      class="relative flex items-start gap-4 rounded-xl border border-gray-200 p-5 transition-colors group-hover:border-gray-300 dark:border-white/10 dark:group-hover:border-white/20"
+      class="relative flex h-full items-start gap-4 rounded-xl border border-gray-200 p-5 transition-colors group-hover:border-gray-300 dark:border-white/10 dark:group-hover:border-white/20"
     >
       <UAvatar
         :src="props.project.thumbnail"
@@ -49,21 +49,18 @@
 </template>
 
 <script setup lang="ts">
-const props = defineProps({
+const props = defineProps<{
   project: {
-    type: Object as () => {
-      name: string;
-      description: string;
-      url: string;
-      thumbnail: string;
-      status?: string;
-      opensource?: boolean;
-      accentColor?: string;
-      accentFont?: string;
-    },
-    required: true,
-  },
-});
+    name: string;
+    description: string;
+    url: string;
+    thumbnail: string;
+    status?: string;
+    opensource?: boolean;
+    accentColor?: string;
+    accentFont?: string;
+  };
+}>();
 
 // Per-project accent color/font, driven by content data rather than a
 // hardcoded per-slug class in this component's <style> block — the old
@@ -73,7 +70,7 @@ const props = defineProps({
 const titleStyle = computed(() => ({
   ...(props.project.accentColor ? { color: props.project.accentColor } : {}),
   ...(props.project.accentFont
-    ? { fontFamily: props.project.accentFont }
+    ? { fontFamily: `"${props.project.accentFont}", sans-serif` }
     : {}),
 }));
 const avatarStyle = computed(() =>
