@@ -6,7 +6,7 @@ article. This document is the one-time setup.
 ```
 Apple Notes ──share──> Shortcut ──POST──> GitHub issue (draft-article)
                                                 │
-                                       scheduled agent run
+                                agent run (triggered agent-side)
                                                 │
                               ┌─────────────────┴─────────────────┐
                          note is thin                      note is enough
@@ -23,21 +23,23 @@ merged PR itself.
 
 ## 1. Create the labels
 
-In the repo, create three labels (Issues → Labels → New label):
+In the repo, create four labels (Issues → Labels → New label):
 
 | Label | Meaning |
 | --- | --- |
 | `draft-article` | Unprocessed note sitting in the inbox |
 | `needs-input` | Claude asked questions and is waiting on you |
+| `article-in-progress` | An agent run has claimed this note; others skip it |
 | `article-drafted` | A PR exists for this note |
 
-`draft-article` is also the security boundary: applying a label needs write access to
-the repo, so a labeled issue is provably one you created. The skill ignores anything
-unlabeled.
+The security boundary is the label **plus** the issue author. The skill only
+processes `draft-article` issues opened by `brand0new`, because anyone with triage
+access could apply the label to someone else's issue. Issues filed by the Shortcut
+are opened by the token owner, so they pass.
 
 ## 2. Create a token for the agent
 
-The scheduled agent needs write access to this repo — it files no issues itself, but
+The agent needs write access to this repo — it files no issues itself, but
 it comments on them, pushes branches, opens PRs, and merges them once checks pass.
 That's broader than the Shortcut's PAT needs to be, so keep them separate:
 
@@ -45,9 +47,8 @@ That's broader than the Shortcut's PAT needs to be, so keep them separate:
   scoped to this one repo. It only ever creates an issue.
 - **Agent token**: needs `repo` scope (or a fine-grained equivalent with
   Contents/Pull requests/Issues read-write on this repo) since it pushes commits,
-  opens PRs, and merges them. This is whatever credential the onboarded agent already
-  authenticates with — see `AGENTS.md` at the repo root for the onboarding step that
-  wires this up.
+  opens PRs, and merges them. This is whatever credential the agent already
+  authenticates with.
 
 ### The Shortcut's own token
 
@@ -114,14 +115,13 @@ the rest is the article source.
 Worth adding once it works: a Home Screen icon, and "Hey Siri, draft article" for
 dictating one while driving. Dictation artifacts are fine — the skill cleans them up.
 
-## 4. The scheduled run
+## 4. Running the agent
 
-Scheduling isn't done by hand per-agent: it's part of onboarding. `AGENTS.md` at the
-repo root instructs any newly onboarded coding agent to set up its own recurring job
-against this repo — check for issues labeled `draft-article`, run the
-`note-to-article` procedure on anything it finds, do nothing if the inbox is empty.
-
-Twice a day is plenty for essays; there's no value in a tighter loop.
+This repo doesn't schedule anything. Whatever runs the `note-to-article` procedure
+(on demand, on a timer, from an external client) is set up on the agent side. If
+you do run it on a timer, twice a day is plenty for essays. The
+`article-in-progress` claim label means two agents polling the same inbox won't
+produce duplicate drafts.
 
 ## What the agent does with a note
 
@@ -154,5 +154,5 @@ Defined in `skills/note-to-article/SKILL.md`, with the voice rules in
 Shortcut token: revoke on GitHub, generate a new one, edit the `Authorization`
 header in the Shortcut. Nothing else references it.
 
-Agent token: rotate through whatever auth flow the agent used during onboarding
-(see `AGENTS.md`). Revoking it pauses the scheduled run until it's replaced.
+Agent token: rotate through whatever auth flow the agent uses. Revoking it stops the
+agent from processing notes until it's replaced.
