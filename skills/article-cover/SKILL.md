@@ -39,6 +39,9 @@ npm run cover:generate -- --file <path> --slug <slug>
 
 Exactly one of `--url` / `--file`. Options:
 
+- `--collection reviews` writes to `public/reviews/<slug>/` for a review instead of
+  an article. The rest of this skill applies the same way, with `reviews` in place of
+  `articles`. `skills/new-review/` covers the review-specific parts.
 - `--dither zhou-fang` swaps the default Bayer 4×4 ordered dither
   (`scripts/lib/bayer-dither.mjs`) for smoother error diffusion
   (`scripts/lib/zhou-fang-dither.mjs`). Use it when Bayer turns a face or a gradient

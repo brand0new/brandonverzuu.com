@@ -7,7 +7,7 @@
       >
         Skip to content
       </a>
-      <AppPageBackground :image="articleCover" />
+      <AppPageBackground :image="pageCover" />
       <AppNavbar />
       <div class="h-32"></div>
       <UContainer id="main-content" class="mx-auto max-w-xl lg:max-w-2xl">
@@ -32,17 +32,18 @@ useCanonical();
 // navigation). Not wrapped in <ClientOnly>, so it's part of the prerendered
 // HTML instead of appearing after hydration.
 //
-// Individual article posts show their own dithered cover instead of the
-// animated field. The path is derived from the route by the cover
+// Individual articles and reviews show their own dithered cover instead of
+// the animated field. The path is derived from the route by the cover
 // convention (scripts/generate-cover.mjs always writes
-// public/articles/<slug>/cover.png, and the note-to-article skill makes a
-// cover mandatory) rather than read from the article's frontmatter: the
-// page's data loads after app.vue has already rendered, so it can't be
-// known here in time for the prerendered HTML.
+// public/<collection>/<slug>/cover.png; the note-to-article skill makes an
+// article cover mandatory and content.config.ts makes a review's required)
+// rather than read from frontmatter: the page's data loads after app.vue
+// has already rendered, so it can't be known here in time for the
+// prerendered HTML.
 const route = useRoute();
-const articleCover = computed(() => {
-  const slug = route.path.match(/^\/articles\/([^/]+)\/?$/)?.[1];
-  return slug ? `/articles/${slug}/cover.png` : null;
+const pageCover = computed(() => {
+  const match = route.path.match(/^\/(articles|reviews)\/([^/]+)\/?$/);
+  return match ? `/${match[1]}/${match[2]}/cover.png` : null;
 });
 </script>
 

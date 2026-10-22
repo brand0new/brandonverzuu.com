@@ -7,7 +7,8 @@ no step-by-step procedures. Those live in `skills/`.
 ## What this is
 
 `brandonverzuu.com` is Brandon Verzuu's personal site: articles on APIs, platforms
-and technology, plus projects, bookmarks and a uses page. It's a Nuxt 4 + Nuxt
+and technology, plus reviews (films, games, books), projects, bookmarks and a uses
+page. It's a Nuxt 4 + Nuxt
 Content + Nuxt UI app, **statically generated**. `npm run generate` prerenders every
 route, and the result is served as plain files by Cloudflare Pages. There's no server
 runtime in production, and that constraint shapes most technical decisions here: if a
@@ -48,6 +49,9 @@ These are facts the build and the pages rely on:
 - Every article has a cover at `public/articles/<slug>/cover.png` with a
   `cover-light.png` sibling. The page background and the article cards find them by
   that path, not through frontmatter.
+- Reviews follow the same pattern in `content/reviews/` (the `reviews` schema) and
+  `public/reviews/<slug>/`. Brandon writes them by hand. Ratings, verdicts and
+  opinions are his alone, and agents never supply them.
 - Tags form a small, reused vocabulary. `app/utils/topicClusters.ts` maps them to the
   `/topics` hubs.
 
@@ -99,7 +103,8 @@ baseline.
 | `ship-change` | take any change from branch to production (naming, build, PR, checks, merge) |
 | `workspace-cleanup` | remove build output, finished worktrees and merged branches |
 | `note-to-article` | turn a `draft-article` issue into a published article |
-| `article-cover` | generate an article's dithered cover (`npm run cover:generate`) |
+| `new-review` | add a hand-written review to `/reviews` (content contract only) |
+| `article-cover` | generate the dithered cover for an article or review (`npm run cover:generate`) |
 | `fingerprint-scrub` | run the deterministic style scrub on a draft (`npm run scrub:fingerprint`) |
 | `article-explainer` | write and render an animated explainer (`npm run explainer:render`) |
 | `new-component` | add a Vue component that follows the conventions in its `conventions.md` |
