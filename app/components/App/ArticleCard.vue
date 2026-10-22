@@ -16,8 +16,7 @@
            /articles/<slug>/cover.png (generate-cover.mjs's fixed output
            path), so the light path is derived by string substitution rather
            than requiring a second frontmatter field per article — see
-           scripts/generate-cover.mjs and scripts/backfill-cover-light.mjs
-           for how cover-light.png is produced (terracotta dots recolored
+           scripts/generate-cover.mjs for how cover-light.png is produced (terracotta dots recolored
            against App/DitherCanvas.vue's own light-mode off-white
            tone, keeping the two dither treatments visually consistent).
 

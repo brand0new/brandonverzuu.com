@@ -73,5 +73,5 @@ npm run generate     # must succeed
 ```
 
 Open `/reviews` and `/reviews/<slug>` with `npm run dev` and check the card, the rating,
-the cover in both themes and the credit line. Then follow the PR conventions in
-`AGENTS.md` (`content: review of <subject>`).
+the cover in both themes and the credit line. Then ship it with `skills/ship-change/`
+(`content: review of <subject>`).
