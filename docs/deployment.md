@@ -10,8 +10,8 @@ configured. For the step-by-step of shipping a change, see `skills/ship-change/`
      ▼                     ▼                       ▼                       ▼
 GitHub Actions       Cloudflare Pages        GitHub Actions          Cloudflare Pages
 `generate` check     preview build           `generate` check        production build
-(required to merge)  → <hash>.personal-       (post-merge signal)     → brandonverzuu.com
-                       site.pages.dev
+(required to merge)  → preview URL           (post-merge signal)     → brandonverzuu.com
+                       (see below)
 ```
 
 ## The pieces
@@ -26,7 +26,7 @@ GitHub Actions       Cloudflare Pages        GitHub Actions          Cloudflare 
 | `nuxt.config.ts` → `nitro.preset: cloudflare_pages_static` | this repo | Makes `nuxt generate` emit a purely static `dist/` in the layout Pages expects. |
 | `.node-version` | this repo | Node version for local work, GitHub Actions (`node-version-file`) and the Cloudflare build image. |
 | `.github/dependabot.yml` | this repo | Grouped weekly npm updates and monthly Actions updates, as PRs that go through the same checks. |
-| Custom domain `brandonverzuu.com` | Cloudflare dashboard → the Pages project → Custom domains | Points the production deployment at the real domain. Previews stay on `*.pages.dev`. |
+| Custom domain `brandonverzuu.com` | Cloudflare dashboard → the Pages project → Custom domains | Points the production deployment at the real domain. Previews stay on the project's `personal-site-46x.pages.dev` subdomain: `<hash>.personal-site-46x.pages.dev` per deployment, plus a stable `<branch>.personal-site-46x.pages.dev` alias per branch. Cloudflare's bot comments both on each PR. |
 
 ## Why the build runs twice
 
