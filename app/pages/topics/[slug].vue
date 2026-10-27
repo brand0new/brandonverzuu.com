@@ -7,7 +7,9 @@
         <li><NuxtLink to="/" class="hover:text-primary-600">Home</NuxtLink></li>
         <li aria-hidden="true">/</li>
         <li>
-          <NuxtLink to="/topics" class="hover:text-primary-600">Topics</NuxtLink>
+          <NuxtLink to="/topics" class="hover:text-primary-600"
+            >Topics</NuxtLink
+          >
         </li>
         <li aria-hidden="true">/</li>
         <li class="text-gray-700 dark:text-gray-300" aria-current="page">

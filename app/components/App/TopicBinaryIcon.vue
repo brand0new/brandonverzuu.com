@@ -26,7 +26,7 @@
        so dark mode keeps the brighter raw tone, same as before. -->
   <div
     aria-hidden="true"
-    class="text-terracotta-heading dark:text-terracotta flex flex-none gap-1 font-mono leading-none font-bold tracking-tighter select-none"
+    class="flex flex-none gap-1 font-mono leading-none font-bold tracking-tighter text-terracotta-heading select-none dark:text-terracotta"
     :style="{ fontSize: `${fontSize}px` }"
   >
     <div v-for="(column, i) in columns" :key="i" class="flex flex-col">

@@ -1,7 +1,7 @@
 <template>
   <article
     v-if="review"
-    class="prose dark:prose-invert prose-blockquote:not-italic prose-img:rounded-lg mx-auto"
+    class="mx-auto prose dark:prose-invert prose-blockquote:not-italic prose-img:rounded-lg"
   >
     <!-- Breadcrumb paired with useReviewSchema's BreadcrumbList, same as
          articles/[slug].vue. -->
@@ -57,12 +57,11 @@
     <!-- Covers are official art, not open-license imagery, so every review
          credits the rights holder and links where the art came from. -->
     <p class="not-prose mt-12 text-xs text-gray-600 dark:text-gray-400">
-      Cover art: {{ review.imageAuthor }}
-      (<NuxtLink
+      Cover art: {{ review.imageAuthor }} (<NuxtLink
         :to="review.imageSource"
         external
         target="_blank"
-        class="hover:text-primary-600 underline"
+        class="underline hover:text-primary-600"
         >source<span class="sr-only"> (opens in new tab)</span></NuxtLink
       >)
     </p>

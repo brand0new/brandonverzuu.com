@@ -14,7 +14,7 @@
           <time :datetime="String(review.date)">{{ readableDate }}</time>
         </p>
         <h2
-          class="group-hover:text-primary-600 dark:group-hover:text-primary-400 mt-1 dark:text-gray-100"
+          class="mt-1 group-hover:text-primary-600 dark:text-gray-100 dark:group-hover:text-primary-400"
         >
           {{ review.title }}
         </h2>

@@ -1,17 +1,23 @@
 <template>
   <article
     v-if="article"
-    class="prose dark:prose-invert prose-blockquote:not-italic prose-img:rounded-lg mx-auto"
+    class="mx-auto prose dark:prose-invert prose-blockquote:not-italic prose-img:rounded-lg"
   >
     <!-- Visible breadcrumb trail, paired with the BreadcrumbList schema
          emitted by useArticleSchema — matching markup and structured data
          is what search engines actually reward with a breadcrumb rich
          result, an unmatched pair is often ignored. -->
     <nav aria-label="Breadcrumb" class="not-prose mb-4">
-      <ol class="flex flex-wrap items-center gap-1.5 text-sm font-medium text-gray-600 dark:text-gray-400">
+      <ol
+        class="flex flex-wrap items-center gap-1.5 text-sm font-medium text-gray-600 dark:text-gray-400"
+      >
         <li><NuxtLink to="/" class="hover:text-primary-600">Home</NuxtLink></li>
         <li aria-hidden="true">/</li>
-        <li><NuxtLink to="/articles" class="hover:text-primary-600">Articles</NuxtLink></li>
+        <li>
+          <NuxtLink to="/articles" class="hover:text-primary-600"
+            >Articles</NuxtLink
+          >
+        </li>
         <li aria-hidden="true">/</li>
         <li class="text-gray-800 dark:text-gray-300" aria-current="page">
           {{ article.title }}

@@ -3,7 +3,7 @@
     <div class="relative">
       <a
         href="#main-content"
-        class="focus:bg-primary-600 sr-only z-[60] rounded-md px-4 py-2 text-white focus:not-sr-only focus:fixed focus:top-2 focus:left-2"
+        class="sr-only z-[60] rounded-md px-4 py-2 text-white focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:bg-primary-600"
       >
         Skip to content
       </a>

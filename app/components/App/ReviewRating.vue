@@ -16,7 +16,7 @@
     <span class="sr-only">Rated {{ rating }} out of {{ MAX_RATING }}</span>
     <span
       aria-hidden="true"
-      class="text-terracotta-heading dark:text-terracotta font-mono leading-none font-bold tracking-tight select-none"
+      class="font-mono leading-none font-bold tracking-tight text-terracotta-heading select-none dark:text-terracotta"
       :style="{ fontSize: `${fontSize}px` }"
     >
       {{ ratingToBits(rating) }}

@@ -1,7 +1,7 @@
 <template>
   <NuxtLink :to="article.path" class="group">
     <article
-      class="from-terracotta to-porcelain-950 relative overflow-hidden rounded-xl bg-gradient-to-br"
+      class="relative overflow-hidden rounded-xl bg-gradient-to-br from-terracotta to-porcelain-950"
     >
       <!-- Background image. Only rendered when the article declares a cover in
            its frontmatter: this is a static build, so a guessed path for an
@@ -63,7 +63,7 @@
           </span>
           {{ getReadableDate(article.date) }}
         </time>
-        <h2 class="group-hover:text-primary-400 text-white dark:text-white">
+        <h2 class="text-white group-hover:text-primary-400 dark:text-white">
           {{ article.title }}
         </h2>
         <p class="relative z-10 mt-2 text-sm text-gray-100 dark:text-gray-200">
