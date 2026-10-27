@@ -1,13 +1,13 @@
 ---
 name: article-explainer
-description: Write and render a looping animated explainer video for an article on brandonverzuu.com (scripts/explainers). Use when adding or changing an explainer, or when cutting the 4:5 feed version for LinkedIn. Agent-agnostic.
+description: Write and render a looping animated explainer video for an article on brandonverzuu.com (apps/site/scripts/explainers). Use when adding or changing an explainer, or when cutting the 4:5 feed version for LinkedIn. Agent-agnostic.
 ---
 
 # Article explainer
 
 A silent, looping video above the article body (`AppArticleExplainer`) that tells one
 idea in about six scenes. The drawing kit, the story format and the codec choices are
-documented in `scripts/explainers/README.md`; read it before writing a story. This
+documented in `apps/site/scripts/explainers/README.md`; read it before writing a story. This
 file is the procedure.
 
 ## 0. Prerequisites
@@ -16,12 +16,12 @@ file is the procedure.
 - Playwright's Chromium: `npx playwright install chromium`
 - `ffmpeg` on your PATH
 - General Sans reachable from Fontshare, or the two `.woff2` files in
-  `scripts/explainers/fonts/` (git-ignored, licensed). The render fails rather than
+  `apps/site/scripts/explainers/fonts/` (git-ignored, licensed). The render fails rather than
   falling back to another typeface.
 
 ## 1. Write the story
 
-1. Copy a `defineStory()` story such as `scripts/explainers/stories/api-governance.js`
+1. Copy a `defineStory()` story such as `apps/site/scripts/explainers/stories/api-governance.js`
    to `stories/<name>.js`.
 2. Follow the rules in the README's "Writing a new story": six scenes, one idea per
    scene, captions held at least 4 s, content between y 90 and 540, and a closing
@@ -43,7 +43,7 @@ npm run explainer:render -- <name> --slug <article-slug>
 ```
 
 This writes `explainer.mp4`, `explainer.webm` and `explainer-poster.png` to
-`public/articles/<slug>/` and prints the frontmatter keys (`explainerVideo`,
+`apps/site/public/articles/<slug>/` and prints the frontmatter keys (`explainerVideo`,
 `explainerVideoWebm`, `explainerPoster`). Add them to the article, and write
 `explainerAlt` by hand: the captions are burned into the video, so the alt text is the
 screen-reader description of the whole story.
@@ -54,8 +54,8 @@ screen-reader description of the whole story.
 npm run explainer:render -- <name> --format feed
 ```
 
-This writes `scripts/explainers/out/<name>-feed-4x5.mp4` (git-ignored). It's uploaded
-to LinkedIn by hand and never goes under `public/`.
+This writes `apps/site/scripts/explainers/out/<name>-feed-4x5.mp4` (git-ignored). It's uploaded
+to LinkedIn by hand and never goes under `apps/site/public/`.
 
 ## 5. Check it
 

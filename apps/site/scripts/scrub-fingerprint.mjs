@@ -30,6 +30,7 @@
 // before opening a PR, same spirit as `npm run generate` in that step.
 
 import { readFile, writeFile } from "node:fs/promises";
+import path from "node:path";
 import {
   FIXABLE_SUBSTITUTIONS,
   FIXABLE_SENTENCE_PATTERNS,
@@ -243,7 +244,10 @@ async function main() {
     return;
   }
 
-  const raw = await readFile(args.file, "utf-8");
+  // npm runs workspace scripts from the workspace directory, so resolve --file
+  // against the directory the command was typed in (INIT_CWD) instead.
+  const file = path.resolve(process.env.INIT_CWD ?? process.cwd(), args.file);
+  const raw = await readFile(file, "utf-8");
   const { frontmatter, body: originalBody } = splitFrontmatter(raw);
 
   let body = originalBody;
@@ -253,7 +257,7 @@ async function main() {
     body = result.fixed;
     fixCount = result.count;
     if (fixCount > 0) {
-      await writeFile(args.file, frontmatter + body, "utf-8");
+      await writeFile(file, frontmatter + body, "utf-8");
     }
   }
 

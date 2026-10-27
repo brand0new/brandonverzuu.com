@@ -1,5 +1,11 @@
 # 00: Monorepo migration
 
+Status: **implemented** on `claude/ecstatic-fermat-hk6jtr`. Two deviations from the
+plan below, both to keep the change smaller: `scripts/` moved into `apps/site/`
+(the scripts write into the site's `public/` and only serve the site), and
+`wrangler.toml` stayed at the root, pointing at `apps/site/dist`, so the Pages
+build keeps running from the root and no dashboard change should be needed.
+
 ## Scope
 
 Turn the repo into an npm-workspaces monorepo without changing what the site

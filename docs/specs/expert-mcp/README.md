@@ -126,14 +126,14 @@ state the standard being applied. That's the product, and it's accepted. Control
 npm workspaces (the repo already uses npm, lockfile v3, Node from `.node-version`).
 
 ```
-apps/site/            the Nuxt site, moved as-is
+apps/site/            the Nuxt site, moved as-is, including its scripts/
 apps/expert-mcp/      gateway Worker
 apps/cli/             CLI
 packages/acp/
 packages/engine-api/
 packages/check-kit/
 products/skills/      thin public skills (served over MCP, installable from the repo)
-scripts/  skills/  docs/   stay at the root
+skills/  docs/  wrangler.toml   stay at the root
 ```
 
 `skills/` (repo procedures for agents working on this repo) and `products/skills/`

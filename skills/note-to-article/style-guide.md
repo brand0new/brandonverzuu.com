@@ -1,6 +1,6 @@
 # Writing style guide
 
-Derived from all eleven articles in `content/articles/` (~13,500 words, nine of them
+Derived from all eleven articles in `apps/site/content/articles/` (~13,500 words, nine of them
 mature published pieces, English and Dutch). This is a **generative** guide: it exists
 so a ghostwriter can produce a draft that reads as Brandon's, not so a reviewer can
 tick boxes afterwards.

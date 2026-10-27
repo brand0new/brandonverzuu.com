@@ -11,21 +11,23 @@ Nothing here touches the remote. The goal is that an idle clone holds the source
 
 ## 1. Build output
 
-These are all git-ignored and recreated on demand:
+These are all git-ignored and recreated on demand. The site's build output lives
+in `apps/site/`:
 
 | Path | Created by |
 | --- | --- |
-| `dist/`, `.output/` | `npm run generate` |
-| `.nuxt/`, `.nitro/`, `.cache/` | `npm run dev` / `generate` |
-| `.data/` | Nuxt Content's local SQLite cache |
-| `.wrangler/` | a local `wrangler` run |
-| `scripts/explainers/out/` | explainer feed renders |
+| `apps/site/dist/`, `apps/site/.output/` | `npm run generate` |
+| `apps/site/.nuxt/`, `apps/site/.nitro/`, `apps/site/.cache/` | `npm run dev` / `generate` |
+| `apps/site/.data/` | Nuxt Content's local SQLite cache |
+| `.wrangler/` (any workspace) | a local `wrangler` run |
+| `apps/site/scripts/explainers/out/` | explainer feed renders |
 
 Delete them once you're no longer running the dev server or inspecting a build:
 
 ```
-npx nuxi cleanup        # .nuxt, .output, node_modules/.vite, node_modules/.cache
-rm -rf dist .data .wrangler
+npx nuxi cleanup apps/site   # .nuxt, .output, node_modules/.vite, node_modules/.cache
+rm -rf apps/site/dist apps/site/.data
+find . -name .wrangler -type d -prune -not -path './node_modules/*' -exec rm -rf {} +
 ```
 
 Leave `node_modules/` in place unless you're about to reinstall anyway.

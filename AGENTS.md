@@ -14,6 +14,18 @@ route, and the result is served as plain files by Cloudflare Pages. There's no s
 runtime in production, and that constraint shapes most technical decisions here: if a
 feature needs a server at request time, it doesn't fit.
 
+## Repo layout
+
+The repo is an npm-workspaces monorepo with one lockfile at the root:
+
+- `apps/site/`: the site (`app/`, `content/`, `public/`, `scripts/`, the Nuxt and
+  Content configs). Everything this file says about the site lives here.
+- `apps/`, `packages/`, `products/`: the paid expertise service, planned in
+  `docs/specs/expert-mcp/` and built spec by spec. Until a workspace has a
+  `package.json`, it's only a placeholder.
+- `skills/`, `docs/`, `.github/` and `wrangler.toml` stay at the root and cover the
+  whole repo.
+
 ## How a change reaches production
 
 `master` is production. GitHub hosts the repo and runs a `generate` check on every PR.
@@ -29,30 +41,30 @@ details: what runs where, why the build runs twice, configuration and secrets.
   client that brings its own tone-of-voice instructions overrides that guide for how
   the prose reads, but never for the content contract below.
 - **Static first.** Nothing may depend on a request-time server, an image proxy or a
-  guessed asset path. What isn't in `dist/` after `generate` doesn't exist.
+  guessed asset path. What isn't in `apps/site/dist/` after `generate` doesn't exist.
 - **Accessible in both themes.** Light and dark are equal citizens. Every visible
   element meets WCAG AA in both, and the first paint never flashes the wrong theme.
 - **Look comes from data.** Per-item styling is declared in content, not hard-coded
   per slug.
 - **The dithered visual language** (Bayer and Zhou-Fang dithering, terracotta on
   porcelain) is shared by covers, page backgrounds and explainer videos. The
-  algorithms live once in `scripts/lib/` and are ported, with attribution, where the
+  algorithms live once in `apps/site/scripts/lib/` and are ported, with attribution, where the
   browser needs them.
 
 ## Content contract
 
 These are facts the build and the pages rely on:
 
-- An article is `content/articles/<slug>.md`, its filename equals its `slug`
+- An article is `apps/site/content/articles/<slug>.md`, its filename equals its `slug`
   frontmatter, and its frontmatter matches the `articles` schema in
-  `content.config.ts`. A mismatch fails the build.
-- Every article has a cover at `public/articles/<slug>/cover.png` with a
+  `apps/site/content.config.ts`. A mismatch fails the build.
+- Every article has a cover at `apps/site/public/articles/<slug>/cover.png` with a
   `cover-light.png` sibling. The page background and the article cards find them by
   that path, not through frontmatter.
-- Reviews follow the same pattern in `content/reviews/` (the `reviews` schema) and
-  `public/reviews/<slug>/`. Brandon writes them by hand. Ratings, verdicts and
+- Reviews follow the same pattern in `apps/site/content/reviews/` (the `reviews` schema) and
+  `apps/site/public/reviews/<slug>/`. Brandon writes them by hand. Ratings, verdicts and
   opinions are his alone, and agents never supply them.
-- Tags form a small, reused vocabulary. `app/utils/topicClusters.ts` maps them to the
+- Tags form a small, reused vocabulary. `apps/site/app/utils/topicClusters.ts` maps them to the
   `/topics` hubs.
 
 ## Autonomy
@@ -118,8 +130,11 @@ that up on its side and points it at `note-to-article`.
 
 - The Node version is pinned in `.node-version`. `better-sqlite3` is native, so it
   needs `npm rebuild` after switching Node majors.
-- `npm ci` installs exactly what CI and Cloudflare install. `npm run dev` runs the
-  dev server, and `npm run generate` produces the static build in `dist/`.
-- Build output (`dist/`, `.output/`, `.nuxt/`, `.data/`) is disposable and
+- Run npm from the repo root. `npm ci` installs exactly what CI and Cloudflare
+  install, for every workspace. The root scripts (`dev`, `generate`,
+  `cover:generate` …) run the site's own scripts in `apps/site`, and
+  `npm run generate` produces the static build in `apps/site/dist/`. Paths passed
+  to a script resolve against the directory you run it from.
+- Build output (`dist/`, `.output/`, `.nuxt/`, `.data/` under `apps/site/`) is disposable and
   git-ignored. Agents work in git worktrees under `.claude/worktrees/`, one per task,
   and clean up after merging.

@@ -1,4 +1,4 @@
-# Component conventions (`app/components/`)
+# Component conventions (`apps/site/app/components/`)
 
 The reference that `SKILL.md` applies. When a component changes one of these
 conventions, update this file in the same PR.
@@ -20,8 +20,8 @@ conventions, update this file in the same PR.
   group-hover:border-gray-300 dark:border-white/10 dark:group-hover:border-white/20`,
   wrapped in a `NuxtLink class="group block"`. Image-backed cards (`ArticleCard`)
   fall back to the `from-terracotta to-porcelain-950` gradient when there's no image.
-- **Colours come from tokens.** Use the palette in `public/css/main.css` and the
-  Nuxt UI aliases in `app/app.config.ts` (`primary` = porcelain). Terracotta is the
+- **Colours come from tokens.** Use the palette in `apps/site/public/css/main.css` and the
+  Nuxt UI aliases in `apps/site/app/app.config.ts` (`primary` = porcelain). Terracotta is the
   accent. For contrast, terracotta text uses `text-terracotta-heading` in light mode
   and `text-terracotta` in dark mode.
 - **Every visual element passes WCAG AA (4.5:1) in both themes**, decorative or not.
@@ -40,17 +40,17 @@ conventions, update this file in the same PR.
 - **Motion respects `prefers-reduced-motion`.** Paint one static frame and stop.
 - **Icons:** the `mage:*` set, wrapped in `<client-only>`, with `aria-hidden`. Any
   icon chosen dynamically must also be added to `icon.clientBundle.icons` in
-  `nuxt.config.ts`, or it 404s in the static build.
+  `apps/site/nuxt.config.ts`, or it 404s in the static build.
 - **External links** get `external`, `target="_blank"` and
   `<span class="sr-only">(opens in new tab)</span>`.
 - **Static-build safety:** no runtime server routes, no IPX image URLs, no guessed
   asset paths. Render an image only when the data declares it
   (`v-if="article.image"`). The one deliberate exception is the article cover, which
-  is located by the `public/articles/<slug>/cover.png` convention (see
+  is located by the `apps/site/public/articles/<slug>/cover.png` convention (see
   `skills/article-cover/`).
-- **Shared logic goes in `app/utils/` (pure) or `app/composables/` (Nuxt state or
+- **Shared logic goes in `apps/site/app/utils/` (pure) or `apps/site/app/composables/` (Nuxt state or
   head).** Visual algorithms shared with build scripts (dithering) live in
-  `scripts/lib/`. When you port one to the browser, name the source file in a
+  `apps/site/scripts/lib/`. When you port one to the browser, name the source file in a
   comment.
 - **Comments explain why, not what**: the constraint, the measured number, the
   alternative you rejected. Make them as long as they need to be and no longer.

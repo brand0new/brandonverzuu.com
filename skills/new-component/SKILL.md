@@ -1,6 +1,6 @@
 ---
 name: new-component
-description: Add a new Vue component to brandonverzuu.com that matches the existing component conventions (placement, props, theming, accessibility, static-build safety). Use when creating or substantially reworking anything under app/components/. Agent-agnostic.
+description: Add a new Vue component to brandonverzuu.com that matches the existing component conventions (placement, props, theming, accessibility, static-build safety). Use when creating or substantially reworking anything under apps/site/app/components/. Agent-agnostic.
 ---
 
 # New component
@@ -50,7 +50,7 @@ name = PascalCase noun, no folder prefix in the filename
     NO data fetching. NO useColorMode(). NO route reads.
 
   derived = computed(() => pure transform of props)    // e.g. cover → cover-light path
-  shared logic → app/utils/*.ts (pure) or app/composables/use*.ts (state/head)
+  shared logic → apps/site/app/utils/*.ts (pure) or apps/site/app/composables/use*.ts (state/head)
 </script>
 ```
 
@@ -88,7 +88,7 @@ name = PascalCase noun, no folder prefix in the filename
 
   for every icon:
     <client-only><Icon :name="mage:..." aria-hidden="true" /></client-only>
-    if name is dynamic: add it to nuxt.config.ts → icon.clientBundle.icons
+    if name is dynamic: add it to apps/site/nuxt.config.ts → icon.clientBundle.icons
 </template>
 ```
 
@@ -96,7 +96,7 @@ name = PascalCase noun, no folder prefix in the filename
 
 ```
 for each colour you add:
-  token = pick from public/css/main.css or Nuxt UI alias (primary, neutral)
+  token = pick from apps/site/public/css/main.css or Nuxt UI alias (primary, neutral)
           NEVER a raw hex in the template; raw hex only in <canvas> code,
           with a comment naming the CSS token it mirrors
   for theme in [light, dark]:

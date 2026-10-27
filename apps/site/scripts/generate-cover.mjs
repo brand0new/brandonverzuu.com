@@ -24,10 +24,21 @@
 
 import { mkdir, readFile } from "node:fs/promises";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import sharp from "sharp";
 import { toLinearLuminance } from "./lib/color.mjs";
 import { zhouFangDither } from "./lib/zhou-fang-dither.mjs";
 import { bayerDither } from "./lib/bayer-dither.mjs";
+
+// The site root (apps/site), so covers land in its public/ whether the script
+// runs through npm from the repo root or the site, or directly with node.
+const siteRoot = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  "..",
+);
+// npm runs workspace scripts from the workspace directory, so resolve --file
+// against the directory the command was typed in (INIT_CWD) instead.
+const callerCwd = process.env.INIT_CWD ?? process.cwd();
 
 function parseArgs(argv) {
   const args = {};
@@ -106,7 +117,7 @@ async function main() {
   let sourceBuffer;
   if (args.file) {
     console.log(`Reading ${args.file} ...`);
-    sourceBuffer = await readFile(args.file);
+    sourceBuffer = await readFile(path.resolve(callerCwd, args.file));
   } else {
     console.log(`Fetching ${args.url} ...`);
     const res = await fetch(args.url);
@@ -162,7 +173,7 @@ async function main() {
     rgbLight[i * 3 + 2] = b;
   }
 
-  const outDir = path.join("public", collection, args.slug);
+  const outDir = path.join(siteRoot, "public", collection, args.slug);
   await mkdir(outDir, { recursive: true });
   const outPath = path.join(outDir, "cover.png");
   const outPathLight = path.join(outDir, "cover-light.png");
