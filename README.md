@@ -1,7 +1,20 @@
 # brandonverzuu.com
 
-The current version of my site has been created with Nuxt!
+My personal site: articles on APIs, platforms and technology, plus projects,
+bookmarks and the tools I use. Built with Nuxt 4, Nuxt Content and Nuxt UI, statically
+generated and served by Cloudflare Pages.
 
-Previously I've worked with Hugo to generate a static site. But since I've been working Vuetify and experimenting with Nuxt I thought I'd give Nuxt a try for hosting my personal site.
+```
+npm ci
+npm run dev        # local dev server
+npm run generate   # static build to dist/
+```
 
-Currently the site is hosted on Cloudflare using their Pages services as a way of hosting static sites. This drastically reduces the complexity of the setup as Cloudflare requires less intermediate steps to host a static site.
+- [`AGENTS.md`](AGENTS.md): what this project is, its principles and how the pieces
+  fit together. The starting point for agents and humans alike.
+- [`docs/deployment.md`](docs/deployment.md): how GitHub and Cloudflare turn a merge
+  into the live site.
+- [`docs/note-to-article.md`](docs/note-to-article.md): capturing article notes from
+  an iPhone.
+- [`skills/`](skills/): agent-agnostic procedures for shipping changes, writing
+  articles, generating covers and explainers, and cleaning up.
