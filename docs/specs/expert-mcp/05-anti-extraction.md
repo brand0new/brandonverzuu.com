@@ -15,6 +15,8 @@ because there's no LLM and no corpus on the server.
 Per account, held in the `AccountGuard` Durable Object:
 
 - Rate limits per minute, hour and day, per check kind.
+- No free trial and no free credits: every check is paid, so probing always costs
+  money (decision D10).
 - Credit spend ceilings per rolling 24 hours and 30 days, independent of balance. New
   accounts start low; the ceiling grows with account age and clean history.
 - Linked identities share one budget: same hashed card fingerprint, same OAuth

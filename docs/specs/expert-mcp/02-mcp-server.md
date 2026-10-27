@@ -15,7 +15,8 @@ rules Worker over a service binding (spec 04).
 - `@cloudflare/workers-oauth-provider` for OAuth 2.1: authorization code with PKCE
   and dynamic client registration (MCP clients), plus the device authorization
   grant (CLI).
-- D1 `commerce` for accounts and API tokens (spec 03 adds its tables).
+- D1 `commerce` for accounts and API tokens (spec 03 adds its tables), created
+  with the EU jurisdiction (decision D11).
 - Service binding `RULES` → `expert-rules` (`RulesService` from
   `packages/engine-api`).
 

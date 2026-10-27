@@ -21,6 +21,20 @@ and the repo-level guards. Updates `docs/deployment.md` and `AGENTS.md`.
 
 No LLM, Vectorize or AI Gateway: the checks are deterministic.
 
+### EU data location (decision D11)
+
+All stored data stays in the EU:
+
+- D1 databases created with `--jurisdiction eu`.
+- Durable Objects (`McpSession`, `AccountGuard`) created through
+  `namespace.jurisdiction('eu')`, so their storage is EU-only.
+- KV has no jurisdiction setting, so it holds only non-personal flags
+  (`CHECKS_ENABLED`). No personal or account data goes in KV.
+- Logs: Workers Logs with personal data excluded (spec 02); Logpush, if added
+  later, to an EU-jurisdiction R2 bucket.
+- Stripe processes payment data under its own terms, which the privacy statement
+  names.
+
 `apps/expert-mcp/wrangler.jsonc` declares bindings with `env.staging` and
 `env.production`. Resource ids aren't secret and are committed once created.
 

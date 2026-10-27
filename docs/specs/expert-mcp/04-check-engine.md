@@ -10,7 +10,7 @@ generic code in this repo and private IP in `brand0new/expertise`.
 | Public (this repo) | Private (`brand0new/expertise`) |
 | --- | --- |
 | `packages/engine-api`: request/result types, `RulesService` interface | Rule packs per check kind |
-| `packages/check-kit`: parsers (OpenAPI/AsyncAPI with `$ref` resolution, Markdown + frontmatter AST, process schema), JSONPath, generic predicates (exists, pattern, casing, length, enum, schema) | Which predicates apply where, with what options, severity, dimension, message and fix text |
+| `packages/check-kit`: parsers (OpenAPI with `$ref` resolution, Markdown + frontmatter AST, process schema), JSONPath, generic predicates (exists, pattern, casing, length, enum, schema) | Which predicates apply where, with what options, severity, dimension, message and fix text |
 | Gateway: input size limits, parsing, validation | Scoring models: dimension weights, band cut-offs |
 | | Bespoke check functions that are IP in themselves |
 | | Phrasing variants per message (spec 05) |
@@ -44,14 +44,16 @@ agents never supply review ratings.
 
 ### API governance (`api-governance`)
 
-- Input: OpenAPI 3.0/3.1 or AsyncAPI 2.6/3.0, JSON or YAML, ≤ 2 MB after
+- Input: OpenAPI 3.0/3.1, JSON or YAML, ≤ 2 MB after
   `$ref` resolution (external refs rejected; the buyer bundles first).
-- Options: `profile` (e.g. `public`, `internal`, `partner`), which picks a subset
-  and severity overrides in the private pack.
+- No profiles in v1: one rule set for every API. Audience-specific profiles
+  (public, partner, internal) are a later option. AsyncAPI is out of v1.
 - Location: JSONPath into the submitted document.
 
 ### Skill design (`skill-design`)
 
+- Format: the Agent Skills format only (`SKILL.md` with YAML frontmatter plus
+  supporting files). Harness-specific formats are out of v1.
 - Input: a skill folder as a JSON manifest of files (`{ path, content }[]`, text
   only, ≤ 1 MB total, ≤ 200 files), or a tarball the gateway unpacks.
 - Parsed into: frontmatter, Markdown AST of `SKILL.md`, file tree, referenced paths,

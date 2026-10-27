@@ -18,7 +18,7 @@ bv-expertise login                         OAuth device flow against the gateway
 bv-expertise logout
 bv-expertise credits                       balance and recent usage
 bv-expertise buy [--pack <id>]             opens a Stripe Checkout link
-bv-expertise check api <file>              api-governance check   [--profile public|internal|partner]
+bv-expertise check api <file>              api-governance check
 bv-expertise check skill <dir>             skill-design check (packages text files into a manifest)
 bv-expertise review process <file>         process-review check (validates against the public schema first)
 bv-expertise schema process                prints the public process schema

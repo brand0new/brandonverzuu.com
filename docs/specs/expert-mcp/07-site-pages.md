@@ -26,6 +26,9 @@ for any new component).
 
 ## Who writes what
 
+Scaffolds already exist in `docs/specs/expert-mcp/legal/` (`terms.md`,
+`privacy.md`). This spec moves the approved versions into `content/expert/`.
+
 The terms and privacy text are legal documents. An agent can draft structure and
 headings with `TODO(Brandon)` markers, but Brandon (ideally with a lawyer) supplies
 and approves the wording. Like reviews, these are Brandon's words, not an agent's.

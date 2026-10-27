@@ -16,7 +16,7 @@ Three products, all deterministic:
 
 | Product | Buyer sends | Buyer gets |
 | --- | --- | --- |
-| **API governance check** | OpenAPI 3.x / AsyncAPI document | Findings (severity, JSONPath, issue, fix), governance score per dimension |
+| **API governance check** | OpenAPI 3.0/3.1 document | Findings (severity, JSONPath, issue, fix), governance score per dimension |
 | **Skill design check** | An Agent Skill folder (`SKILL.md` plus files) | Findings on structure, triggering, scope, progressive disclosure and safety, plus a score |
 | **Process description review** | A process in a published structured format (spec 04) | Findings on roles, handoffs, controls, exceptions and measurability, plus a score |
 
@@ -169,7 +169,7 @@ type CheckKind = 'api-governance' | 'skill-design' | 'process-review'
 interface CheckRequest {
   kind: CheckKind
   artifact: Artifact            // parsed and size-checked by the gateway
-  options: { profile?: string; locale?: string }
+  options: { locale?: string }   // profiles are a later option
   variantSeed: string           // per-account HMAC, for phrasing variants (spec 05)
 }
 
@@ -224,7 +224,7 @@ authenticate → validate + parse → guard.admit → ledger.reserve → rules.r
 | # | Decision | Recommendation |
 | --- | --- | --- |
 | D1 | Threat model and thin skills | **Decided:** accepted |
-| D2 | Products | **Decided:** API governance, skill design, process description review |
+| D2 | Products | **Decided:** API governance (OpenAPI 3.0/3.1 only, no profiles), skill design (Agent Skills format only), process description review |
 | D3 | Private repo for rules | **Decided:** `brand0new/expertise` (private). Brandon writes the rules; agents scaffold its structure only. |
 | D4 | Process description input format | **Researched:** no JSON Schema standard exists. Our own Process Description schema using BPMN 2.0 vocabulary, plus a governance block, published at a static URL and registered in SchemaStore (spec 04). Brandon reviews v1. |
 | D5 | Seller of record: legal entity, Stripe account, VAT | **Later.** Brandon's business entity with Stripe Tax on. Blocks live payments only; everything runs in Stripe test mode until then. |
@@ -232,3 +232,6 @@ authenticate → validate + parse → guard.admit → ledger.reserve → rules.r
 | D7 | How agents deploy to Cloudflare | **Later.** Workers Builds (Git integration) for both Workers, plus one scoped API token for provisioning, held as a session secret, never in a repo. Blocks spec 06 only. |
 | D8 | Move the site into `apps/site` | **Decided:** yes, as its own PR, verified on a preview first |
 | D9 | Hostname and CLI package name | **Decided:** `mcp.brandonverzuu.com`; npm package `@brandonverzuu/expertise` (binary `bv-expertise`) |
+| D10 | Free trial | **Decided:** none. Every check is paid. |
+| D11 | Data location | **Decided:** EU only (spec 06). |
+| D12 | Merging | **Decided:** Brandon always reviews the Cloudflare preview before a PR in this programme merges. Agents open PRs and get them green, but don't merge them. |
