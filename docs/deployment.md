@@ -24,7 +24,7 @@ GitHub Actions       Cloudflare Pages        GitHub Actions          Cloudflare 
 | Cloudflare Pages project `personal-site` | Cloudflare dashboard → Workers & Pages | Connected to the repo through the **Cloudflare Workers and Pages GitHub app**. Builds every pushed branch, deploys `master` to production and other branches as previews. Reports the `Cloudflare Pages` check. |
 | `wrangler.toml` | this repo | Pages project config that the Cloudflare build reads: project name, output directory (`dist`) and compatibility date. |
 | `nuxt.config.ts` → `nitro.preset: cloudflare_pages_static` | this repo | Makes `nuxt generate` emit a purely static `dist/` in the layout Pages expects. |
-| `.node-version` | this repo | Node version for local work, GitHub Actions (`node-version-file`) and the Cloudflare build image. |
+| `.node-version` | this repo | Node version for local work, GitHub Actions (`node-version-file`) and the Cloudflare build image. Keep it on a Node major that ships npm 11: Dependabot writes `package-lock.json` with npm 11, and npm 10's `npm ci` rejects those lockfiles (it expects optional peer dependencies npm 11 leaves out). |
 | `.github/dependabot.yml` | this repo | Grouped weekly npm updates and monthly Actions updates, as PRs that go through the same checks. |
 | Custom domain `brandonverzuu.com` | Cloudflare dashboard → the Pages project → Custom domains | Points the production deployment at the real domain. Previews stay on the project's `personal-site-46x.pages.dev` subdomain: `<hash>.personal-site-46x.pages.dev` per deployment, plus a stable `<branch>.personal-site-46x.pages.dev` alias per branch. Cloudflare's bot comments both on each PR. |
 
