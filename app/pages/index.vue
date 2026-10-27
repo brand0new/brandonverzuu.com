@@ -2,10 +2,10 @@
   <main class="min-h-screen">
     <AppHeader class="mb-12" title="Hi, I'm Brandon!">
       <p>
-        I am Head of Innovation & Product, based in Rosmalen, The Netherlands.
-        I help organisations shape how they innovate and integrate their
-        systems, building on a background in Cloud Integration, web-based APIs
-        and API strategy development.
+        I am Head of Innovation & Product, based in Rosmalen, The Netherlands. I
+        help organisations shape how they innovate and integrate their systems,
+        building on a background in Cloud Integration, web-based APIs and API
+        strategy development.
       </p>
       <p>
         Compassionate about software development and technology in general. I

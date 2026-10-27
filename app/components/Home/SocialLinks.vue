@@ -10,7 +10,7 @@
         class="group flex items-end gap-4 dark:hover:text-gray-300"
       >
         <p
-          class="group-hover:text-primary-600 text-sm text-gray-600 dark:text-gray-400"
+          class="text-sm text-gray-600 group-hover:text-primary-600 dark:text-gray-400"
         >
           {{ link.name }}
           <span class="sr-only">(opens in new tab)</span>

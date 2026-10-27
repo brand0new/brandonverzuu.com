@@ -7,7 +7,7 @@
       <div class="min-w-0 flex-1">
         <div class="flex items-center justify-between gap-2">
           <h2
-            class="group-hover:text-primary-600 dark:group-hover:text-primary-400 dark:text-gray-100"
+            class="group-hover:text-primary-600 dark:text-gray-100 dark:group-hover:text-primary-400"
           >
             {{ cluster.title }}
           </h2>
@@ -15,9 +15,7 @@
         <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
           {{ cluster.summary }}
         </p>
-        <span
-          class="mt-3 inline-block text-xs font-medium text-gray-500"
-        >
+        <span class="mt-3 inline-block text-xs font-medium text-gray-500">
           {{ articleCount }} {{ articleCount === 1 ? "article" : "articles" }}
         </span>
       </div>

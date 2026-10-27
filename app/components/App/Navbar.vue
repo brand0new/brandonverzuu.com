@@ -8,7 +8,7 @@
           <UTooltip :text="item.name">
             <ULink
               :to="item.path"
-              class="hover:text-primary-600 dark:hover:text-primary-400 relative flex items-center justify-center px-3 py-4 transition"
+              class="relative flex items-center justify-center px-3 py-4 transition hover:text-primary-600 dark:hover:text-primary-400"
               active-class="text-primary-600 dark:text-primary-400"
             >
               <client-only>
@@ -20,7 +20,7 @@
               </client-only>
               <span
                 v-if="$route.path === item.path"
-                class="from-primary-500/0 via-primary-500/70 to-primary-500/0 dark:from-primary-400/0 dark:via-primary-400/40 dark:to-primary-400/0 absolute inset-x-1 -bottom-px h-px bg-gradient-to-r"
+                class="absolute inset-x-1 -bottom-px h-px bg-gradient-to-r from-primary-500/0 via-primary-500/70 to-primary-500/0 dark:from-primary-400/0 dark:via-primary-400/40 dark:to-primary-400/0"
               ></span>
               <span
                 v-if="$route.path === item.path"

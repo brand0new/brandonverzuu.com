@@ -134,9 +134,7 @@ function loop(timestamp: number) {
 }
 
 onMounted(() => {
-  reduceMotion = window.matchMedia(
-    "(prefers-reduced-motion: reduce)",
-  ).matches;
+  reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   // The frame's height is fixed in CSS, so only a width change (viewport
   // resize) needs a redraw — needed mainly for reduced motion, where there
