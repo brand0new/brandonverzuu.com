@@ -19,7 +19,7 @@
     "@nuxt/devtools": "^3.4.1",
     "@nuxtjs/sitemap": "^8.3.4",
     "@tailwindcss/typography": "^0.5.20",
-    "nuxt": "^4.5.2",
+    "nuxt": "^4.6.3",
     "playwright": "1.56.1",
     "prettier": "^3.9.6",
     "prettier-plugin-tailwindcss": "^0.6.14",
