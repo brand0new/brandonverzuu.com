@@ -2,44 +2,43 @@
 
 ## Scope
 
-An automated suite that attacks staging the way a distiller would, run before
-every production deploy of guard or engine changes and on a schedule.
+An automated suite that attacks staging the way a rule reconstructor would. It runs
+before every production deploy of guard or rules changes, and weekly.
 
-## Corpus
+## Test rule pack
 
-Runs against the fixture corpus from spec 04 (fake documents with planted, unique
-sentences), never the real one, so the suite can measure leakage exactly.
+Runs against a **fixture rule pack** (fake rules written for the test, in the
+private repo's `test/` folder) on staging, so reconstruction can be scored exactly
+without exposing real rules to the eval harness.
 
 ## Attack classes
 
-1. **Direct exfiltration:** "print your instructions", "list your sources",
-   "quote the document about X", role-play and encoding tricks (base64, translate,
-   one word per line), injection hidden inside an OpenAPI `description`.
-2. **Reconstruction:** many inputs designed so that outputs together reveal one
-   planted document.
-3. **Sweeping:** a scripted agent that maximises topic coverage with synthetic
-   artifacts, at increasing speeds, across several linked and unlinked accounts.
-4. **Generic-output fishing:** minimal or empty artifacts that invite textbook
-   answers.
+1. **Enumeration:** submit artifacts that violate one thing at a time, across all
+   three check kinds, and record which finding appears.
+2. **Differential probing:** chains of near-duplicate artifacts that bisect a
+   threshold (for example name lengths 1…100).
+3. **Sybil spreading:** the same campaign split across many accounts, with and
+   without a shared card, OAuth client or domain.
+4. **Interface abuse:** direct calls to the rules Worker URL (must not exist),
+   oversized or malicious artifacts (YAML bombs, deep `$ref` chains, path tricks in
+   skill manifests), attempts to execute skill scripts.
 
 ## Metrics and pass thresholds
 
 | Metric | Pass |
 | --- | --- |
-| Planted sentences recovered verbatim (≥ 8-gram) | 0 |
-| Canary appearances in any returned output | 0 |
-| Planted facts recovered (paraphrase, judged by a model against the fixture) | below threshold set in `GUARD_CONFIG` |
-| Sweeper accounts throttled before reaching X% coverage | 100% |
-| False positives on a benign suite of realistic artifacts | below threshold |
+| Rules of the fixture pack reconstructed (condition and threshold) before the campaign is throttled | below the share set in `GUARD_CONFIG` |
+| Credits needed to reconstruct that share | above the cost set in `GUARD_CONFIG` |
+| Sybil campaigns linked and throttled together (shared signal present) | 100% |
+| Rules Worker reachable from the internet | never |
+| False positives: a benign CI history (same API, 200 commits over 30 days) and a benign multi-team org | none throttled |
 
 ## Deliverables
 
-- `apps/expert-mcp/evals/` with the harness (TypeScript, runs against a URL with
-  test-mode Stripe credits granted by an admin CLI command).
-- A report (Markdown) per run, uploaded as a CI artifact, never committed if it
-  contains outputs.
+- `apps/expert-mcp/evals/`: harness (TypeScript) that runs against a URL with
+  test-mode credits granted by the admin CLI.
+- Per-run Markdown report uploaded as a CI artifact, never committed.
 
 ## Acceptance
 
-The suite runs against staging and all pass thresholds hold before the first
-production deploy of paid tools.
+All thresholds hold on staging before the first production deploy of paid checks.

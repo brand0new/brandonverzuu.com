@@ -26,8 +26,8 @@ renders. Nothing else changes in this PR.
   Dependabot handles workspaces from the root lockfile (it does for npm v3
   lockfiles; verify).
 - `.gitignore`: build output patterns made path-agnostic (`**/dist/`, `**/.nuxt/` …).
-- Empty `apps/expert-mcp/` and `packages/` placeholders with a README each, so later
-  specs have a home.
+- Empty `apps/expert-mcp/`, `apps/cli/`, `packages/` and `products/skills/`
+  placeholders with a README each, so later specs have a home.
 
 ## Cloudflare Pages
 
