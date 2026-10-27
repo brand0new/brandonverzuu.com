@@ -33,7 +33,7 @@ Neither repo holds a Cloudflare token (decision D7).
   `apps/expert-mcp/**` and `packages/**`. Non-`master` branches → preview versions
   on staging; `master` → production. D1 migrations applied in the deploy command,
   staging first.
-- **Rules:** Workers Builds on `brand0new/expert-rules`, its own `main` →
+- **Rules:** Workers Builds on `brand0new/expertise`, its own `main` →
   production, other branches → staging. Deploying rules doesn't redeploy the
   gateway, and the other way round.
 - **Order on first deploy:** rules Worker first, since a service binding to a

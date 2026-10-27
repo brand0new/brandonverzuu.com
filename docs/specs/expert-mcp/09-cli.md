@@ -7,21 +7,21 @@ nothing beyond input packaging and output formatting.
 
 ## Package
 
-- npm `@brandonverzuu/expert`, binary `bv-expert` (decision D9). Node from
+- npm `@brandonverzuu/expertise`, binary `bv-expertise` (decision D9). Node from
   `.node-version`; also bundled as a single file for `npx`.
 - Published from this repo by a tagged release workflow, with npm provenance.
 
 ## Commands
 
 ```
-bv-expert login                         OAuth device flow against the gateway; token in the OS keychain
-bv-expert logout
-bv-expert credits                       balance and recent usage
-bv-expert buy [--pack <id>]             opens a Stripe Checkout link
-bv-expert check api <file>              api-governance check   [--profile public|internal|partner]
-bv-expert check skill <dir>             skill-design check (packages text files into a manifest)
-bv-expert review process <file>         process-review check (validates against the public schema first)
-bv-expert schema process                prints the public process schema
+bv-expertise login                         OAuth device flow against the gateway; token in the OS keychain
+bv-expertise logout
+bv-expertise credits                       balance and recent usage
+bv-expertise buy [--pack <id>]             opens a Stripe Checkout link
+bv-expertise check api <file>              api-governance check   [--profile public|internal|partner]
+bv-expertise check skill <dir>             skill-design check (packages text files into a manifest)
+bv-expertise review process <file>         process-review check (validates against the public schema first)
+bv-expertise schema process                prints the public process schema
 ```
 
 Common flags: `--format text|json|sarif|markdown`, `--fail-on error|warning`
@@ -32,8 +32,8 @@ Common flags: `--format text|json|sarif|markdown`, `--fail-on error|warning`
 - Validates input locally with `check-kit` parsers and the public schema before
   sending, so malformed input never costs credits.
 - Shows the credit price and asks for confirmation unless `--yes` or a non-TTY.
-- `CI=true` or `BV_EXPERT_TOKEN` set → non-interactive, token from the
-  environment (an account-scoped API token created with `bv-expert token create`,
+- `CI=true` or `BV_EXPERTISE_TOKEN` set → non-interactive, token from the
+  environment (an account-scoped API token created with `bv-expertise token create`,
   which the gateway issues as a long-lived, revocable credential tied to the
   account's guard budget).
 - SARIF output maps findings to `results` with locations, so GitHub code scanning
@@ -55,7 +55,7 @@ Uses the REST surface from spec 02:
 ## Acceptance
 
 - Each command works against `wrangler dev`.
-- `bv-expert check api` on a public example spec produces text, JSON and SARIF that
+- `bv-expertise check api` on a public example spec produces text, JSON and SARIF that
   validate (SARIF 2.1.0 schema).
 - `--dry-run` never charges (ledger unchanged).
 - The published package contains no rule content (CI checks the packed tarball for

@@ -9,7 +9,7 @@ for any new component).
 ## Pages
 
 - `/expert`: what the service is, the three checks (what you give it, what you get,
-  credit price), the three ways in (MCP URL with OAuth, `bv-expert` CLI, REST for
+  credit price), the three ways in (MCP URL with OAuth, `bv-expertise` CLI, REST for
   CI), links to the public skills and the process schema, and how purchasing works
   (ACP or purchase link).
 - `/expert/pricing`: credit packs and prices. Data from a content file
@@ -20,6 +20,9 @@ for any new component).
   rules**; no automated harvesting beyond the buyer's own artifacts; no resale; retention periods from spec 05; suspension on
   breach; governing law.
 - `/expert/privacy`: what's stored and for how long.
+- `/schemas/process-description/v1.json`: the public Process Description schema
+  (spec 04), copied from `packages/check-kit` at build time and served as a static
+  file with `Content-Type: application/schema+json` (via `public/_headers`).
 
 ## Who writes what
 

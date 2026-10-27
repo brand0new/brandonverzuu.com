@@ -3,11 +3,11 @@
 ## Scope
 
 The deterministic engine that runs Brandon's checks, split between public,
-generic code in this repo and private IP in `brand0new/expert-rules`.
+generic code in this repo and private IP in `brand0new/expertise`.
 
 ## Split
 
-| Public (this repo) | Private (`expert-rules`) |
+| Public (this repo) | Private (`brand0new/expertise`) |
 | --- | --- |
 | `packages/engine-api`: request/result types, `RulesService` interface | Rule packs per check kind |
 | `packages/check-kit`: parsers (OpenAPI/AsyncAPI with `$ref` resolution, Markdown + frontmatter AST, process schema), JSONPath, generic predicates (exists, pattern, casing, length, enum, schema) | Which predicates apply where, with what options, severity, dimension, message and fix text |
@@ -24,7 +24,7 @@ any linter has belongs in `check-kit`.
 Declarative, typed, version-controlled:
 
 ```ts
-// expert-rules/packs/api-governance/naming.ts (illustrative shape, not content)
+// expertise/packs/api-governance/naming.ts (illustrative shape, not content)
 export default rule({
   id: 'agv-…',                 // stable, private
   dimension: 'naming',
@@ -60,14 +60,56 @@ agents never supply review ratings.
 
 ### Process description review (`process-review`)
 
-- Input: a process document matching a **public** schema
-  (`packages/check-kit/schemas/process.schema.json`, decision D4): process
-  metadata, roles, steps (actor, input, output, system, trigger), decisions,
-  handoffs, controls, exceptions, SLAs and KPIs. YAML or JSON.
-- The schema is public on purpose: it tells buyers' agents how to convert a prose
-  description, and its structure isn't the IP. The judgment about it is.
-- BPMN 2.0 XML import is a later addition (mapped to the same schema in `check-kit`).
-- Location: step or element id.
+- Input: a document in the **Process Description** format (below), YAML or JSON,
+  ≤ 1 MB. BPMN 2.0 XML is accepted too and converted to the same model by
+  `check-kit` (later milestone).
+- Location: element id.
+
+#### Why a new schema, and how it stays standard
+
+Research (October 2026) found no standard JSON Schema for describing business
+processes:
+
+- **BPMN 2.0.2 (OMG, ISO/IEC 19510)** is the standard, but its normative
+  serialisation is XML (XSD and CMOF metamodels). The bpmn.io maintainers confirm
+  there's no standard JSON form; any JSON mapping is custom.
+- **SchemaStore** (the de facto JSON Schema registry) lists no BPMN or
+  business-process schema. What it has is workflow *execution* formats:
+  Serverless Workflow (CNCF sandbox), Arazzo (OpenAPI Initiative, API call
+  sequences), Argo, GitHub Actions, Google Cloud Workflows, CWL. They model
+  automated tasks, not human roles, accountability, controls or SLAs.
+- **schema.org `HowTo`** is JSON-LD markup for instructions, too thin for roles,
+  decisions and controls.
+- **NIST OSCAL** has JSON Schemas for control catalogues. It's a good reference
+  for controls, but it doesn't describe processes.
+
+So the format is ours, built to be as close to a standard as possible:
+
+1. **BPMN vocabulary.** Every element maps to a BPMN 2.0 concept: `process`,
+   `participants` / `lanes` (roles), `tasks` (with BPMN task types: user,
+   service, manual, script, send, receive), `events` (start, end, intermediate,
+   boundary, with BPMN trigger types), `gateways` (exclusive, parallel,
+   inclusive, event-based), `flows` (sequence) and `messages` (message flows =
+   handoffs between participants), `dataObjects`. Ids are BPMN-compatible, so a
+   BPMN XML export and import is a mapping, not a translation.
+2. **Extensions BPMN lacks, in a separate `governance` block:** RACI per task
+   (exactly one accountable), controls (with optional OSCAL control-id
+   references), exceptions and their handling, SLAs and KPIs, systems of record,
+   evidence produced, document owner and review cadence.
+3. **Published as JSON Schema 2020-12** at a stable, static URL on the site:
+   `https://brandonverzuu.com/schemas/process-description/v1.json` (served from
+   `apps/site/public/`, so it fits the static-first rule). The source lives in
+   `packages/check-kit/schemas/process-description.schema.json` and the site
+   build copies it.
+4. **Registered in SchemaStore** with the file pattern `*.process.yaml` /
+   `*.process.json`, so editors validate files without our tooling.
+5. **Versioned by URL** (`v1`, `v2`), never changed in place.
+
+The schema is public on purpose. It tells buyers' agents how to convert a prose
+description, and its structure isn't the IP. The judgment applied to it is.
+
+Agents draft the schema; Brandon reviews it before v1 is published, because it
+fixes what buyers have to supply.
 
 ## Rules Worker
 

@@ -1,6 +1,7 @@
 # Expert MCP: specification
 
-Status: **draft, awaiting Brandon's decisions** (see "Open decisions" below).
+Status: **draft.** Specs 00–04 and 07–10 are unblocked; payments go live and
+spec 06 deploys once the "Later" decisions below are made.
 Nothing here is implemented yet. Once the decisions are made, each sub-spec in this
 folder is handed to one agent and implemented on its own branch and PR.
 
@@ -51,7 +52,7 @@ PUBLIC  brand0new/brandonverzuu.com (this repo, monorepo)
   packages/check-kit   generic, non-IP check primitives (parsers, JSONPath, AST walkers)
   products/skills      the thin public skills
 
-PRIVATE brand0new/expert-rules (separate private repo, decision D3)
+PRIVATE brand0new/expertise (separate private repo)
   rule packs           declarative rules: what is checked, severities, messages, fixes
   scoring models       dimensions, weights, bands
   bespoke checks       any check logic that is itself IP
@@ -224,10 +225,10 @@ authenticate → validate + parse → guard.admit → ledger.reserve → rules.r
 | --- | --- | --- |
 | D1 | Threat model and thin skills | **Decided:** accepted |
 | D2 | Products | **Decided:** API governance, skill design, process description review |
-| D3 | Private repo for rules | Create `brand0new/expert-rules` (private). Brandon writes the rules; agents scaffold its structure only. |
-| D4 | Process description input format | A published JSON/YAML schema (spec 04), plus BPMN 2.0 XML import later. The buyer's agent converts prose to the schema using the public skill. |
-| D5 | Seller of record: legal entity, Stripe account, VAT | Brandon's business entity with Stripe Tax on. Needed before any live payment. |
-| D6 | Pricing and currency | EUR, packs of 10/50/200 credits. Brandon sets the amounts and credits per check. |
-| D7 | How agents deploy to Cloudflare | Workers Builds (Git integration) for both Workers, plus one scoped API token for provisioning, held as a session secret, never in a repo |
-| D8 | Move the site into `apps/site` | Yes, as its own PR, verified on a preview first |
-| D9 | Hostname and CLI package name | `mcp.brandonverzuu.com`; npm package `@brandonverzuu/expert`, binary `bv-expert` |
+| D3 | Private repo for rules | **Decided:** `brand0new/expertise` (private). Brandon writes the rules; agents scaffold its structure only. |
+| D4 | Process description input format | **Researched:** no JSON Schema standard exists. Our own Process Description schema using BPMN 2.0 vocabulary, plus a governance block, published at a static URL and registered in SchemaStore (spec 04). Brandon reviews v1. |
+| D5 | Seller of record: legal entity, Stripe account, VAT | **Later.** Brandon's business entity with Stripe Tax on. Blocks live payments only; everything runs in Stripe test mode until then. |
+| D6 | Pricing and currency | **Later.** EUR, packs of 10/50/200 credits. Placeholders until Brandon sets them. |
+| D7 | How agents deploy to Cloudflare | **Later.** Workers Builds (Git integration) for both Workers, plus one scoped API token for provisioning, held as a session secret, never in a repo. Blocks spec 06 only. |
+| D8 | Move the site into `apps/site` | **Decided:** yes, as its own PR, verified on a preview first |
+| D9 | Hostname and CLI package name | **Decided:** `mcp.brandonverzuu.com`; npm package `@brandonverzuu/expertise` (binary `bv-expertise`) |
