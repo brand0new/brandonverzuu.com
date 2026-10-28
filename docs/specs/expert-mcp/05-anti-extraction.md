@@ -33,7 +33,9 @@ Per account, held in the `AccountGuard` Durable Object:
 ## Result shaping (`guard.shape`)
 
 - Strip `telemetry` before anything leaves.
-- Scores as bands only.
+- Ratings are whole numbers 0–100 per dimension (D14). For `throttled` accounts
+  they're rounded to the nearest 10, so small probes can't read single-penalty
+  differences.
 - Finding ids are random per response, so findings can't be joined across
   responses by id.
 - Findings are capped per dimension when the account is `throttled`, sorted by

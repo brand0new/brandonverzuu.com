@@ -42,8 +42,6 @@ export interface CheckRequest {
 
 export type Severity = "error" | "warning" | "info";
 
-export type Band = "A" | "B" | "C" | "D" | "E";
-
 export interface Finding {
   /** Opaque per response, not a stable rule id. */
   id: string;
@@ -58,7 +56,8 @@ export interface Finding {
 
 export interface DimensionScore {
   dimension: string;
-  band: Band;
+  /** Rating from 0 (worst) to 100 (best), a whole number (decision D14). */
+  score: number;
 }
 
 export interface CheckResult {

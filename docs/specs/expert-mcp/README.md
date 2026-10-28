@@ -53,7 +53,7 @@ PUBLIC  brand0new/brandonverzuu.com (this repo, monorepo)
 
 PRIVATE brand0new/expertise (separate private repo)
   rule packs           declarative rules: what is checked, severities, messages, fixes
-  scoring models       dimensions, weights, bands
+  scoring models       dimensions, weights, severity penalties
   bespoke checks       any check logic that is itself IP
   → deployed as Worker "expert-rules": no public route, reachable only through a
     service binding from the gateway
@@ -64,9 +64,10 @@ executable logic, and Workers can't safely run code loaded at runtime. A private
 repo deployed by Cloudflare's Git integration keeps the code out of public view,
 keeps it under version control, and lets Brandon edit rules like any other code.
 
-What leaves the rules Worker: findings and score *bands* for one artifact. What
-never leaves: rule definitions, the full rule list, conditions, thresholds,
-weights, raw scores and anything not triggered by the buyer's artifact.
+What leaves the rules Worker: findings and a 0–100 rating per dimension for one
+artifact (D14). What never leaves: rule definitions, the full rule list,
+conditions, thresholds, weights, penalties and anything not triggered by the
+buyer's artifact.
 
 ## What "prevent distillation" still means
 
@@ -82,8 +83,10 @@ state the standard being applied. That's the product, and it's accepted. Control
 3. **Probing is detectable**: near-duplicate artifacts, synthetic minimal
    artifacts, and accounts that systematically trigger an unusual share of the rule
    pack are throttled, then frozen.
-4. **Results are coarse where precision would leak the model**: score bands, not
-   raw scores; findings don't expose thresholds; no "explain this rule" endpoint.
+4. **Results don't explain the model**: findings don't expose thresholds, there's
+   no "explain this rule" endpoint, and throttled accounts get coarser results.
+   Ratings are 0–100 per dimension (D14), which tells a prober more than grades
+   did. That's accepted, and spec 05 watches for it.
 5. **Leaks are attributable and actionable**: per-account phrasing variants in
    messages, and terms that forbid reconstruction, training and resale.
 
@@ -182,7 +185,7 @@ interface Finding {
 
 interface CheckResult {
   findings: Finding[]
-  scores: { dimension: string; band: 'A' | 'B' | 'C' | 'D' | 'E' }[]
+  scores: { dimension: string; score: number }[]   // 0–100, whole numbers (D14)
   rulePackVersion: string       // opaque label, e.g. "2026.10"
   telemetry: { triggered: string[] }   // stable rule ids: for the guard only, stripped before responding
 }
@@ -232,6 +235,7 @@ authenticate → validate + parse → payments.quote → guard.admit
 | D7 | How agents deploy to Cloudflare | **Later.** Workers Builds (Git integration) for both Workers, plus one scoped API token for provisioning, held as a session secret, never in a repo. Blocks spec 06 only. |
 | D8 | Move the site into `apps/site` | **Decided:** yes, as its own PR, verified on a preview first |
 | D13 | Payment rails | **Decided:** x402 and MPP only, pay per check; no ACP, packs or balance. See [decisions/D13-payment-rails.md](decisions/D13-payment-rails.md). |
+| D14 | Scoring, test rules, de-duplication | **Decided:** 0–100 rating per dimension, no grades; no fake rule packs anywhere; findings stay de-duplicated per rule and location. See [decisions/D14-scoring.md](decisions/D14-scoring.md). |
 | D9 | Hostname and CLI package name | **Decided:** `mcp.brandonverzuu.com`; npm package `@brandonverzuu/expertise` (binary `bv-expertise`) |
 | D10 | Free trial | **Decided:** none. Every check is paid. |
 | D11 | Data location | **Decided:** EU only (spec 06). |
