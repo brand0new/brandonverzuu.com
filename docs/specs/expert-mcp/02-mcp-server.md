@@ -1,5 +1,7 @@
 # 02: Gateway: MCP, REST, auth and accounts (`apps/expert-mcp`)
 
+Status: **implemented** in `apps/expert-mcp` (PR pending review). ACP checkout tools and `/.well-known/acp.json` wait for specs 01 and 03.
+
 ## Scope
 
 The public gateway Worker: MCP Streamable HTTP, a REST surface for the CLI and CI,
