@@ -15,17 +15,19 @@ because there's no LLM and no corpus on the server.
 Per account, held in the `AccountGuard` Durable Object:
 
 - Rate limits per minute, hour and day, per check kind.
-- No free trial and no free credits: every check is paid, so probing always costs
-  money (decision D10).
-- Credit spend ceilings per rolling 24 hours and 30 days, independent of balance. New
+- No free trial: every check is paid per request, so probing always costs
+  money (decisions D10, D13).
+- Spending ceilings in EUR per rolling 24 hours and 30 days. New
   accounts start low; the ceiling grows with account age and clean history.
-- Linked identities share one budget: same hashed card fingerprint, same OAuth
-  client, same non-free-mail email domain, same CLI install id.
-- Status gate: `throttled` → reduced limits and coarser results; `frozen` → ACP
-  `forbidden`, nothing runs, nothing charged.
+- Linked identities share one budget: same bound wallet or hashed card fingerprint
+  (spec 03), same OAuth client, same non-free-mail email domain, same CLI install
+  id. Payments only count from payers bound to an account, so fresh wallets add
+  no identities.
+- Status gate: `throttled` → reduced limits and coarser results; `frozen` → a
+  `forbidden` error, nothing runs, nothing charged.
 - **Near-duplicate gate:** the gateway computes a structural signature of each
   artifact (normalised AST hash plus a MinHash of its paths and keys). An artifact
-  very close to recent submissions from the same identity costs full credits again
+  very close to recent submissions from the same identity costs the full price again
   and adds to the anomaly score. Small diffs are the signature of a probe.
 
 ## Result shaping (`guard.shape`)
@@ -70,8 +72,8 @@ or a reconstructed rule set can be traced back to likely accounts with
 
 ## Kill switch and admin
 
-- `CHECKS_ENABLED` flag in KV disables all paid checks instantly; checkout and
-  balance keep working.
+- `CHECKS_ENABLED` flag in KV disables all paid checks instantly; account,
+  prices and statements keep working.
 - Admin actions (freeze, unfreeze, refund, anomaly report) only through
   `apps/expert-mcp/cli/admin.ts` with Brandon's own Cloudflare credentials. No admin
   HTTP routes.

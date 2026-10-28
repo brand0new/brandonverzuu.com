@@ -1,0 +1,265 @@
+# yaml-language-server: $schema=../schemas/process-description.schema.json
+# Example: supplier invoice approval at a mid-sized company. Illustrative only.
+$schema: https://brandonverzuu.com/schemas/process-description/v1.json
+processDescription: "1.0"
+process:
+  id: Process_InvoiceApproval
+  name: Supplier invoice approval
+  version: "3.2"
+  description: >-
+    From receipt of a supplier invoice to its release for payment. Invoices are
+    matched against the purchase order and goods receipt in the ERP before a budget
+    holder approves them.
+  participants:
+    - id: Participant_Acme
+      name: Acme Ltd
+    - id: Participant_Supplier
+      name: Supplier
+      external: true
+  lanes:
+    - id: Lane_APClerk
+      name: Accounts payable clerk
+      participant: Participant_Acme
+    - id: Lane_BudgetHolder
+      name: Budget holder
+      participant: Participant_Acme
+    - id: Lane_Controller
+      name: Financial controller
+      participant: Participant_Acme
+    - id: Lane_ERP
+      name: ERP system
+      participant: Participant_Acme
+  events:
+    - id: Event_InvoiceReceived
+      name: Invoice received
+      position: start
+      trigger: message
+      lane: Lane_APClerk
+    - id: Event_ApprovalOverdue
+      name: Approval overdue
+      position: boundary
+      trigger: timer
+      attachedTo: Task_ApproveInvoice
+      interrupting: false
+      timer:
+        duration: P3D
+    - id: Event_Released
+      name: Invoice released for payment
+      position: end
+      lane: Lane_ERP
+    - id: Event_Rejected
+      name: Invoice rejected
+      position: end
+      trigger: message
+      lane: Lane_APClerk
+  tasks:
+    - id: Task_RegisterInvoice
+      name: Register invoice
+      type: user
+      lane: Lane_APClerk
+      inputs: [Data_Invoice]
+      outputs: [Data_InvoiceRecord]
+    - id: Task_ThreeWayMatch
+      name: Match invoice to purchase order and goods receipt
+      type: service
+      lane: Lane_ERP
+      implementation: ERP matching engine
+      inputs: [Data_InvoiceRecord, Data_PurchaseOrder, Data_GoodsReceipt]
+      outputs: [Data_MatchResult]
+    - id: Task_ResolveMismatch
+      name: Resolve mismatch with supplier and buyer
+      type: user
+      lane: Lane_APClerk
+      inputs: [Data_MatchResult]
+    - id: Task_ApproveInvoice
+      name: Approve invoice
+      type: user
+      lane: Lane_BudgetHolder
+      inputs: [Data_InvoiceRecord, Data_MatchResult]
+      outputs: [Data_Approval]
+    - id: Task_ControllerApproval
+      name: Second approval above threshold
+      type: user
+      lane: Lane_Controller
+      inputs: [Data_InvoiceRecord, Data_Approval]
+      outputs: [Data_Approval]
+    - id: Task_RemindApprover
+      name: Remind budget holder
+      type: send
+      lane: Lane_ERP
+    - id: Task_ReleaseForPayment
+      name: Release for payment run
+      type: service
+      lane: Lane_ERP
+      inputs: [Data_Approval]
+    - id: Task_NotifyRejection
+      name: Notify supplier of rejection
+      type: send
+      lane: Lane_APClerk
+  gateways:
+    - id: Gateway_Matched
+      name: Matched?
+      type: exclusive
+      direction: diverging
+      lane: Lane_ERP
+      default: Flow_Mismatch
+    - id: Gateway_Approved
+      name: Approved?
+      type: exclusive
+      direction: diverging
+      lane: Lane_BudgetHolder
+      default: Flow_Rejected
+    - id: Gateway_Amount
+      name: Above second-approval threshold?
+      type: exclusive
+      direction: diverging
+      lane: Lane_BudgetHolder
+      default: Flow_BelowThreshold
+    - id: Gateway_Join
+      type: exclusive
+      direction: converging
+      lane: Lane_ERP
+  flows:
+    - {
+        id: Flow_1,
+        source: Event_InvoiceReceived,
+        target: Task_RegisterInvoice,
+      }
+    - { id: Flow_2, source: Task_RegisterInvoice, target: Task_ThreeWayMatch }
+    - { id: Flow_3, source: Task_ThreeWayMatch, target: Gateway_Matched }
+    - id: Flow_Matched
+      source: Gateway_Matched
+      target: Task_ApproveInvoice
+      condition: All lines match within tolerance
+    - {
+        id: Flow_Mismatch,
+        source: Gateway_Matched,
+        target: Task_ResolveMismatch,
+      }
+    - { id: Flow_4, source: Task_ResolveMismatch, target: Task_ThreeWayMatch }
+    - { id: Flow_5, source: Task_ApproveInvoice, target: Gateway_Approved }
+    - id: Flow_ApprovedYes
+      source: Gateway_Approved
+      target: Gateway_Amount
+      condition: Budget holder approves
+    - {
+        id: Flow_Rejected,
+        source: Gateway_Approved,
+        target: Task_NotifyRejection,
+      }
+    - id: Flow_AboveThreshold
+      source: Gateway_Amount
+      target: Task_ControllerApproval
+      condition: Invoice total above the second-approval threshold in the approval policy
+    - { id: Flow_BelowThreshold, source: Gateway_Amount, target: Gateway_Join }
+    - { id: Flow_6, source: Task_ControllerApproval, target: Gateway_Join }
+    - { id: Flow_7, source: Gateway_Join, target: Task_ReleaseForPayment }
+    - { id: Flow_8, source: Task_ReleaseForPayment, target: Event_Released }
+    - { id: Flow_9, source: Task_NotifyRejection, target: Event_Rejected }
+    - {
+        id: Flow_10,
+        source: Event_ApprovalOverdue,
+        target: Task_RemindApprover,
+      }
+  messages:
+    - id: Message_Invoice
+      name: Invoice
+      source: Participant_Supplier
+      target: Event_InvoiceReceived
+      payload: [Data_Invoice]
+      channel: e-invoicing network
+    - id: Message_Rejection
+      name: Rejection notice
+      source: Task_NotifyRejection
+      target: Participant_Supplier
+      channel: email
+  dataObjects:
+    - { id: Data_Invoice, name: Supplier invoice }
+    - { id: Data_InvoiceRecord, name: Invoice record, state: registered }
+    - { id: Data_PurchaseOrder, name: Purchase order }
+    - { id: Data_GoodsReceipt, name: Goods receipt }
+    - { id: Data_MatchResult, name: Match result }
+    - { id: Data_Approval, name: Approval record }
+governance:
+  owner:
+    name: Head of Finance Operations
+    role: Lane_Controller
+  reviewCadence: P1Y
+  lastReviewed: "2026-03-15"
+  raci:
+    - task: Task_RegisterInvoice
+      responsible: [Lane_APClerk]
+      accountable: Lane_Controller
+    - task: Task_ApproveInvoice
+      responsible: [Lane_BudgetHolder]
+      accountable: Lane_BudgetHolder
+      informed: [Lane_APClerk]
+    - task: Task_ControllerApproval
+      responsible: [Lane_Controller]
+      accountable: Lane_Controller
+    - task: Task_ResolveMismatch
+      responsible: [Lane_APClerk]
+      accountable: Lane_Controller
+      consulted: [Lane_BudgetHolder]
+  controls:
+    - id: Control_ThreeWayMatch
+      name: Three-way match before approval
+      type: preventive
+      automation: automated
+      appliesTo: [Task_ThreeWayMatch, Gateway_Matched]
+      frequency: per transaction
+      evidence: [Evidence_MatchLog]
+    - id: Control_SegregationOfDuties
+      name: Registrar cannot approve the same invoice
+      type: preventive
+      automation: automated
+      appliesTo: [Task_ApproveInvoice, Task_ControllerApproval]
+      performedBy: Lane_ERP
+      references:
+        - catalog: https://raw.githubusercontent.com/usnistgov/oscal-content/main/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json
+          controlId: ac-5
+      evidence: [Evidence_ApprovalTrail]
+  exceptions:
+    - id: Exception_NoPurchaseOrder
+      name: Invoice without purchase order
+      raisedAt: [Task_ThreeWayMatch]
+      handling: The clerk asks the requester to raise a retrospective purchase order.
+      handledBy: Task_ResolveMismatch
+      escalateTo: Lane_Controller
+  slas:
+    - id: SLA_Approval
+      name: Approval turnaround
+      from: Task_ApproveInvoice
+      to: Gateway_Approved
+      target: P3D
+      calendar: business
+      attainment: 95
+      owner: Lane_BudgetHolder
+  kpis:
+    - id: KPI_TouchlessRate
+      name: Share of invoices matched without manual work
+      unit: percent
+      direction: increase
+      frequency: monthly
+      source: System_ERP
+  systemsOfRecord:
+    - id: System_ERP
+      name: ERP
+      records:
+        [
+          Data_InvoiceRecord,
+          Data_PurchaseOrder,
+          Data_GoodsReceipt,
+          Data_Approval,
+        ]
+  evidence:
+    - id: Evidence_MatchLog
+      name: Match log
+      producedBy: [Task_ThreeWayMatch]
+      storedIn: System_ERP
+      retention: P7Y
+    - id: Evidence_ApprovalTrail
+      name: Approval audit trail
+      producedBy: [Task_ApproveInvoice, Task_ControllerApproval]
+      storedIn: System_ERP
+      retention: P7Y
