@@ -170,6 +170,16 @@ export class StubPaymentGate implements PaymentGate {
   }
 }
 
+/** A whole number 0–100 (decision D14). */
+export function clampScore(score: number): number {
+  return Math.min(100, Math.max(0, Math.round(score)));
+}
+
+/** Rounded to the nearest 10, for throttled accounts (spec 05). */
+export function coarseScore(score: number): number {
+  return Math.round(clampScore(score) / 10) * 10;
+}
+
 export class StubGuard implements Guard {
   readonly recorded: {
     accountId: string;
@@ -186,16 +196,24 @@ export class StubGuard implements Guard {
     return { admitted: true };
   }
 
+  /** Accounts the stub treats as throttled (spec 05 decides this for real). */
+  readonly throttled = new Set<string>();
+
   async shape({
+    accountId,
     result,
   }: {
     accountId: string;
     result: CheckResult;
   }): Promise<PublicResult> {
     // The real guard also randomises ids and caps findings when throttled.
+    const throttled = this.throttled.has(accountId);
     return {
       findings: result.findings,
-      scores: result.scores,
+      scores: result.scores.map(({ dimension, score }) => ({
+        dimension,
+        score: throttled ? coarseScore(score) : clampScore(score),
+      })),
       rulePackVersion: result.rulePackVersion,
     };
   }
@@ -224,7 +242,7 @@ export class StubRules implements RulesService {
           dimension: "stub",
         },
       ],
-      scores: [{ dimension: "stub", band: "C" }],
+      scores: [{ dimension: "stub", score: 73 }],
       rulePackVersion: "stub",
       telemetry: { triggered: ["stub"] },
     };

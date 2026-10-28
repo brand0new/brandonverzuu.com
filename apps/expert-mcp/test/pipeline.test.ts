@@ -92,6 +92,34 @@ describe("runPaidCheck", () => {
     expect(recorded[0]!.artifactSignature).toMatch(/^[0-9a-f]{64}$/);
   });
 
+  it("returns 0–100 scores, rounded to the nearest 10 for throttled accounts (D14, spec 05)", async () => {
+    const account = await createAccount();
+    const { ctx, services } = makeContext(account);
+    expect((await paid(ctx, "skill-design")).result.scores).toEqual([
+      { dimension: "stub", score: 73 },
+    ]);
+    (services.guard as StubGuard).throttled.add(account.id);
+    ctx.rules = {
+      run: async () => ({
+        findings: [],
+        scores: [
+          { dimension: "a", score: 73 },
+          { dimension: "b", score: 75 },
+          { dimension: "c", score: 104.6 },
+          { dimension: "d", score: -3 },
+        ],
+        rulePackVersion: "t",
+        telemetry: { triggered: [] },
+      }),
+    };
+    expect((await paid(ctx, "skill-design")).result.scores).toEqual([
+      { dimension: "a", score: 70 },
+      { dimension: "b", score: 80 },
+      { dimension: "c", score: 100 },
+      { dimension: "d", score: 0 },
+    ]);
+  });
+
   it("voids when the rules Worker fails", async () => {
     const account = await createAccount();
     const { ctx, services, settle } = makeContext(account);

@@ -8,10 +8,10 @@
 
 import type {
   Artifact,
-  Band,
   CheckKind,
   CheckRequest,
   CheckResult,
+  DimensionScore,
   Finding,
   RulesService,
   SkillFile,
@@ -22,6 +22,7 @@ export type {
   CheckKind,
   CheckRequest,
   CheckResult,
+  DimensionScore,
   Finding,
   RulesService,
 };
@@ -41,7 +42,6 @@ export function isCheckKind(value: string): value is CheckKind {
 }
 
 export type ArtifactFile = SkillFile;
-export type ScoreBand = Band;
 export type CheckOptions = CheckRequest["options"];
 
 /**
@@ -246,10 +246,14 @@ export type Admission =
       retryAfterSeconds?: number;
     };
 
-/** A `CheckResult` as it may leave the gateway: no telemetry, bands only. */
+/**
+ * A `CheckResult` as it may leave the gateway: no telemetry. Scores are whole
+ * numbers 0–100 per dimension (decision D14), rounded to the nearest 10 for
+ * throttled accounts (spec 05).
+ */
 export interface PublicResult {
   findings: Finding[];
-  scores: { dimension: string; band: ScoreBand }[];
+  scores: DimensionScore[];
   rulePackVersion: string;
 }
 

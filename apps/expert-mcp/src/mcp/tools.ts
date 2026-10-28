@@ -61,11 +61,11 @@ export interface ToolDeps {
 
 const DESCRIPTIONS: Record<CheckKind, string> = {
   "api-governance":
-    "Run Brandon Verzuu's API governance check on an OpenAPI 3.0 or 3.1 document. Returns findings (severity, JSONPath location, issue, fix) and a governance score band per dimension.",
+    "Run Brandon Verzuu's API governance check on an OpenAPI 3.0 or 3.1 document. Returns findings (severity, JSONPath location, issue, fix) and a governance score from 0 to 100 per dimension.",
   "skill-design":
-    "Run Brandon Verzuu's skill design check on an Agent Skill folder (SKILL.md plus files). Returns findings by file and line and a score band per dimension.",
+    "Run Brandon Verzuu's skill design check on an Agent Skill folder (SKILL.md plus files). Returns findings by file and line and a score from 0 to 100 per dimension.",
   "process-review":
-    "Review a process description in the public Process Description format (see get_process_schema). Returns findings by element id and a score band per dimension.",
+    "Review a process description in the public Process Description format (see get_process_schema). Returns findings by element id and a score from 0 to 100 per dimension.",
 };
 
 const findingSchema = z.object({
@@ -93,7 +93,7 @@ const paidOutputSchema = z.object({
   scores: z.array(
     z.object({
       dimension: z.string(),
-      band: z.enum(["A", "B", "C", "D", "E"]),
+      score: z.number().int().min(0).max(100),
     }),
   ),
   rulePackVersion: z.string(),
