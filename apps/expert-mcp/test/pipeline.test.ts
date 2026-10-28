@@ -30,9 +30,9 @@ async function paymentFor(
   input: unknown,
   overrides?: Parameters<typeof stubPayment>[1],
 ): Promise<PaymentProof> {
-  const { artifact } = await parseArtifact(kind, input);
+  const parsed = await parseArtifact(kind, input);
   return stubPayment(
-    await ctx.payments.quote(kind, artifact, ctx.account),
+    await ctx.payments.quote(kind, parsed, ctx.account),
     overrides,
   );
 }

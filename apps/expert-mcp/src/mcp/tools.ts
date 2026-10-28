@@ -274,7 +274,7 @@ export function registerTools(mcp: McpServer, deps: ToolDeps): void {
       const ctx = await context();
       const parsed = await parseArtifact(kind, input);
       return {
-        price: await ctx.payments.quote(kind, parsed.artifact, ctx.account),
+        price: await ctx.payments.quote(kind, parsed, ctx.account),
       };
     },
   );

@@ -1,94 +1,62 @@
 // Shared interfaces from docs/specs/expert-mcp/README.md ("Shared interfaces").
 //
-// TODO(spec 04): `CheckKind`, `Artifact`, `CheckRequest`, `Finding`, `CheckResult`
-// and `RulesService` move to `packages/engine-api`. Once it merges, import them
-// from there and delete the copies below. Keep these in step with the README
-// until then: the rules Worker is built against the same shapes.
+// The contract with the rules Worker comes from `@brandonverzuu/engine-api`
+// (spec 04); this file re-exports it and adds the gateway's own interfaces.
 //
 // TODO(spec 03): `PaymentGate` and `IdempotencyStore` get their D1 and rail
 // implementations there. TODO(spec 05): `Guard` and `PublicResult`.
 
+import type {
+  Artifact,
+  Band,
+  CheckKind,
+  CheckRequest,
+  CheckResult,
+  Finding,
+  RulesService,
+  SkillFile,
+} from "@brandonverzuu/engine-api";
+
+export type {
+  Artifact,
+  CheckKind,
+  CheckRequest,
+  CheckResult,
+  Finding,
+  RulesService,
+};
+
 // ---------------------------------------------------------------------------
-// engine-api (spec 04)
+// engine-api helpers
 // ---------------------------------------------------------------------------
 
 export const CHECK_KINDS = [
   "api-governance",
   "skill-design",
   "process-review",
-] as const;
-export type CheckKind = (typeof CHECK_KINDS)[number];
+] as const satisfies readonly CheckKind[];
 
 export function isCheckKind(value: string): value is CheckKind {
   return (CHECK_KINDS as readonly string[]).includes(value);
 }
 
-export interface ArtifactFile {
-  path: string;
-  content: string;
-}
+export type ArtifactFile = SkillFile;
+export type ScoreBand = Band;
+export type CheckOptions = CheckRequest["options"];
 
 /**
- * An artifact after the gateway has size-checked, parsed and validated it.
- * Placeholder shape until `packages/engine-api` defines `Artifact`; `check-kit`
- * parsers will replace the gateway's own parsing in src/artifact.ts.
+ * An artifact after the gateway has size-checked, parsed and validated it:
+ * the engine-api `Artifact` that crosses the service binding, plus the parsed
+ * document the gateway itself needs (the operation count for pricing).
  */
-export type Artifact =
-  | {
-      kind: "api-governance";
-      format: "json" | "yaml";
-      /** The submitted text, kept so locations can be mapped to lines. */
-      text: string;
-      document: unknown;
-    }
-  | {
-      kind: "skill-design";
-      files: ArtifactFile[];
-    }
-  | {
-      kind: "process-review";
-      format: "json" | "yaml";
-      text: string;
-      document: unknown;
-    };
-
-export interface CheckOptions {
-  locale?: string;
-}
-
-export interface CheckRequest {
-  kind: CheckKind;
+export interface ParsedArtifact {
   artifact: Artifact;
+  /** The parsed JSON/YAML document; absent for skills. */
+  document?: unknown;
   options: CheckOptions;
-  /** Per-account HMAC, for phrasing variants (spec 05). */
-  variantSeed: string;
-}
-
-export interface Finding {
-  /** Opaque per response, not a stable rule id. */
-  id: string;
-  severity: "error" | "warning" | "info";
-  /** JSONPath, file:line or step id in the buyer's artifact. */
-  location: string;
-  message: string;
-  fix: string;
-  dimension: string;
-}
-
-export type ScoreBand = "A" | "B" | "C" | "D" | "E";
-
-export interface CheckResult {
-  findings: Finding[];
-  scores: { dimension: string; band: ScoreBand }[];
-  /** Opaque label, e.g. "2026.10". */
-  rulePackVersion: string;
-  /** Stable rule ids, for the guard only. Stripped before responding. */
-  telemetry: { triggered: string[] };
-}
-
-/** The rules Worker's entrypoint, reached over the RULES service binding. */
-export interface RulesService {
-  run(req: CheckRequest): Promise<CheckResult>;
+  /** Placeholder structural signature for guard.record (spec 05 replaces it). */
+  signature: string;
+  bytes: number;
 }
 
 // ---------------------------------------------------------------------------
@@ -223,7 +191,11 @@ export interface PaymentReceipt {
 
 export interface PaymentGate {
   /** EUR minor units, VAT applied per account. */
-  quote(kind: CheckKind, artifact: Artifact, account: Account): Promise<Price>;
+  quote(
+    kind: CheckKind,
+    parsed: ParsedArtifact,
+    account: Account,
+  ): Promise<Price>;
   /** The 402 body: x402 requirements + MPP challenge. */
   challenge(ctx: {
     account: Account;

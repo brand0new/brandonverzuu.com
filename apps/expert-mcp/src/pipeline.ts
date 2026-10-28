@@ -79,7 +79,7 @@ export async function runPaidCheck(
   }
 
   // 3. Quote: the price is known from the parsed artifact before any payment.
-  const price = await ctx.payments.quote(kind, parsed.artifact, account);
+  const price = await ctx.payments.quote(kind, parsed, account);
 
   // 4. Admission.
   const admission = await ctx.guard.admit({

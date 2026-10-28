@@ -3,7 +3,7 @@
 
 import { NL_VAT_RATE_BP, type PriceRow } from "./config";
 import { GatewayError } from "./errors";
-import type { Artifact, Price, VatTreatment } from "./types";
+import type { ParsedArtifact, Price, VatTreatment } from "./types";
 
 const HTTP_METHODS = [
   "get",
@@ -43,16 +43,20 @@ export function countOperations(document: unknown): number {
 /** Net price in EUR minor units for one artifact, before VAT. */
 export function netAmount(
   row: PriceRow,
-  artifact: Artifact,
+  parsed: ParsedArtifact,
 ): { net: number; operations?: number } {
   if (!row.active)
     throw new GatewayError(
       "checks_disabled",
       "This check isn't on sale right now. Nothing was charged.",
     );
-  if (artifact.kind !== "api-governance" || !row.stepOps || !row.stepAmount)
+  if (
+    parsed.artifact.kind !== "api-governance" ||
+    !row.stepOps ||
+    !row.stepAmount
+  )
     return { net: row.baseAmount };
-  const operations = countOperations(artifact.document);
+  const operations = countOperations(parsed.document);
   const steps = Math.ceil(Math.max(0, operations - row.stepOps) / row.stepOps);
   return { net: row.baseAmount + steps * row.stepAmount, operations };
 }
@@ -64,10 +68,10 @@ export function vatAmount(net: number, rateBp: number): number {
 
 export function priceFor(
   row: PriceRow,
-  artifact: Artifact,
+  parsed: ParsedArtifact,
   treatment: VatTreatment,
 ): Price {
-  const { net, operations } = netAmount(row, artifact);
+  const { net, operations } = netAmount(row, parsed);
   const vatRateBp = treatment === "reverse_charge" ? 0 : NL_VAT_RATE_BP;
   const vat = vatAmount(net, vatRateBp);
   return {

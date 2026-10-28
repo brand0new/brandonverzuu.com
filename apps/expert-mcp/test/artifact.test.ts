@@ -24,8 +24,9 @@ describe("parseArtifact", () => {
     expect(yaml.artifact).toMatchObject({
       kind: "api-governance",
       format: "yaml",
-      document: { openapi: "3.0.3" },
+      content: openapi(),
     });
+    expect(yaml.document).toMatchObject({ openapi: "3.0.3" });
     const json = await parseArtifact("api-governance", {
       document: '{"openapi":"3.1.0","info":{},"paths":{}}',
     });
@@ -161,10 +162,8 @@ describe("parseArtifact", () => {
       document: "process:\n  id: p1\n",
       format: "yaml",
     });
-    expect(parsed.artifact).toMatchObject({
-      kind: "process-review",
-      document: { process: { id: "p1" } },
-    });
+    expect(parsed.artifact).toMatchObject({ kind: "process-review" });
+    expect(parsed.document).toEqual({ process: { id: "p1" } });
     expect(
       await code("process-review", { document: "- just\n- a list\n" }),
     ).toBe("invalid_artifact");

@@ -20,6 +20,7 @@ import type {
   CheckResult,
   Guard,
   IdempotencyStore,
+  ParsedArtifact,
   PaymentChallenge,
   PaymentGate,
   PaymentProof,
@@ -77,8 +78,8 @@ export class StubPaymentGate implements PaymentGate {
   private readonly usedNonces = new Set<string>();
   private nextId = 1;
 
-  async quote(kind: CheckKind, artifact: Artifact, _account: Account) {
-    return priceFor(DEFAULT_PRICES[kind], artifact, "nl_standard");
+  async quote(kind: CheckKind, parsed: ParsedArtifact, _account: Account) {
+    return priceFor(DEFAULT_PRICES[kind], parsed, "nl_standard");
   }
 
   async challenge({

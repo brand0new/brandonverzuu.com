@@ -1,20 +1,25 @@
 import { describe, expect, it } from "vitest";
 import { DEFAULT_PRICES } from "../src/config";
 import { countOperations, priceFor, vatAmount } from "../src/pricing";
-import type { Artifact } from "../src/types";
+import type { ParsedArtifact } from "../src/types";
 
-function openapi(operations: number): Artifact {
+function parsed(
+  artifact: ParsedArtifact["artifact"],
+  document?: unknown,
+): ParsedArtifact {
+  return { artifact, document, options: {}, signature: "", bytes: 0 };
+}
+
+function openapi(operations: number): ParsedArtifact {
   const paths: Record<string, Record<string, unknown>> = {};
   for (let i = 0; i < operations; i++) {
     const path = `/r${Math.floor(i / 2)}`;
     paths[path] = { ...paths[path], [i % 2 ? "post" : "get"]: {} };
   }
-  return {
-    kind: "api-governance",
-    format: "json",
-    text: "",
-    document: { openapi: "3.1.0", paths },
-  };
+  return parsed(
+    { kind: "api-governance", format: "json", content: "" },
+    { openapi: "3.1.0", paths },
+  );
 }
 
 describe("pricing (D6)", () => {
@@ -44,13 +49,11 @@ describe("pricing (D6)", () => {
   });
 
   it("prices skill design at EUR 5 and process review at EUR 15", () => {
-    const skill: Artifact = { kind: "skill-design", files: [] };
-    const process: Artifact = {
-      kind: "process-review",
-      format: "yaml",
-      text: "",
-      document: {},
-    };
+    const skill = parsed({ kind: "skill-design", files: [] });
+    const process = parsed(
+      { kind: "process-review", format: "yaml", content: "" },
+      {},
+    );
     expect(
       priceFor(DEFAULT_PRICES["skill-design"], skill, "nl_standard"),
     ).toMatchObject({ net: 500, vat: 105, total: 605, vatRateBp: 2100 });

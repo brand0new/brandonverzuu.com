@@ -11,7 +11,12 @@ import { z } from "zod";
 import { LIMITS } from "./config";
 import { sha256Hex } from "./crypto";
 import { GatewayError } from "./errors";
-import type { Artifact, ArtifactFile, CheckKind, CheckOptions } from "./types";
+import type {
+  ArtifactFile,
+  CheckKind,
+  CheckOptions,
+  ParsedArtifact,
+} from "./types";
 
 const encoder = new TextEncoder();
 
@@ -73,13 +78,7 @@ export type AnyCheckInput = CheckInput<CheckKind>;
 
 // --- Parsing -----------------------------------------------------------------
 
-export interface ParsedArtifact {
-  artifact: Artifact;
-  options: CheckOptions;
-  /** Placeholder structural signature for guard.record (spec 05 replaces it). */
-  signature: string;
-  bytes: number;
-}
+export type { ParsedArtifact };
 
 export async function parseArtifact(
   kind: CheckKind,
@@ -126,7 +125,8 @@ export async function parseArtifact(
   if (kind === "api-governance") checkOpenApi(document);
   else checkProcess(document);
   return {
-    artifact: { kind, format: detected, text, document },
+    artifact: { kind, format: detected, content: text },
+    document,
     options,
     signature: await sha256Hex(text),
     bytes,
