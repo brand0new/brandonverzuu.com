@@ -8,26 +8,21 @@ import { GatewayError } from "./errors";
 import {
   MemoryIdempotencyStore,
   StubGuard,
-  StubLedger,
-  StubPurchaseLinks,
+  StubPaymentGate,
   StubRules,
 } from "./stubs";
 import type {
   Flags,
   Guard,
   IdempotencyStore,
-  Ledger,
-  PurchaseLinks,
+  PaymentGate,
   RulesService,
-  UsageLog,
 } from "./types";
 
 export interface Services {
-  ledger: Ledger;
-  usage: UsageLog;
+  payments: PaymentGate;
   guard: Guard;
   rules: RulesService;
-  purchases: PurchaseLinks;
   idempotency: IdempotencyStore;
   flags: Flags;
 }
@@ -44,13 +39,10 @@ export function setDevServices(services: Services | undefined): void {
 }
 
 export function createDevServices(): Services {
-  const ledger = new StubLedger();
   return {
-    ledger,
-    usage: ledger,
+    payments: new StubPaymentGate(),
     guard: new StubGuard(),
     rules: new StubRules(),
-    purchases: new StubPurchaseLinks(),
     idempotency: new MemoryIdempotencyStore(),
     flags: { checksEnabled: async () => true },
   };
@@ -67,18 +59,16 @@ export function getServices(env: Env): Services {
       `${what} isn't available yet (${spec}).`,
     );
   };
-  const ledgerMissing = missing("The credit ledger", "spec 03");
+  const paymentsMissing = missing("Payments", "spec 03");
   return {
-    // TODO(spec 03): the D1 ledger, usage log, purchase links and idempotency store.
-    ledger: {
-      balance: ledgerMissing,
-      reserve: ledgerMissing,
-      commit: ledgerMissing,
-      refund: ledgerMissing,
-      grant: ledgerMissing,
+    // TODO(spec 03): x402 and MPP behind PaymentGate, and the D1 idempotency store.
+    payments: {
+      quote: paymentsMissing,
+      challenge: paymentsMissing,
+      verify: paymentsMissing,
+      settle: paymentsMissing,
+      void: paymentsMissing,
     },
-    usage: { recent: missing("Usage history", "spec 03") },
-    purchases: { create: missing("Purchase links", "spec 03") },
     idempotency: {
       get: missing("Idempotency", "spec 03"),
       put: missing("Idempotency", "spec 03"),

@@ -1,11 +1,22 @@
 // Errors a handler can turn into a precise answer. Anything else is an
 // internal error: the caller sees a generic message and the request id.
 
+import type { PaymentChallenge } from "./types";
+
 export type ErrorCode =
   | "invalid_request"
   | "invalid_artifact"
   | "artifact_too_large"
-  | "insufficient_credits"
+  | "payment_required"
+  | "payment_invalid"
+  | "payment_reused"
+  | "payment_expired"
+  | "wrong_amount"
+  | "payment_failed"
+  | "payer_not_bound"
+  | "payer_bound_elsewhere"
+  | "wallet_limit"
+  | "not_implemented"
   | "rate_limited"
   | "spend_ceiling"
   | "forbidden"
@@ -13,13 +24,23 @@ export type ErrorCode =
   | "check_failed"
   | "not_configured"
   | "request_not_idempotent"
-  | "not_found";
+  | "not_found"
+  | "conflict";
 
 const STATUS: Record<ErrorCode, number> = {
   invalid_request: 400,
   invalid_artifact: 400,
   artifact_too_large: 413,
-  insufficient_credits: 402,
+  payment_required: 402,
+  payment_invalid: 402,
+  payment_reused: 402,
+  payment_expired: 402,
+  wrong_amount: 402,
+  payment_failed: 402,
+  payer_not_bound: 403,
+  payer_bound_elsewhere: 409,
+  wallet_limit: 409,
+  not_implemented: 501,
   rate_limited: 429,
   spend_ceiling: 429,
   forbidden: 403,
@@ -28,6 +49,7 @@ const STATUS: Record<ErrorCode, number> = {
   not_configured: 503,
   request_not_idempotent: 422,
   not_found: 404,
+  conflict: 409,
 };
 
 export class GatewayError extends Error {
@@ -58,18 +80,24 @@ export class GatewayError extends Error {
   }
 }
 
-/** Thrown by `Ledger.reserve` when the balance can't cover the check. */
-export class InsufficientCredits extends GatewayError {
-  readonly balance: number;
-  readonly required: number;
+/**
+ * No payment attached, or the attached one was refused in a way the caller can
+ * fix by paying again: carries a fresh challenge (spec 03 "The payment flow").
+ */
+export class PaymentRequired extends GatewayError {
+  readonly challenge: PaymentChallenge;
 
-  constructor(balance: number, required: number) {
-    super(
-      "insufficient_credits",
-      `This check costs ${required} credits and the balance is ${balance}.`,
-    );
-    this.name = "InsufficientCredits";
-    this.balance = balance;
-    this.required = required;
+  constructor(
+    challenge: PaymentChallenge,
+    cause?: GatewayError,
+    message = "This check is paid per artifact. Pay with x402 or MPP and retry.",
+  ) {
+    super(cause?.code ?? "payment_required", cause?.message ?? message, {
+      cause,
+    });
+    this.name = "PaymentRequired";
+    // A refused payment that the caller can retry is still a 402.
+    (this as { status: number }).status = 402;
+    this.challenge = challenge;
   }
 }

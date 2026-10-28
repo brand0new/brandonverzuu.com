@@ -1,5 +1,5 @@
 // Validate + parse: the second step of the paid-check pipeline. Runs before any
-// credit is reserved, so a malformed or oversized artifact costs nothing.
+// anything is quoted or paid, so a malformed or oversized artifact costs nothing.
 //
 // TODO(spec 04): the parsers move to `packages/check-kit` (OpenAPI with $ref
 // resolution, Markdown + frontmatter AST, the process schema). This module keeps

@@ -1,7 +1,8 @@
 # expert-mcp
 
 The gateway Worker for the paid expertise checks: MCP, REST, OAuth and accounts.
-Spec: `docs/specs/expert-mcp/02-mcp-server.md`.
+Spec: `docs/specs/expert-mcp/02-mcp-server.md`. Checks are paid per artifact over
+x402 or MPP (decision D13, spec 03).
 
 It holds no rules. Those live in the private `brand0new/expertise` repo and run
 in a separate Worker behind the `RULES` service binding.
@@ -18,8 +19,10 @@ npx -w apps/expert-mcp wrangler d1 migrations apply COMMERCE --local
 npm run dev -w apps/expert-mcp         # http://localhost:8787
 ```
 
-In development the Ledger, Guard and RulesService are in-memory stubs
-(`src/stubs.ts`): every account starts with 100 credits and every check returns
+In development the PaymentGate, Guard and RulesService are in-memory stubs
+(`src/stubs.ts`): a paid check without a payment answers 402 with placeholder
+x402 requirements, the stub accepts any x402-shaped payload for the right amount
+(`stubPayment` in `src/stubs.ts`) and collects nothing, and every check returns
 one fake finding labelled `STUB FINDING`. Magic links are printed to the console.
 Staging and production never use the stubs; whatever isn't built yet answers
 `not_configured`.
@@ -30,6 +33,8 @@ Staging and production never use the stubs; whatever isn't built yet answers
 | --------------------------- | -------------------------------------------------------------- |
 | `src/index.ts`              | Routes, OAuth provider wiring, device-flow hook on `/token`    |
 | `src/pipeline.ts`           | `runPaidCheck`, the one paid-check pipeline                    |
+| `src/pricing.ts`            | D6 prices, operation count, VAT                                |
+| `src/payments/`             | Where x402 and MPP travel over HTTP and MCP                    |
 | `src/artifact.ts`           | Input schemas, limits and hardened parsing                     |
 | `src/mcp/`                  | `McpSession` (Durable Object), tools, Skills extension         |
 | `src/auth/`                 | Magic-link sign-in, consent, device flow, email senders        |

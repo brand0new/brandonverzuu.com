@@ -18,11 +18,9 @@ export async function createToolContext(
   return {
     account,
     requestId,
-    ledger: services.ledger,
+    payments: services.payments,
     guard: services.guard,
     rules: services.rules,
-    usage: services.usage,
-    purchases: services.purchases,
     flags: services.flags,
     env,
     waitUntil,

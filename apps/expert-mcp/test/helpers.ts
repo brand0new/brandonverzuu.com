@@ -44,11 +44,9 @@ export function makeContext(
   const ctx: ToolContext = {
     account,
     requestId: `req_test_${++counter}`,
-    ledger: services.ledger,
+    payments: services.payments,
     guard: services.guard,
     rules: services.rules,
-    usage: services.usage,
-    purchases: services.purchases,
     flags: services.flags,
     env,
     waitUntil: (p) => pending.push(p),
@@ -104,10 +102,21 @@ export async function connectMcp(options: {
   return { client, server };
 }
 
+export const SPY_PRICE = {
+  kind: "skill-design",
+  currency: "EUR",
+  net: 0,
+  vat: 0,
+  total: 0,
+  vatTreatment: "nl_standard",
+  vatRateBp: 2100,
+} as const;
+
 export function spyRunPaidCheck() {
   return vi.fn<ToolDeps["runPaidCheck"]>(async () => ({
     result: { findings: [], scores: [], rulePackVersion: "spy" },
-    creditsCharged: 0,
+    price: SPY_PRICE,
+    receipt: { rail: "x402", paymentId: "pay_spy" },
   }));
 }
 
@@ -132,3 +141,23 @@ export const VALID_INPUTS = {
     format: "yaml",
   },
 } as const;
+
+/** A stub x402 payload paying exactly what a 402 asked for (dev stub gate only). */
+export function stubPayloadFor(
+  required: { accepts: { amount: string }[] },
+  nonce = `0x${crypto.randomUUID().replace(/-/g, "")}`,
+) {
+  return {
+    x402Version: 2,
+    accepted: required.accepts[0],
+    payload: {
+      signature: "0xstub",
+      authorization: {
+        from: "0x000000000000000000000000000000000000dEaD",
+        to: "0x0000000000000000000000000000000000000000",
+        value: required.accepts[0]!.amount,
+        nonce,
+      },
+    },
+  };
+}

@@ -1,14 +1,49 @@
 import type { CheckKind } from "./types";
 
+/** One row of the `prices` table (spec 03), amounts in EUR minor units, excl. VAT. */
+export interface PriceRow {
+  kind: CheckKind;
+  baseAmount: number;
+  currency: "EUR";
+  /** API governance: operations included in the base price, and per step. */
+  stepOps: number | null;
+  stepAmount: number | null;
+  active: boolean;
+}
+
 /**
- * Credits per artifact. Placeholders until Brandon sets pricing (decision D6);
- * spec 03 may move them into the products table.
+ * Prices per check from decision D6, excluding VAT. Spec 03 seeds the D1
+ * `prices` table with the same numbers; this copy is the development default.
  */
-export const CHECK_PRICES: Record<CheckKind, number> = {
-  "api-governance": 1,
-  "skill-design": 1,
-  "process-review": 1,
+export const DEFAULT_PRICES: Record<CheckKind, PriceRow> = {
+  "skill-design": {
+    kind: "skill-design",
+    baseAmount: 500,
+    currency: "EUR",
+    stepOps: null,
+    stepAmount: null,
+    active: true,
+  },
+  "api-governance": {
+    kind: "api-governance",
+    baseAmount: 1000,
+    currency: "EUR",
+    stepOps: 50,
+    stepAmount: 500,
+    active: true,
+  },
+  "process-review": {
+    kind: "process-review",
+    baseAmount: 1500,
+    currency: "EUR",
+    stepOps: null,
+    stepAmount: null,
+    active: true,
+  },
 };
+
+/** Dutch standard VAT rate, in basis points (spec 03 "VAT"). */
+export const NL_VAT_RATE_BP = 2100;
 
 /** Input limits per kind (spec 04), enforced before anything is parsed. */
 export const LIMITS = {

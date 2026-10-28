@@ -191,7 +191,7 @@ ${userCode ? '<p class="warn">That code isn\'t valid or has expired.</p>' : ""}
     `<h1>Allow ${name} to use your account?</h1>
 <p>Code <strong>${escape(row.user_code)}</strong>. Check that it matches the code in your terminal.</p>
 <p class="muted">This app registered itself; its name is not verified.</p>
-<p>It will be able to see your credit balance and usage, and run paid checks that spend your credits.</p>
+<p>It will be able to see your account, payers and statements, and run paid checks. Each check is paid separately, from a wallet or card you approve.</p>
 <form method="post" action="/device">
   <input type="hidden" name="user_code" value="${escape(row.user_code)}">
   ${termsCheckbox(env.TERMS_URL, env.TERMS_VERSION, account?.termsVersion)}

@@ -11,7 +11,7 @@ function instructions(env: Env, skills: BundledSkill[]): string {
   const skillList = skills.map((s) => `skill://${s.path}/SKILL.md`).join(", ");
   return [
     "Paid, deterministic checks by Brandon Verzuu: API governance (OpenAPI), skill design (Agent Skills) and process description review.",
-    "Each check costs credits per artifact. Always ask the user before spending credits or buying more.",
+    "Each check is paid per artifact over x402 (EURC or USDC on Base) or MPP (card, via Stripe): a paid tool called without a payment returns the payment requirements and runs nothing. Use quote_check for the price. Always ask the user before paying.",
     skills.length > 0
       ? `Before running a check, load the matching skill (${skillList}), or call get_skill if this client can't load skills.`
       : "Call get_skill to see how to prepare input for a check.",

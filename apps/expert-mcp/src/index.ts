@@ -7,8 +7,7 @@
 //   /device_authorization /device        RFC 8628 device flow (src/auth/device.ts)
 //   /signin /signin/verify               magic-link sign-in
 //   /healthz                             liveness, no data
-//   /.well-known/acp.json                TODO(spec 01/03): ACP discovery, 404 until packages/acp lands
-//   /webhooks/stripe                     TODO(spec 03), 404 until then
+//   /webhooks/stripe                     TODO(spec 03): MPP (Stripe) webhooks, 404 until then
 //
 // Everything else is 404. There are no admin routes.
 
@@ -132,10 +131,6 @@ const defaultHandler = {
         return handleDevicePage(request, env);
       case "POST /device":
         return handleDeviceDecision(request, env);
-      // TODO(spec 01/03): serve the ACP discovery document from packages/acp
-      // (transports: ["mcp"]) once that package merges.
-      case "GET /.well-known/acp.json":
-        return notFound();
       // TODO(spec 03): Stripe webhooks.
       case "POST /webhooks/stripe":
         return notFound();

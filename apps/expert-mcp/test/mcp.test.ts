@@ -3,12 +3,12 @@ import { describe, expect, it } from "vitest";
 import { z } from "zod";
 import { sdkObjectSchema } from "../src/mcp/sdk-schema";
 import { SKILLS_EXTENSION, type BundledSkill } from "../src/mcp/skills";
-import { STUB_STARTING_CREDITS } from "../src/stubs";
 import {
   connectMcp,
   createAccount,
   fixtureSkill,
   makeContext,
+  stubPayloadFor,
   VALID_INPUTS,
 } from "./helpers";
 
@@ -45,7 +45,11 @@ describe("MCP surface", () => {
     const { client } = await setup();
     const { tools } = await client.listTools();
     const check = tools.find((t) => t.name === "check_api_governance")!;
-    expect(check.description).toMatch(/Costs 1 credit per artifact/);
+    expect(check.description).toMatch(
+      /EUR 10\.00 excl\. VAT for up to 50 operations, \+EUR 5\.00 per further 50/,
+    );
+    expect(check.description).toMatch(/x402/);
+    expect(check.description).not.toMatch(/credit/i);
     expect(check.description).toMatch(/brandonverzuu\.com\/expert\/terms/);
     expect(check.inputSchema).toMatchObject({
       type: "object",
@@ -69,42 +73,52 @@ describe("MCP surface", () => {
     else expect((result as { isError?: boolean }).isError).toBe(true);
   });
 
-  it("runs a paid check and returns structured findings without telemetry", async () => {
+  it("returns the x402 payment requirements and the MPP challenge without a payment", async () => {
     const { client } = await setup();
     const result = await client.callTool({
       name: "check_api_governance",
       arguments: VALID_INPUTS["api-governance"],
     });
+    expect(result.isError).toBe(true);
+    const required = result.structuredContent as Record<string, unknown>;
+    expect(required).toMatchObject({
+      x402Version: 2,
+      resource: { url: "mcp://tool/check_api_governance" },
+      accepts: [{ scheme: "exact", amount: String(1210 * 10_000) }],
+    });
+    expect(JSON.parse((result.content as { text: string }[])[0]!.text)).toEqual(
+      required,
+    );
+    expect(result._meta?.["org.paymentauth/payment-required"]).toMatchObject({
+      httpStatus: 402,
+    });
+  });
+
+  it("runs a paid check on the retry with _meta x402/payment, without telemetry", async () => {
+    const { client } = await setup();
+    const first = await client.callTool({
+      name: "check_api_governance",
+      arguments: VALID_INPUTS["api-governance"],
+    });
+    const required = first.structuredContent as {
+      accepts: { amount: string }[];
+    };
+    const result = await client.callTool({
+      name: "check_api_governance",
+      arguments: VALID_INPUTS["api-governance"],
+      _meta: { "x402/payment": stubPayloadFor(required) },
+    });
     expect(result.isError).toBeFalsy();
     const structured = result.structuredContent as Record<string, unknown>;
     expect(structured).toMatchObject({
       rulePackVersion: "stub",
-      creditsCharged: 1,
+      price: { net: 1000, vat: 210, total: 1210 },
+      payment: { rail: "x402" },
     });
     expect(structured).not.toHaveProperty("telemetry");
-    const balance = await client.callTool({
-      name: "get_balance",
-      arguments: {},
+    expect(result._meta?.["x402/payment-response"]).toMatchObject({
+      success: true,
     });
-    expect(balance.structuredContent).toEqual({
-      balance: STUB_STARTING_CREDITS - 1,
-    });
-  });
-
-  it("reports insufficient credits as a tool error with a purchase hint", async () => {
-    const account = await createAccount();
-    const { ctx } = makeContext(account);
-    const { StubLedger } = await import("../src/stubs");
-    ctx.ledger = new StubLedger(0);
-    const { client } = await connectMcp({ context: async () => ctx });
-    const result = await client.callTool({
-      name: "check_skill_design",
-      arguments: VALID_INPUTS["skill-design"],
-    });
-    expect(result.isError).toBe(true);
-    expect(JSON.stringify(result.content)).toMatch(
-      /insufficient_credits.*get_purchase_link/,
-    );
   });
 
   it("returns only skill files from resources/list, and no prompts", async () => {

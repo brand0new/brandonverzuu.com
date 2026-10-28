@@ -5,21 +5,29 @@ import { z } from "zod";
 import { createApiToken, revokeApiToken } from "./accounts";
 import { createToolContext } from "./context";
 import { sha256Hex } from "./crypto";
-import { GatewayError } from "./errors";
+import { DEFAULT_PRICES } from "./config";
+import { GatewayError, PaymentRequired } from "./errors";
 import { log, newRequestId } from "./log";
+import {
+  challengeBody,
+  challengeHeaders,
+  proofFromHeaders,
+  receiptHeaders,
+} from "./payments/transport";
 import { runPaidCheck as defaultRunPaidCheck } from "./pipeline";
 import { getServices } from "./services";
-import { isCheckKind, type AuthProps, type ToolContext } from "./types";
+import {
+  CHECK_KINDS,
+  isCheckKind,
+  type AuthProps,
+  type ToolContext,
+} from "./types";
 
 /** Largest JSON body accepted on /v1 and /mcp, before any parsing. */
 export const MAX_BODY_BYTES = 4 * 1024 * 1024;
 
 const IDEMPOTENCY_KEY = /^[\x21-\x7e]{1,255}$/;
 
-const purchaseLinkBody = z.strictObject({
-  product_id: z.string().min(1).max(64),
-  quantity: z.number().int().min(1).max(10).optional(),
-});
 const tokenBody = z.strictObject({ label: z.string().max(100).optional() });
 
 interface RestDeps {
@@ -43,6 +51,15 @@ function json(
 }
 
 function errorResponse(error: unknown, requestId: string): Response {
+  if (error instanceof PaymentRequired) {
+    const headers = challengeHeaders(error.challenge);
+    headers.set("Content-Type", "application/problem+json");
+    headers.set("X-Request-Id", requestId);
+    return new Response(JSON.stringify(challengeBody(error, requestId)), {
+      status: 402,
+      headers,
+    });
+  }
   if (error instanceof GatewayError) {
     const headers: Record<string, string> = {};
     if (error.retryAfterSeconds !== undefined)
@@ -136,7 +153,11 @@ export function createRestHandler(
         log("info", "rest_request", {
           requestId,
           method: request.method,
-          route: route.startsWith("/v1/tokens/") ? "/v1/tokens/{id}" : route,
+          route: route.startsWith("/v1/tokens/")
+            ? "/v1/tokens/{id}"
+            : route.startsWith("/v1/wallets/")
+              ? "/v1/wallets/{id}"
+              : route,
           status,
           durationMs: Date.now() - started,
         });
@@ -174,18 +195,20 @@ async function route_(
     }
     const text = await readBodyText(request);
     const body = parseJson(text);
+    const proof = proofFromHeaders(request.headers);
     const tool = await context();
     const { idempotency } = getServices(env);
     const scope = `checks/${kind}`;
-    const requestHash = await sha256Hex(text);
+    const bodyHash = await sha256Hex(text);
     const previous = await idempotency.get(tool.account.id, scope, key);
     if (previous) {
-      if (previous.requestHash !== requestHash) {
+      if (previous.bodyHash !== bodyHash) {
         throw new GatewayError(
           "request_not_idempotent",
           "This Idempotency-Key was used with a different request.",
         );
       }
+      // Replays charge nothing: the payment attached to the replay is ignored.
       return new Response(previous.response, {
         status: 200,
         headers: {
@@ -195,29 +218,26 @@ async function route_(
         },
       });
     }
-    const { result, creditsCharged } = await deps.runPaidCheck(
+    const { result, price, receipt } = await deps.runPaidCheck(
       tool,
       kind,
       body,
+      { resource: `${env.PUBLIC_ORIGIN}${path}`, proof },
     );
     const responseBody = JSON.stringify({
       ...result,
-      creditsCharged,
+      price,
+      payment: { rail: receipt.rail, id: receipt.paymentId },
       request_id: requestId,
     });
-    await idempotency.put(
-      tool.account.id,
-      scope,
-      key,
-      requestHash,
-      responseBody,
-    );
+    await idempotency.put(tool.account.id, scope, key, bodyHash, responseBody);
     return new Response(responseBody, {
       status: 200,
       headers: {
         "Content-Type": "application/json",
         "X-Request-Id": requestId,
         "Cache-Control": "no-store",
+        ...receiptHeaders(receipt),
       },
     });
   }
@@ -230,26 +250,53 @@ async function route_(
         status: tool.account.status,
         terms_version: tool.account.termsVersion,
         current_terms_version: env.TERMS_VERSION,
-        balance: await tool.ledger.balance(tool.account.id),
+        // TODO(spec 03, step 2): bound payers, month-to-date spend, spending ceiling.
+        payers: [],
+        month_to_date: null,
+        spending_ceiling: null,
       },
       200,
       requestId,
     );
   }
 
-  if (path === "/v1/purchase-links" && method === "POST") {
-    const parsed = purchaseLinkBody.safeParse(
-      parseJson(await readBodyText(request)),
+  if (path === "/v1/prices" && method === "GET") {
+    // TODO(spec 03, step 2): read the D1 `prices` table.
+    return json(
+      {
+        currency: "EUR",
+        vat: "excluded",
+        prices: CHECK_KINDS.map((kind) => {
+          const row = DEFAULT_PRICES[kind];
+          return {
+            kind,
+            amount: row.baseAmount,
+            ...(row.stepOps
+              ? {
+                  included_operations: row.stepOps,
+                  step_operations: row.stepOps,
+                  step_amount: row.stepAmount,
+                }
+              : {}),
+          };
+        }),
+      },
+      200,
+      requestId,
     );
-    if (!parsed.success)
-      throw new GatewayError("invalid_request", z.prettifyError(parsed.error));
-    const tool = await context();
-    const link = await tool.purchases.create(
-      tool.account.id,
-      parsed.data.product_id,
-      parsed.data.quantity ?? 1,
+  }
+
+  // TODO(spec 03, step 2): wallet binding (EIP-191) and monthly statements.
+  if (
+    (path === "/v1/wallets" && method === "POST") ||
+    (/^\/v1\/wallets\/[^/]+$/.test(path) && method === "DELETE") ||
+    (path === "/v1/statements" && method === "GET")
+  ) {
+    await context();
+    throw new GatewayError(
+      "not_implemented",
+      "Not available yet (spec 03, payments).",
     );
-    return json(link, 201, requestId);
   }
 
   if (path === "/v1/tokens" && method === "POST") {

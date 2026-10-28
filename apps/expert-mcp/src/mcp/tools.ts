@@ -1,5 +1,7 @@
 // The MCP tool registry: three paid checks and the free account and help tools.
-// ACP checkout tools (spec 03) are added by that spec.
+// Paid tools follow the x402 MCP transport (spec 03): without a payment they
+// return the payment requirements as an error result; the retry carries the
+// payment in `_meta`.
 
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { RequestHandlerExtra } from "@modelcontextprotocol/sdk/shared/protocol.js";
@@ -9,12 +11,18 @@ import type {
   ServerRequest,
 } from "@modelcontextprotocol/sdk/types.js";
 import { z } from "zod";
-import { CHECK_INPUT_SCHEMAS } from "../artifact";
-import { CHECK_PRICES } from "../config";
-import { GatewayError } from "../errors";
+import { CHECK_INPUT_SCHEMAS, parseArtifact } from "../artifact";
+import { DEFAULT_PRICES } from "../config";
+import { GatewayError, PaymentRequired } from "../errors";
 import { log } from "../log";
+import {
+  paymentRequiredToolResult,
+  proofFromMcpMeta,
+  receiptMeta,
+} from "../payments/transport";
+import { formatEur } from "../pricing";
 import type { runPaidCheck as RunPaidCheck } from "../pipeline";
-import type { CheckKind, ToolContext } from "../types";
+import { CHECK_KINDS, type CheckKind, type ToolContext } from "../types";
 import { sdkSchema } from "./sdk-schema";
 import { findSkill, skillEntry, type BundledSkill } from "./skills";
 
@@ -27,10 +35,11 @@ export const PAID_TOOLS = {
 
 /** Tools that never charge. A tool in neither list fails the entry-point test. */
 export const FREE_TOOLS = [
-  "get_balance",
-  "get_usage",
+  "get_account",
+  "get_prices",
+  "quote_check",
+  "bind_wallet",
   "get_terms",
-  "get_purchase_link",
   "get_process_schema",
   "get_skill",
 ] as const;
@@ -68,6 +77,17 @@ const findingSchema = z.object({
   dimension: z.string(),
 });
 
+const priceSchema = z.object({
+  kind: z.string(),
+  currency: z.literal("EUR"),
+  net: z.number(),
+  vat: z.number(),
+  total: z.number(),
+  vatTreatment: z.enum(["reverse_charge", "nl_standard"]),
+  vatRateBp: z.number(),
+  operations: z.number().optional(),
+});
+
 const paidOutputSchema = z.object({
   findings: z.array(findingSchema),
   scores: z.array(
@@ -77,8 +97,19 @@ const paidOutputSchema = z.object({
     }),
   ),
   rulePackVersion: z.string(),
-  creditsCharged: z.number(),
+  price: priceSchema,
+  payment: z.object({ rail: z.enum(["x402", "mpp"]), id: z.string() }),
 });
+
+/** "EUR 10 excl. VAT (+EUR 5 per further 50 operations over 50)" */
+function priceText(kind: CheckKind): string {
+  const row = DEFAULT_PRICES[kind];
+  const step =
+    row.stepOps && row.stepAmount
+      ? ` for up to ${row.stepOps} operations, +${formatEur(row.stepAmount)} per further ${row.stepOps}`
+      : "";
+  return `${formatEur(row.baseAmount)} excl. VAT${step}`;
+}
 
 function ok(structured: Record<string, unknown>): CallToolResult {
   return {
@@ -92,10 +123,11 @@ function toolError(
   tool: string,
   requestId?: string,
 ): CallToolResult {
+  if (error instanceof PaymentRequired) return paymentRequiredToolResult(error);
   if (error instanceof GatewayError) {
     const hint =
-      error.code === "insufficient_credits"
-        ? " Use get_purchase_link to buy credits, with the user's approval."
+      error.code === "payer_not_bound"
+        ? " Bind the wallet to this account first (bind_wallet), with the user's approval."
         : "";
     return {
       isError: true,
@@ -128,12 +160,11 @@ export function registerTools(mcp: McpServer, deps: ToolDeps): void {
     keyof typeof PAID_TOOLS,
     CheckKind,
   ][]) {
-    const price = CHECK_PRICES[kind];
     mcp.registerTool(
       name,
       {
         title: name.replace(/_/g, " "),
-        description: `${DESCRIPTIONS[kind]} Costs ${price} credit${price === 1 ? "" : "s"} per artifact, charged only if the check completes. Ask the user before spending credits. ${terms}`,
+        description: `${DESCRIPTIONS[kind]} This is expert review, paid per artifact: ${priceText(kind)}, plus Dutch VAT unless reverse charge applies. Paid over x402 (EURC or USDC on Base) or MPP (card, via Stripe); without a payment it returns the payment requirements and runs nothing. The payment is only collected if the check completes. Ask the user before paying. ${terms}`,
         inputSchema: sdkSchema(CHECK_INPUT_SCHEMAS[kind]),
         outputSchema: sdkSchema(paidOutputSchema),
         annotations: {
@@ -147,12 +178,23 @@ export function registerTools(mcp: McpServer, deps: ToolDeps): void {
         let ctx: ToolContext | undefined;
         try {
           ctx = await deps.context(extra.requestInfo?.headers);
-          const { result, creditsCharged } = await deps.runPaidCheck(
+          const proof = proofFromMcpMeta(
+            extra._meta as Record<string, unknown> | undefined,
+          );
+          const { result, price, receipt } = await deps.runPaidCheck(
             ctx,
             kind,
             args,
+            { resource: `mcp://tool/${name}`, proof },
           );
-          return ok({ ...result, creditsCharged });
+          return {
+            ...ok({
+              ...result,
+              price,
+              payment: { rail: receipt.rail, id: receipt.paymentId },
+            }),
+            _meta: receiptMeta(receipt),
+          };
         } catch (error) {
           return toolError(error, name, ctx?.requestId);
         }
@@ -192,22 +234,67 @@ export function registerTools(mcp: McpServer, deps: ToolDeps): void {
   };
 
   free(
-    "get_balance",
-    "Return the account's credit balance.",
+    "get_account",
+    "Return the account: status, bound payers (wallets and cards), month-to-date spend and spending ceiling.",
     undefined,
     async (_args, context) => {
       const ctx = await context();
-      return { balance: await ctx.ledger.balance(ctx.account.id) };
+      // TODO(spec 03, step 2): payers, month-to-date spend and the ceiling.
+      return {
+        id: ctx.account.id,
+        status: ctx.account.status,
+        payers: [],
+        monthToDate: null,
+        spendingCeiling: null,
+      };
     },
   );
 
   free(
-    "get_usage",
-    "Return the account's recent credit movements (purchases and checks), newest first.",
-    z.strictObject({ limit: z.number().int().min(1).max(100).optional() }),
-    async ({ limit }, context) => {
+    "get_prices",
+    "Return the price of each check in EUR, excluding VAT.",
+    undefined,
+    async () => ({
+      currency: "EUR",
+      vat: "excluded",
+      prices: CHECK_KINDS.map((kind) => ({ kind, price: priceText(kind) })),
+    }),
+  );
+
+  free(
+    "quote_check",
+    "Return what a check would cost for this artifact, including VAT for this account. Nothing is charged and nothing runs.",
+    z.strictObject({
+      kind: z.enum(CHECK_KINDS),
+      input: z
+        .record(z.string(), z.unknown())
+        .describe("The same arguments the paid check tool takes."),
+    }),
+    async ({ kind, input }, context) => {
       const ctx = await context();
-      return { entries: await ctx.usage.recent(ctx.account.id, limit ?? 20) };
+      const parsed = await parseArtifact(kind, input);
+      return {
+        price: await ctx.payments.quote(kind, parsed.artifact, ctx.account),
+      };
+    },
+  );
+
+  free(
+    "bind_wallet",
+    "Return the message a wallet must sign (EIP-191) to be bound to this account, so it can pay for checks. Submit the signature with POST /v1/wallets.",
+    z.strictObject({
+      address: z
+        .string()
+        .regex(/^0x[0-9a-fA-F]{40}$/)
+        .describe("The wallet address to bind."),
+    }),
+    async (_args, context) => {
+      await context();
+      // TODO(spec 03, step 2): the signed-challenge message.
+      throw new GatewayError(
+        "not_implemented",
+        "Wallet binding isn't available yet (spec 03, payments).",
+      );
     },
   );
 
@@ -223,23 +310,6 @@ export function registerTools(mcp: McpServer, deps: ToolDeps): void {
         privacyUrl: env.PRIVACY_URL,
         acceptedVersion: ctx.account.termsVersion,
       };
-    },
-  );
-
-  free(
-    "get_purchase_link",
-    "Create a checkout link where the user buys a credit pack in the browser. Only call this after the user agreed to buy.",
-    z.strictObject({
-      product_id: z.string().min(1).max(64).describe("Credit pack id."),
-      quantity: z.number().int().min(1).max(10).optional(),
-    }),
-    async ({ product_id, quantity }, context) => {
-      const ctx = await context();
-      return await ctx.purchases.create(
-        ctx.account.id,
-        product_id,
-        quantity ?? 1,
-      );
     },
   );
 

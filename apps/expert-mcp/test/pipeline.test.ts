@@ -1,14 +1,17 @@
 import { describe, expect, it, vi } from "vitest";
-import { CHECK_PRICES } from "../src/config";
-import { GatewayError } from "../src/errors";
+import { parseArtifact } from "../src/artifact";
+import { GatewayError, PaymentRequired } from "../src/errors";
 import { runPaidCheck } from "../src/pipeline";
-import { StubGuard, StubLedger, STUB_STARTING_CREDITS } from "../src/stubs";
+import { StubGuard, StubPaymentGate, stubPayment } from "../src/stubs";
+import type { CheckKind, PaymentProof, ToolContext } from "../src/types";
 import {
   createAccount,
   makeContext,
   setAccountStatus,
   VALID_INPUTS,
 } from "./helpers";
+
+const RESOURCE = "https://example.test/v1/checks/x";
 
 async function expectGatewayError(promise: Promise<unknown>, code: string) {
   const error = await promise.then(
@@ -17,25 +20,66 @@ async function expectGatewayError(promise: Promise<unknown>, code: string) {
   );
   expect(error).toBeInstanceOf(GatewayError);
   expect((error as GatewayError).code).toBe(code);
+  return error as GatewayError;
+}
+
+/** A stub payment for exactly this check's price. */
+async function paymentFor(
+  ctx: ToolContext,
+  kind: CheckKind,
+  input: unknown,
+  overrides?: Parameters<typeof stubPayment>[1],
+): Promise<PaymentProof> {
+  const { artifact } = await parseArtifact(kind, input);
+  return stubPayment(
+    await ctx.payments.quote(kind, artifact, ctx.account),
+    overrides,
+  );
+}
+
+async function paid(ctx: ToolContext, kind: CheckKind, input?: unknown) {
+  const body = input ?? VALID_INPUTS[kind];
+  return runPaidCheck(ctx, kind, body, {
+    resource: RESOURCE,
+    proof: await paymentFor(ctx, kind, body),
+  });
 }
 
 describe("runPaidCheck", () => {
-  it("charges once, strips telemetry and records after responding", async () => {
+  it("answers 402 with a challenge and runs nothing without a payment", async () => {
+    const account = await createAccount();
+    const { ctx, services } = makeContext(account);
+    const run = vi.spyOn(services.rules, "run");
+    const error = await expectGatewayError(
+      runPaidCheck(ctx, "skill-design", VALID_INPUTS["skill-design"], {
+        resource: RESOURCE,
+        proof: null,
+      }),
+      "payment_required",
+    );
+    expect(error).toBeInstanceOf(PaymentRequired);
+    expect(error.status).toBe(402);
+    const { challenge } = error as PaymentRequired;
+    expect(challenge.price).toMatchObject({ net: 500, vat: 105, total: 605 });
+    expect(challenge.x402).toMatchObject({
+      x402Version: 2,
+      resource: { url: RESOURCE },
+    });
+    expect(run).not.toHaveBeenCalled();
+  });
+
+  it("verifies, runs, settles once, strips telemetry and records after responding", async () => {
     const account = await createAccount();
     const { ctx, services, settle } = makeContext(account);
-    const outcome = await runPaidCheck(
-      ctx,
-      "api-governance",
-      VALID_INPUTS["api-governance"],
-    );
+    const outcome = await paid(ctx, "api-governance");
 
-    expect(outcome.creditsCharged).toBe(CHECK_PRICES["api-governance"]);
+    expect(outcome.price).toMatchObject({ kind: "api-governance", net: 1000 });
     expect(outcome.result).not.toHaveProperty("telemetry");
     expect(outcome.result.findings[0]?.message).toMatch(/^STUB FINDING/);
-    expect(await services.ledger.balance(account.id)).toBe(
-      STUB_STARTING_CREDITS - CHECK_PRICES["api-governance"],
-    );
-    expect((services.ledger as StubLedger).openReservations()).toHaveLength(0);
+    const gate = services.payments as StubPaymentGate;
+    expect(gate.settled).toHaveLength(1);
+    expect(gate.voided).toHaveLength(0);
+    expect(outcome.receipt.paymentId).toBe(gate.settled[0]!.id);
 
     await settle();
     const recorded = (services.guard as StubGuard).recorded;
@@ -48,111 +92,112 @@ describe("runPaidCheck", () => {
     expect(recorded[0]!.artifactSignature).toMatch(/^[0-9a-f]{64}$/);
   });
 
-  it("refunds when the rules Worker fails", async () => {
+  it("voids when the rules Worker fails", async () => {
     const account = await createAccount();
     const { ctx, services, settle } = makeContext(account);
     ctx.rules = {
       run: vi.fn(async () => Promise.reject(new Error("rules down"))),
     };
-    const refund = vi.spyOn(services.ledger, "refund");
-
-    await expectGatewayError(
-      runPaidCheck(ctx, "skill-design", VALID_INPUTS["skill-design"]),
-      "check_failed",
-    );
-
-    expect(refund).toHaveBeenCalledOnce();
-    expect(await services.ledger.balance(account.id)).toBe(
-      STUB_STARTING_CREDITS,
-    );
-    expect((services.ledger as StubLedger).openReservations()).toHaveLength(0);
+    await expectGatewayError(paid(ctx, "skill-design"), "check_failed");
+    const gate = services.payments as StubPaymentGate;
+    expect(gate.voided).toHaveLength(1);
+    expect(gate.settled).toHaveLength(0);
     await settle();
     expect((services.guard as StubGuard).recorded).toHaveLength(0);
   });
 
-  it("refunds when shaping fails", async () => {
+  it("voids when shaping fails", async () => {
     const account = await createAccount();
     const { ctx, services } = makeContext(account);
     vi.spyOn(services.guard, "shape").mockRejectedValue(
       new Error("shape failed"),
     );
-    const refund = vi.spyOn(services.ledger, "refund");
-
-    await expectGatewayError(
-      runPaidCheck(ctx, "process-review", VALID_INPUTS["process-review"]),
-      "check_failed",
-    );
-    expect(refund).toHaveBeenCalledOnce();
-    expect(await services.ledger.balance(account.id)).toBe(
-      STUB_STARTING_CREDITS,
-    );
+    await expectGatewayError(paid(ctx, "process-review"), "check_failed");
+    const gate = services.payments as StubPaymentGate;
+    expect(gate.voided).toHaveLength(1);
+    expect(gate.settled).toHaveLength(0);
   });
 
-  it("refunds when committing fails", async () => {
+  it("voids and withholds the result when settling fails", async () => {
     const account = await createAccount();
     const { ctx, services } = makeContext(account);
-    vi.spyOn(services.ledger, "commit").mockRejectedValue(new Error("d1 down"));
-    const refund = vi.spyOn(services.ledger, "refund");
-
-    await expectGatewayError(
-      runPaidCheck(ctx, "api-governance", VALID_INPUTS["api-governance"]),
-      "check_failed",
+    vi.spyOn(services.payments, "settle").mockRejectedValue(
+      new Error("facilitator down"),
     );
-    expect(refund).toHaveBeenCalledOnce();
-    expect(await services.ledger.balance(account.id)).toBe(
-      STUB_STARTING_CREDITS,
-    );
+    await expectGatewayError(paid(ctx, "api-governance"), "payment_failed");
+    expect((services.payments as StubPaymentGate).voided).toHaveLength(1);
   });
 
-  it("surfaces the original error when the refund itself fails", async () => {
+  it("surfaces the original error when voiding itself fails", async () => {
     const account = await createAccount();
     const { ctx, services } = makeContext(account);
     ctx.rules = {
       run: async () =>
         Promise.reject(new GatewayError("not_configured", "rules missing")),
     };
-    vi.spyOn(services.ledger, "refund").mockRejectedValue(
-      new Error("refund failed"),
+    vi.spyOn(services.payments, "void").mockRejectedValue(
+      new Error("void failed"),
     );
-
-    await expectGatewayError(
-      runPaidCheck(ctx, "api-governance", VALID_INPUTS["api-governance"]),
-      "not_configured",
-    );
+    await expectGatewayError(paid(ctx, "api-governance"), "not_configured");
   });
 
-  it("doesn't run the check without enough credits", async () => {
+  it("rejects a wrong amount and a reused authorisation before any rules run, with a fresh challenge", async () => {
     const account = await createAccount();
     const { ctx, services } = makeContext(account);
-    const ledger = new StubLedger(0);
-    ctx.ledger = ledger;
     const run = vi.spyOn(services.rules, "run");
+    const input = VALID_INPUTS["api-governance"];
 
+    const wrong = await expectGatewayError(
+      runPaidCheck(ctx, "api-governance", input, {
+        resource: RESOURCE,
+        proof: await paymentFor(ctx, "api-governance", input, { value: "1" }),
+      }),
+      "wrong_amount",
+    );
+    expect(wrong).toBeInstanceOf(PaymentRequired);
+    expect(wrong.status).toBe(402);
+
+    const proof = await paymentFor(ctx, "api-governance", input);
+    await runPaidCheck(ctx, "api-governance", input, {
+      resource: RESOURCE,
+      proof,
+    });
+    run.mockClear();
     await expectGatewayError(
-      runPaidCheck(ctx, "api-governance", VALID_INPUTS["api-governance"]),
-      "insufficient_credits",
+      runPaidCheck(ctx, "api-governance", input, { resource: RESOURCE, proof }),
+      "payment_reused",
     );
     expect(run).not.toHaveBeenCalled();
-    expect(ledger.openReservations()).toHaveLength(0);
   });
 
-  it("charges nothing for an invalid artifact", async () => {
+  it("asks for nothing for an invalid artifact", async () => {
     const account = await createAccount();
     const { ctx, services } = makeContext(account);
-    const reserve = vi.spyOn(services.ledger, "reserve");
+    const quote = vi.spyOn(services.payments, "quote");
+    const noPayment = { resource: RESOURCE, proof: null };
 
     await expectGatewayError(
-      runPaidCheck(ctx, "api-governance", { document: '{"swagger": "2.0"}' }),
+      runPaidCheck(
+        ctx,
+        "api-governance",
+        { document: '{"swagger": "2.0"}' },
+        noPayment,
+      ),
       "invalid_artifact",
     );
     await expectGatewayError(
-      runPaidCheck(ctx, "api-governance", { document: "{}", extra: true }),
+      runPaidCheck(
+        ctx,
+        "api-governance",
+        { document: "{}", extra: true },
+        noPayment,
+      ),
       "invalid_request",
     );
-    expect(reserve).not.toHaveBeenCalled();
+    expect(quote).not.toHaveBeenCalled();
   });
 
-  it("charges nothing when admission is refused", async () => {
+  it("verifies nothing when admission is refused", async () => {
     const account = await createAccount();
     const { ctx, services } = makeContext(account);
     vi.spyOn(services.guard, "admit").mockResolvedValue({
@@ -160,31 +205,23 @@ describe("runPaidCheck", () => {
       reason: "rate_limited",
       retryAfterSeconds: 30,
     });
-    const reserve = vi.spyOn(services.ledger, "reserve");
+    const verify = vi.spyOn(services.payments, "verify");
 
-    const error = await runPaidCheck(
-      ctx,
-      "api-governance",
-      VALID_INPUTS["api-governance"],
-    ).catch((e: unknown) => e);
+    const error = await paid(ctx, "api-governance").catch((e: unknown) => e);
     expect(error).toMatchObject({
       code: "rate_limited",
       retryAfterSeconds: 30,
     });
-    expect(reserve).not.toHaveBeenCalled();
+    expect(verify).not.toHaveBeenCalled();
   });
 
   it("charges nothing when the kill switch is off", async () => {
     const account = await createAccount();
     const { ctx, services } = makeContext(account);
     ctx.flags = { checksEnabled: async () => false };
-    const reserve = vi.spyOn(services.ledger, "reserve");
-
-    await expectGatewayError(
-      runPaidCheck(ctx, "api-governance", VALID_INPUTS["api-governance"]),
-      "checks_disabled",
-    );
-    expect(reserve).not.toHaveBeenCalled();
+    const verify = vi.spyOn(services.payments, "verify");
+    await expectGatewayError(paid(ctx, "api-governance"), "checks_disabled");
+    expect(verify).not.toHaveBeenCalled();
   });
 
   it("runs nothing for a frozen account", async () => {
@@ -192,11 +229,7 @@ describe("runPaidCheck", () => {
     await setAccountStatus(account.id, "frozen");
     const { ctx, services } = makeContext({ ...account, status: "frozen" });
     const admit = vi.spyOn(services.guard, "admit");
-
-    await expectGatewayError(
-      runPaidCheck(ctx, "api-governance", VALID_INPUTS["api-governance"]),
-      "forbidden",
-    );
+    await expectGatewayError(paid(ctx, "api-governance"), "forbidden");
     expect(admit).not.toHaveBeenCalled();
   });
 
@@ -217,7 +250,7 @@ describe("runPaidCheck", () => {
           };
         },
       };
-      await runPaidCheck(ctx, "api-governance", VALID_INPUTS["api-governance"]);
+      await paid(ctx, "api-governance");
     }
     expect(seeds[0]).toBe(seeds[1]);
     expect(seeds[0]).not.toBe(seeds[2]);

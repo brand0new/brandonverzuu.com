@@ -49,7 +49,7 @@ function consentBody(
   return `<h1>Allow ${name} to use your account?</h1>
 <p>${origin} Access will be sent to <strong>${escape(details.redirectHost)}</strong>.</p>
 ${details.redirectIsLoopback ? '<p class="warn"><strong>This sends access to an app on your computer.</strong> Continue only if you just started signing in from it.</p>' : ""}
-<p>It will be able to see your credit balance and usage, and run paid checks that spend your credits.</p>
+<p>It will be able to see your account, payers and statements, and run paid checks. Each check is paid separately, from a wallet or card you approve.</p>
 <form method="post" action="/authorize">
   <input type="hidden" name="handle" value="${escape(handle)}">
   ${termsCheckbox(env.TERMS_URL, env.TERMS_VERSION, acceptedTerms)}

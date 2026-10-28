@@ -1,8 +1,7 @@
 import { env } from "cloudflare:workers";
 import { describe, expect, it } from "vitest";
 import { createApiToken } from "../src/accounts";
-import { STUB_STARTING_CREDITS } from "../src/stubs";
-import { createAccount, ORIGIN, VALID_INPUTS } from "./helpers";
+import { createAccount, ORIGIN, stubPayloadFor, VALID_INPUTS } from "./helpers";
 import { call, mcpSession } from "./http";
 
 async function apiToken() {
@@ -52,7 +51,7 @@ describe("public routes", () => {
     expect(as.code_challenge_methods_supported).toEqual(["S256"]);
   });
 
-  it("returns 404 for ACP discovery (until packages/acp), webhooks and unknown routes", async () => {
+  it("returns 404 for webhooks (until spec 03), ACP discovery and unknown routes", async () => {
     expect((await call("/.well-known/acp.json")).status).toBe(404);
     expect((await call("/webhooks/stripe", { method: "POST" })).status).toBe(
       404,
@@ -91,7 +90,9 @@ describe("REST", () => {
       status: "active",
       terms_version: env.TERMS_VERSION,
       current_terms_version: env.TERMS_VERSION,
-      balance: STUB_STARTING_CREDITS,
+      payers: [],
+      month_to_date: null,
+      spending_ceiling: null,
     });
   });
 
@@ -111,19 +112,46 @@ describe("REST", () => {
     expect(missing.status).toBe(400);
 
     const key = crypto.randomUUID();
-    const first = await call("/v1/checks/api-governance", {
+    const unpaid = await call("/v1/checks/api-governance", {
       method: "POST",
       headers: { ...headers, "Idempotency-Key": key },
       body,
     });
+    expect(unpaid.status).toBe(402);
+    const required = JSON.parse(
+      atob(unpaid.headers.get("PAYMENT-REQUIRED")!),
+    ) as { accepts: { amount: string }[] };
+    expect(required).toMatchObject({
+      x402Version: 2,
+      resource: { url: `${ORIGIN}/v1/checks/api-governance` },
+    });
+    expect(await unpaid.json()).toMatchObject({
+      status: 402,
+      price: { net: 1000, total: 1210 },
+    });
+
+    const payment = btoa(JSON.stringify(stubPayloadFor(required)));
+    const first = await call("/v1/checks/api-governance", {
+      method: "POST",
+      headers: {
+        ...headers,
+        "Idempotency-Key": key,
+        "PAYMENT-SIGNATURE": payment,
+      },
+      body,
+    });
     expect(first.status).toBe(200);
+    expect(first.headers.get("PAYMENT-RESPONSE")).toBeTruthy();
     const result = await first.json<Record<string, unknown>>();
     expect(result).toMatchObject({
       rulePackVersion: "stub",
-      creditsCharged: 1,
+      price: { total: 1210 },
+      payment: { rail: "x402" },
     });
     expect(result).not.toHaveProperty("telemetry");
 
+    // The same key and body replay the stored result and charge nothing, even
+    // without a payment attached.
     const replay = await call("/v1/checks/api-governance", {
       method: "POST",
       headers: { ...headers, "Idempotency-Key": key },
@@ -131,11 +159,20 @@ describe("REST", () => {
     });
     expect(replay.status).toBe(200);
     expect(replay.headers.get("Idempotent-Replayed")).toBe("true");
+    expect(await replay.json()).toEqual(result);
 
-    const account = await (
-      await call("/v1/account", { headers })
-    ).json<{ balance: number }>();
-    expect(account.balance).toBe(STUB_STARTING_CREDITS - 1);
+    // A reused payment under a new key is refused with a fresh challenge.
+    const reused = await call("/v1/checks/api-governance", {
+      method: "POST",
+      headers: {
+        ...headers,
+        "Idempotency-Key": crypto.randomUUID(),
+        "PAYMENT-SIGNATURE": payment,
+      },
+      body,
+    });
+    expect(reused.status).toBe(402);
+    expect(reused.headers.get("PAYMENT-REQUIRED")).toBeTruthy();
 
     const conflict = await call("/v1/checks/api-governance", {
       method: "POST",
@@ -230,38 +267,49 @@ describe("REST", () => {
     ).toBe(200);
   });
 
-  it("stays out of reach when purchase links aren't wired (dev stub answers)", async () => {
+  it("serves prices, and answers 501 for the payment routes spec 03 adds", async () => {
     const { token } = await apiToken();
-    const response = await call("/v1/purchase-links", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ product_id: "pack_10" }),
+    const auth = { Authorization: `Bearer ${token}` };
+    const prices = await call("/v1/prices", { headers: auth });
+    expect(prices.status).toBe(200);
+    expect(await prices.json()).toMatchObject({
+      currency: "EUR",
+      prices: [
+        { kind: "api-governance", amount: 1000, step_amount: 500 },
+        { kind: "skill-design", amount: 500 },
+        { kind: "process-review", amount: 1500 },
+      ],
     });
-    expect(response.status).toBe(201);
-    expect((await response.json<{ url: string }>()).url).toMatch(
-      /^https:\/\/example\.invalid\/stub-checkout/,
-    );
+    expect(
+      (await call("/v1/wallets", { method: "POST", headers: auth })).status,
+    ).toBe(501);
+    expect(
+      (await call("/v1/wallets/w1", { method: "DELETE", headers: auth }))
+        .status,
+    ).toBe(501);
+    expect((await call("/v1/statements", { headers: auth })).status).toBe(501);
+    expect(
+      (await call("/v1/purchase-links", { method: "POST", headers: auth }))
+        .status,
+    ).toBe(404);
   });
 });
 
 describe("MCP over HTTP", () => {
-  it("initialises, lists tools and calls get_balance", async () => {
+  it("initialises, lists tools and calls get_account", async () => {
     const { token } = await apiToken();
     const session = await mcpSession(token);
     expect(session.initialize.result.capabilities.extensions).toEqual({
       "io.modelcontextprotocol/skills": { directoryRead: true },
     });
     const tools = await session.request("tools/list");
-    expect(tools.message.result.tools.length).toBe(9);
-    const balance = await session.request("tools/call", {
-      name: "get_balance",
+    expect(tools.message.result.tools.length).toBe(10);
+    const me = await session.request("tools/call", {
+      name: "get_account",
       arguments: {},
     });
-    expect(balance.message.result.structuredContent).toEqual({
-      balance: STUB_STARTING_CREDITS,
+    expect(me.message.result.structuredContent).toMatchObject({
+      status: "active",
     });
     expect(
       (await session.request("prompts/list")).message.result.prompts,
@@ -291,8 +339,11 @@ describe("MCP over HTTP", () => {
       arguments: { document },
     });
     expect(result.status).toBe(200);
-    expect(result.message.result?.isError).toBeFalsy();
-    expect(result.message.result.structuredContent.creditsCharged).toBe(1);
+    // Parsed and quoted: the near-2 MB document gets a 402 with its price, not a size error.
+    expect(result.message.result.isError).toBe(true);
+    expect(result.message.result.structuredContent).toMatchObject({
+      x402Version: 2,
+    });
   });
 
   it("won't let another account drive a session", async () => {
@@ -312,7 +363,7 @@ describe("MCP over HTTP", () => {
         jsonrpc: "2.0",
         id: 9,
         method: "tools/call",
-        params: { name: "get_balance", arguments: {} },
+        params: { name: "get_account", arguments: {} },
       }),
     });
     const { rpcMessage } = await import("./http");

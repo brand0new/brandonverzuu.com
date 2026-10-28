@@ -24,10 +24,11 @@ const FREE_ARGS: Record<
   (typeof FREE_TOOLS)[number],
   Record<string, unknown>
 > = {
-  get_balance: {},
-  get_usage: {},
+  get_account: {},
+  get_prices: {},
+  quote_check: { kind: "skill-design", input: VALID_INPUTS["skill-design"] },
+  bind_wallet: { address: "0x000000000000000000000000000000000000dEaD" },
   get_terms: {},
-  get_purchase_link: { product_id: "pack_10" },
   get_process_schema: {},
   get_skill: {},
 };
@@ -61,7 +62,10 @@ describe("every paid entry point goes through runPaidCheck", () => {
         name,
         arguments: FREE_ARGS[name],
       });
-      expect(result.isError, name).toBeFalsy();
+      // TODO(spec 03, step 2): bind_wallet is a stub until then.
+      if (name === "bind_wallet")
+        expect(JSON.stringify(result.content)).toContain("not_implemented");
+      else expect(result.isError, name).toBeFalsy();
     }
     expect(spy).not.toHaveBeenCalled();
   });

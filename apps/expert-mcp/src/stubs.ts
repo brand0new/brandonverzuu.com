@@ -2,123 +2,170 @@
 // development (`ENVIRONMENT=development`) and in tests. They are never wired up
 // in staging or production: src/services.ts fails closed there instead.
 //
-// - StubLedger:   spec 03 replaces it with the D1 ledger.
+// - StubPaymentGate: spec 03 replaces it with x402 and MPP.
 // - StubGuard:    spec 05 replaces it with AccountGuard.
 // - StubRules:    spec 04 replaces it with the private rules Worker. It returns
 //                 one fixed, obviously fake finding and knows nothing about any rule.
 
-import { InsufficientCredits } from "./errors";
+import { DEFAULT_PRICES } from "./config";
+import { GatewayError } from "./errors";
+import { priceFor } from "./pricing";
 import type {
+  Account,
   Admission,
   Artifact,
+  Authorization,
   CheckKind,
   CheckRequest,
   CheckResult,
   Guard,
   IdempotencyStore,
-  Ledger,
+  PaymentChallenge,
+  PaymentGate,
+  PaymentProof,
+  PaymentReceipt,
+  Price,
   PublicResult,
-  PurchaseLinks,
-  Reservation,
   RulesService,
-  UsageEntry,
-  UsageLog,
 } from "./types";
 
-/** Credits every account starts with in development, so checks can be tried. */
-export const STUB_STARTING_CREDITS = 100;
+/** EUR cents to the 6-decimal token units the stub asks for. */
+export function stubAtomicAmount(price: Price): string {
+  return String(price.total * 10_000);
+}
 
-export class StubLedger implements Ledger, UsageLog {
-  private readonly rows = new Map<
-    string,
-    { at: string; delta: number; kind: string; ref: string }[]
-  >();
-  private readonly open = new Map<string, Reservation>();
+/**
+ * Builds a payment the stub gate accepts: an x402-shaped payload whose
+ * authorization carries the amount and a fresh nonce. Development and tests only.
+ */
+export function stubPayment(
+  price: Price,
+  overrides: { nonce?: string; value?: string; from?: string } = {},
+): PaymentProof {
+  return {
+    rail: "x402",
+    payload: {
+      x402Version: 2,
+      accepted: {
+        scheme: "exact",
+        network: "stub",
+        amount: stubAtomicAmount(price),
+      },
+      payload: {
+        signature: "0xstub",
+        authorization: {
+          from: overrides.from ?? "0x000000000000000000000000000000000000dEaD",
+          to: "0x0000000000000000000000000000000000000000",
+          value: overrides.value ?? stubAtomicAmount(price),
+          nonce:
+            overrides.nonce ?? `0x${crypto.randomUUID().replace(/-/g, "")}`,
+        },
+      },
+    },
+  };
+}
+
+/**
+ * In-memory payment gate. Every price is quoted as Dutch VAT, the challenge
+ * names a placeholder network and asset, and `verify` accepts any payload built
+ * by `stubPayment` with the right amount and an unused nonce. Nothing is ever
+ * collected.
+ */
+export class StubPaymentGate implements PaymentGate {
+  readonly settled: Authorization[] = [];
+  readonly voided: { authorization: Authorization; reason: string }[] = [];
+  private readonly usedNonces = new Set<string>();
   private nextId = 1;
 
-  constructor(private readonly startingCredits = STUB_STARTING_CREDITS) {}
-
-  private ledger(accountId: string) {
-    let rows = this.rows.get(accountId);
-    if (!rows) {
-      rows = [
-        {
-          at: new Date().toISOString(),
-          delta: this.startingCredits,
-          kind: "stub_grant",
-          ref: "stub",
-        },
-      ];
-      this.rows.set(accountId, rows);
-    }
-    return rows;
+  async quote(kind: CheckKind, artifact: Artifact, _account: Account) {
+    return priceFor(DEFAULT_PRICES[kind], artifact, "nl_standard");
   }
 
-  async balance(accountId: string): Promise<number> {
-    const settled = this.ledger(accountId).reduce(
-      (sum, row) => sum + row.delta,
-      0,
-    );
-    let reserved = 0;
-    for (const r of this.open.values())
-      if (r.accountId === accountId) reserved += r.credits;
-    return settled - reserved;
-  }
-
-  async reserve(
-    accountId: string,
-    credits: number,
-    ref: string,
-  ): Promise<Reservation> {
-    const balance = await this.balance(accountId);
-    if (balance < credits) throw new InsufficientCredits(balance, credits);
-    const r: Reservation = {
-      id: `res_stub_${this.nextId++}`,
-      accountId,
-      credits,
-      ref,
+  async challenge({
+    price,
+    resource,
+  }: {
+    account: Account;
+    price: Price;
+    resource: string;
+  }): Promise<PaymentChallenge> {
+    return {
+      price,
+      x402: {
+        x402Version: 2,
+        error: "Payment required (development stub: nothing is collected).",
+        resource: { url: resource, mimeType: "application/json" },
+        accepts: [
+          {
+            scheme: "exact",
+            network: "stub",
+            amount: stubAtomicAmount(price),
+            asset: "stub",
+            payTo: "0x0000000000000000000000000000000000000000",
+            maxTimeoutSeconds: 300,
+            extra: { stub: true },
+          },
+        ],
+      },
+      mpp: [],
     };
-    this.open.set(r.id, r);
-    return r;
   }
 
-  async commit(r: Reservation): Promise<void> {
-    if (!this.open.delete(r.id)) throw new Error("reservation is not open");
-    this.ledger(r.accountId).push({
-      at: new Date().toISOString(),
-      delta: -r.credits,
-      kind: "check",
-      ref: r.ref,
-    });
+  async verify({
+    account,
+    price,
+    payment,
+  }: {
+    account: Account;
+    price: Price;
+    resource: string;
+    payment: PaymentProof;
+    checkRef: string;
+  }): Promise<Authorization> {
+    if (payment.rail !== "x402")
+      throw new GatewayError(
+        "payment_invalid",
+        "The development stub only takes x402-shaped payments.",
+      );
+    const auth = (
+      payment.payload as {
+        payload?: { authorization?: { value?: string; nonce?: string } };
+      }
+    )?.payload?.authorization;
+    if (!auth?.nonce || typeof auth.value !== "string")
+      throw new GatewayError("payment_invalid", "Malformed payment payload.");
+    if (auth.value !== stubAtomicAmount(price))
+      throw new GatewayError(
+        "wrong_amount",
+        "The payment doesn't match this check's price.",
+      );
+    if (this.usedNonces.has(auth.nonce))
+      throw new GatewayError(
+        "payment_reused",
+        "This payment authorisation was already used.",
+      );
+    this.usedNonces.add(auth.nonce);
+    return {
+      id: `pay_stub_${this.nextId++}`,
+      rail: "x402",
+      accountId: account.id,
+      payerId: "payer_stub",
+      price,
+      proofRef: `x402:${auth.nonce}`,
+    };
   }
 
-  async refund(r: Reservation, _reason: string): Promise<void> {
-    this.open.delete(r.id);
+  async settle(a: Authorization): Promise<PaymentReceipt> {
+    this.settled.push(a);
+    return {
+      rail: a.rail,
+      paymentId: a.id,
+      x402: { success: true, transaction: "", network: "stub" },
+    };
   }
 
-  async grant(
-    accountId: string,
-    credits: number,
-    orderId: string,
-  ): Promise<void> {
-    this.ledger(accountId).push({
-      at: new Date().toISOString(),
-      delta: credits,
-      kind: "purchase",
-      ref: orderId,
-    });
-  }
-
-  async recent(accountId: string, limit: number): Promise<UsageEntry[]> {
-    return this.ledger(accountId)
-      .slice(-limit)
-      .reverse()
-      .map(({ at, delta, kind }) => ({ at, delta, kind }));
-  }
-
-  /** Test helper: reservations not yet committed or refunded. */
-  openReservations(): Reservation[] {
-    return [...this.open.values()];
+  async void(a: Authorization, reason: string): Promise<void> {
+    this.voided.push({ authorization: a, reason });
   }
 }
 
@@ -183,19 +230,10 @@ export class StubRules implements RulesService {
   }
 }
 
-export class StubPurchaseLinks implements PurchaseLinks {
-  async create(_accountId: string, productId: string, quantity: number) {
-    return {
-      url: `https://example.invalid/stub-checkout?product=${encodeURIComponent(productId)}&quantity=${quantity}`,
-      expiresAt: new Date(Date.now() + 30 * 60 * 1000).toISOString(),
-    };
-  }
-}
-
 export class MemoryIdempotencyStore implements IdempotencyStore {
   private readonly entries = new Map<
     string,
-    { requestHash: string; response: string }
+    { bodyHash: string; response: string }
   >();
 
   async get(accountId: string, scope: string, key: string) {
@@ -206,11 +244,11 @@ export class MemoryIdempotencyStore implements IdempotencyStore {
     accountId: string,
     scope: string,
     key: string,
-    requestHash: string,
+    bodyHash: string,
     response: string,
   ) {
     this.entries.set(`${accountId}\u0000${scope}\u0000${key}`, {
-      requestHash,
+      bodyHash,
       response,
     });
   }

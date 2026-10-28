@@ -2,7 +2,7 @@
 //
 // Three configurations:
 // - top level: local development (`wrangler dev`) and tests. Uses in-memory stub
-//   Ledger, Guard and RulesService (src/stubs.ts) and logs magic links to the
+//   PaymentGate, Guard and RulesService (src/stubs.ts) and logs magic links to the
 //   console. Named `expert-mcp-dev` and not reachable, so an accidental
 //   `wrangler deploy` without `--env` can never replace staging or production.
 // - env.staging / env.production: the real deployables (spec 06). Stubs are

@@ -170,13 +170,11 @@ describe("authorization code flow with magic link and consent", () => {
     const { access_token } = await token.json<{ access_token: string }>();
 
     const mcp = await mcpSession(access_token);
-    const balance = await mcp.request("tools/call", {
-      name: "get_balance",
+    const me1 = await mcp.request("tools/call", {
+      name: "get_account",
       arguments: {},
     });
-    expect(balance.message.result.structuredContent.balance).toBeTypeOf(
-      "number",
-    );
+    expect(me1.message.result.structuredContent.id).toBe(account!.id);
     const me = await call("/v1/account", {
       headers: { Authorization: `Bearer ${access_token}` },
     });
