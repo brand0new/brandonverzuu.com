@@ -1,0 +1,25 @@
+# Credit packs and per-check prices for /expert and /expert/pricing.
+# Every amount is a placeholder until Brandon sets prices (decision D6).
+# Replace "TBD" with a number (euros for packs, credits for checks); the
+# schema in content.config.ts accepts either.
+currency: EUR
+packs:
+  - id: pack-10
+    credits: 10
+    price: TBD
+  - id: pack-50
+    credits: 50
+    price: TBD
+  - id: pack-200
+    credits: 200
+    price: TBD
+checks:
+  - kind: api-governance
+    name: API governance check
+    credits: TBD
+  - kind: skill-design
+    name: Skill design check
+    credits: TBD
+  - kind: process-review
+    name: Process description review
+    credits: TBD

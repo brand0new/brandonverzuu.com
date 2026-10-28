@@ -1,5 +1,10 @@
 # 07: Public pages and terms (`apps/site`)
 
+Status: **draft PR, unpublished.** `/expert`, `/expert/pricing`, `/expert/terms`
+and `/expert/privacy` exist, with placeholder prices and draft legal text that
+isn't rendered. TODO: the `/schemas/process-description/v1.json` route, once
+`packages/check-kit` has the schema (spec 04).
+
 ## Scope
 
 Static pages on brandonverzuu.com that humans and agents read before buying. They

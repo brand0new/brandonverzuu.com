@@ -1,5 +1,14 @@
 import { defineCollection, defineContentConfig, z } from "@nuxt/content";
 
+// Shared by the versioned legal documents of the expertise service.
+const legalDocumentSchema = z.object({
+  title: z.string(),
+  // The version id buyers accept, e.g. "2026-11-01". Matches the filename.
+  version: z.string(),
+  date: z.date(),
+  status: z.enum(["draft", "published"]),
+});
+
 export default defineContentConfig({
   collections: {
     projects: defineCollection({
@@ -110,6 +119,50 @@ export default defineContentConfig({
         imageSource: z.string(),
         imageLicense: z.string().optional(),
       }),
+    }),
+    // The expertise service (/expert, docs/specs/expert-mcp/). Prices live
+    // in content rather than a component so Brandon can set them without
+    // touching code (spec 07). An amount is a number or the literal "TBD":
+    // the pages print "TBD" as-is, so no placeholder price can be mistaken
+    // for a real one.
+    expertPricing: defineCollection({
+      source: "expert/pricing.yml",
+      type: "data",
+      schema: z.object({
+        currency: z.literal("EUR"),
+        packs: z.array(
+          z.object({
+            id: z.string(),
+            credits: z.number().positive(),
+            price: z.union([z.number().positive(), z.literal("TBD")]),
+          }),
+        ),
+        // Credits charged per artifact, one entry per check kind
+        // (packages/engine-api CheckKind).
+        checks: z.array(
+          z.object({
+            kind: z.enum(["api-governance", "skill-design", "process-review"]),
+            name: z.string(),
+            credits: z.union([z.number().positive(), z.literal("TBD")]),
+          }),
+        ),
+      }),
+    }),
+    // Terms and privacy statement, one file per version
+    // (expert/terms/<version>.md). These are Brandon's words, like reviews:
+    // agents scaffold structure only. /expert/terms and /expert/privacy
+    // render the newest `published` version and show a "being drafted"
+    // notice while only drafts exist. A published terms version must equal
+    // the gateway's TERMS_VERSION (spec 07).
+    expertTerms: defineCollection({
+      source: "expert/terms/*.md",
+      type: "page",
+      schema: legalDocumentSchema,
+    }),
+    expertPrivacy: defineCollection({
+      source: "expert/privacy/*.md",
+      type: "page",
+      schema: legalDocumentSchema,
     }),
   },
 });
