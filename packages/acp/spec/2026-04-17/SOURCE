@@ -1,0 +1,18 @@
+Vendored from the Agentic Commerce Protocol repository (Apache-2.0).
+
+repository: https://github.com/agentic-commerce-protocol/agentic-commerce-protocol
+commit:     7fdd78df677a94dce04c770644b0fbbb1401272b (main, 2026-07-17)
+
+Files are byte-for-byte copies of upstream. Do not edit or reformat them.
+
+  LICENSE, NOTICE                         <- LICENSE, NOTICE
+  json-schema/schema.agentic_checkout.json <- spec/2026-04-17/json-schema/
+  json-schema/schema.delegate_payment.json <- spec/2026-04-17/json-schema/
+  openrpc/openrpc.agentic_checkout.json    <- spec/2026-04-17/openrpc/
+  examples/examples.agentic_checkout.json      <- examples/2026-04-17/
+  examples/examples.mcp.agentic_checkout.json  <- examples/2026-04-17/
+  examples/examples.delegate_payment.json      <- examples/2026-04-17/
+  examples/examples.multi_item_checkout.json   <- examples/2026-04-17/
+
+To update: copy the same files from a newer commit, record its SHA above, then
+run `npm run build -w packages/acp` and `npm test -w packages/acp`.
