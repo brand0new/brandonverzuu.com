@@ -34,16 +34,22 @@ Version: `TODO(Brandon): e.g. 2026-11-01`
 - Rule sets change over time; each result carries the rule-pack version.
 - Availability: no uptime commitment in v1. `TODO(Brandon): confirm`
 
-## 4. Credits, prices and payment
+## 4. Prices and payment
 
-- Credits are bought in packs (prices at `/expert/pricing`, decision D6).
-- Each check costs a stated number of credits, charged when it runs and refunded
-  automatically if the check fails on our side.
+- Each check has a stated price in EUR excluding VAT (at `/expert/pricing`,
+  decision D6). The price for an artifact is quoted before anything is charged.
+- Payment is per check, over x402 (EURC or USDC on Base) or Stripe's Machine
+  Payments Protocol (decision D13). There's no balance or subscription.
+- A check is only collected after it succeeds. If it fails on our side, nothing
+  is collected.
 - No free trial (decision D10).
-- `TODO(Brandon): do credits expire? (e.g. 12 months after purchase)`
-- `TODO(Brandon): refunds for unused credits: none, or on request within N days?`
-- Payment through Stripe, VAT included or added as applicable (Stripe Tax).
-- Chargebacks or disputes freeze the account until resolved.
+- Payers (wallets, Stripe customers) must be bound to the account. The account
+  holder is responsible for every payment made from them.
+- VAT: reverse charge for EU business customers with a valid VAT id; Dutch VAT
+  otherwise. `TODO(Brandon): confirm with the accountant`
+- A monthly statement lists every payment and serves as the invoice.
+  `TODO(Brandon): confirm with the accountant`
+- Disputed or reversed payments freeze the account until resolved.
 
 ## 5. Your inputs
 
@@ -82,8 +88,6 @@ Core of the terms; every item is grounded in spec 05.
 - Usage is monitored automatically for the patterns above.
 - We can throttle, suspend or close an account that appears to breach section 7,
   with notice where possible. `TODO(Brandon): appeal / contact route`
-- On a breach, unused credits may be forfeited. `TODO(Brandon): check
-  enforceability with the lawyer`
 - Results carry markers that let us identify the account they were issued to.
 
 ## 9. Intellectual property
@@ -103,8 +107,7 @@ Core of the terms; every item is grounded in spec 05.
 
 ## 12. Ending the agreement
 
-- You can close your account at any time. `TODO(Brandon): what happens to unused
-  credits`
+- You can close your account at any time. There is no balance to settle.
 - We can end the service with `TODO(Brandon): notice period` notice.
 
 ## 13. Governing law and disputes

@@ -28,7 +28,7 @@ without exposing real rules to the eval harness.
 | Metric | Pass |
 | --- | --- |
 | Rules of the fixture pack reconstructed (condition and threshold) before the campaign is throttled | below the share set in `GUARD_CONFIG` |
-| Credits needed to reconstruct that share | above the cost set in `GUARD_CONFIG` |
+| Money needed to reconstruct that share | above the cost set in `GUARD_CONFIG` |
 | Sybil campaigns linked and throttled together (shared signal present) | 100% |
 | Rules Worker reachable from the internet | never |
 | False positives: a benign CI history (same API, 200 commits over 30 days) and a benign multi-team org | none throttled |
@@ -36,7 +36,7 @@ without exposing real rules to the eval harness.
 ## Deliverables
 
 - `apps/expert-mcp/evals/`: harness (TypeScript) that runs against a URL with
-  test-mode credits granted by the admin CLI.
+  testnet wallets (Base Sepolia) and Stripe test mode, bound to eval accounts.
 - Per-run Markdown report uploaded as a CI artifact, never committed.
 
 ## Acceptance

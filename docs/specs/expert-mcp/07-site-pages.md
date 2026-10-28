@@ -9,10 +9,10 @@ for any new component).
 ## Pages
 
 - `/expert`: what the service is, the three checks (what you give it, what you get,
-  credit price), the three ways in (MCP URL with OAuth, `bv-expertise` CLI, REST for
-  CI), links to the public skills and the process schema, and how purchasing works
-  (ACP or purchase link).
-- `/expert/pricing`: credit packs and prices. Data from a content file
+  price per check), the three ways in (MCP URL with OAuth, `bv-expertise` CLI, REST
+  for CI), links to the public skills and the process schema, and how paying works
+  (per check over x402 or MPP, D13).
+- `/expert/pricing`: prices per check. Data from a content file
   (`content/expert/pricing.yml`) so prices aren't hard-coded in a component.
 - `/expert/terms`: terms of service, versioned (`content/expert/terms/<version>.md`).
   Must include: outputs licensed for the buyer's internal use; **no use of outputs
