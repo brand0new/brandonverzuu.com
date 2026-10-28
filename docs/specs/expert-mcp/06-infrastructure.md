@@ -17,7 +17,8 @@ and the repo-level guards. Updates `docs/deployment.md` and `AGENTS.md`.
 | KV | `expert-flags-staging` / `expert-flags` |
 | Durable Objects | `McpSession`, `AccountGuard` (migrations in `wrangler.jsonc`) |
 | Cron triggers | reservation sweep, probing analysis |
-| Gateway secrets | `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `EMAIL_HMAC_KEY`, `VARIANT_KEY`, `GUARD_CONFIG` |
+| Gateway secrets | `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET` (MPP), `X402_FACILITATOR_KEY` (Coinbase CDP), `EMAIL_HMAC_KEY`, `VARIANT_KEY`, `GUARD_CONFIG` |
+| Gateway vars | `X402_PAY_TO` (Brandon's receiving address on Base; public), `X402_NETWORK` (`base-sepolia` on staging, `base` in production) |
 
 No LLM, Vectorize or AI Gateway: the checks are deterministic.
 
@@ -32,8 +33,9 @@ All stored data stays in the EU:
   (`CHECKS_ENABLED`). No personal or account data goes in KV.
 - Logs: Workers Logs with personal data excluded (spec 02); Logpush, if added
   later, to an EU-jurisdiction R2 bucket.
-- Stripe processes payment data under its own terms, which the privacy statement
-  names.
+- Stripe (MPP) and the x402 facilitator process payment data under their own
+  terms, which the privacy statement names. x402 payments are public on the Base
+  blockchain.
 
 `apps/expert-mcp/wrangler.jsonc` declares bindings with `env.staging` and
 `env.production`. Resource ids aren't secret and are committed once created.
@@ -82,7 +84,8 @@ Fails the build if:
 
 - `mcp-staging.brandonverzuu.com/healthz` returns 200 from a staging deploy.
 - The rules Worker has no reachable URL (spec 08 checks this).
-- MCP Inspector and the CLI each complete a test-mode purchase and one check
+- MCP Inspector and the CLI each complete one paid check (x402 on Base Sepolia,
+  MPP in Stripe test mode)
   against staging.
 - `docs/deployment.md` documents both Workers (pieces, dashboard settings,
   rollback through Workers versions). `AGENTS.md` describes the new deployables,

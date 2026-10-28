@@ -1,5 +1,10 @@
 # 01: ACP package (`packages/acp`)
 
+Status: **superseded, not built.** Decision D13 limits payments to micropayment
+rails (x402, MPP), so ACP checkout isn't used. PR #128 was closed without
+merging; its branch `claude/expert-01-acp` remains if ACP returns. Kept for
+reference.
+
 ## Scope
 
 A typed, validated implementation of the ACP `2026-04-17` data model for the

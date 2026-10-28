@@ -26,10 +26,9 @@ rules Worker over a service binding (spec 04).
 | --- | --- |
 | `POST/GET /mcp` | MCP endpoint, bearer token required |
 | `POST /v1/checks/{kind}` | Run a check (REST), `Idempotency-Key` required |
-| `GET /v1/account`, `POST /v1/purchase-links`, `POST /v1/tokens`, `DELETE /v1/tokens/{id}` | Account operations |
+| `GET /v1/account`, `GET /v1/prices`, `POST /v1/wallets`, `DELETE /v1/wallets/{id}`, `GET /v1/statements`, `POST /v1/tokens`, `DELETE /v1/tokens/{id}` | Account operations (payments ones from spec 03) |
 | `/.well-known/oauth-protected-resource`, `/.well-known/oauth-authorization-server` | OAuth metadata |
 | `/authorize`, `/token`, `/register`, `/device_authorization`, `/device` | OAuth flows |
-| `/.well-known/acp.json` | ACP discovery from `packages/acp` |
 | `/webhooks/stripe` | spec 03 |
 | `/healthz` | liveness, no data |
 
@@ -61,21 +60,21 @@ CREATE TABLE api_tokens (
 - **Paid check tools:** `check_api_governance`, `check_skill_design`,
   `review_process`. Input: the artifact (inline text or a file manifest) and
   options. Output: the shaped `PublicResult` (spec 05) as structured content.
-  Descriptions state the credit price and link the terms.
-- **Free tools:** `get_balance`, `get_usage`, `get_terms`, `get_purchase_link`,
-  `get_process_schema`, `get_skill` (fallback for clients without the Skills
-  extension).
-- **ACP checkout tools** from spec 03, with the binding's `{ meta, id?, payload? }`
-  arguments.
+  Descriptions state the price in EUR and link the terms. Without a payment they
+  return the 402 payment requirements from spec 03 (x402 MCP transport).
+- **Free tools:** `get_account`, `get_prices`, `quote_check`, `bind_wallet`,
+  `get_terms`, `get_process_schema`, `get_skill` (fallback for clients without
+  the Skills extension).
 - **Skills extension:** the thin public skills from spec 10, as resources through
   `skills/list`. These are the **only** resources. No prompts are exposed.
 
 ## Pipeline
 
 `runPaidCheck(ctx, kind, artifact, options)` implements the pipeline from the
-README: authenticate → validate + parse (`check-kit`) → `guard.admit` →
-`ledger.reserve` → `RULES.run` → `guard.shape` → `ledger.commit` → respond →
-`guard.record`, refunding on any failure. MCP tools and REST handlers both call it;
+README: authenticate → validate + parse (`check-kit`) → `payments.quote` →
+`guard.admit` → 402 challenge when unpaid → `payments.verify` → `RULES.run` →
+`guard.shape` → `payments.settle` → respond → `guard.record`, voiding the
+payment on any failure after verify. MCP tools and REST handlers both call it;
 a test asserts every paid entry point does.
 
 ## Hardening
@@ -89,13 +88,13 @@ a test asserts every paid entry point does.
 ## Acceptance
 
 - MCP Inspector connects, completes OAuth, lists tools and skills, and calls
-  `get_balance`.
+  `get_account`.
 - The CLI device flow completes against `wrangler dev`.
 - An unauthenticated `/mcp` call returns 401 with the resource metadata pointer.
 - `resources/list` returns only the public skills; `prompts/list` is empty.
 - Vitest with `@cloudflare/vitest-pool-workers` covers the pipeline, including
-  refund on failure, using stub `Ledger`, `Guard` and `RulesService`.
+  void on failure, using stub `PaymentGate`, `Guard` and `RulesService`.
 
 ## Out of scope
 
-Pricing and Stripe (03), rules (04), guard internals (05).
+Payment rails (03), rules (04), guard internals (05).

@@ -1,38 +1,37 @@
 # D6: Pricing
 
-Status: **decided 2026-10-28, to be reconsidered** (see "When to look again").
+Status: **decided 2026-10-28, revised the same day by D13, to be reconsidered**
+(see "When to look again").
 Prices are planned, not live. They live as data in
 `apps/site/content/expert/pricing.yml` (spec 07). Spec 03 seeds the gateway's
-`products` table from the same numbers.
+`prices` table from the same numbers.
 
 ## Decision
 
-**Unit.** 1 credit is about EUR 1 list price. Prices are in EUR and exclude VAT.
-A buyer's agent can quote "this check costs EUR 10" without converting anything.
+Revised the same day by D13: payment is per check over micropayment rails (x402,
+MPP), so there are no credit packs and no annual plan. Prices are in EUR and
+exclude VAT.
 
-| Pack | Price | Per credit |
-| --- | --- | --- |
-| 10 credits | EUR 12 | EUR 1.20 |
-| 50 credits | EUR 50 | EUR 1.00 |
-| 200 credits | EUR 160 | EUR 0.80 |
-| Annual team commitment, invoiced | from EUR 2,500 a year | about EUR 0.70, with higher spending limits |
-
-| Check | Credits per artifact |
+| Check | Price per artifact |
 | --- | --- |
-| Skill design | 5 |
-| API governance | 10 for up to 50 operations, +5 per further 50 |
-| Process description review | 15 |
+| Skill design | EUR 5 |
+| API governance | EUR 10 for up to 50 operations, +EUR 5 per further 50 |
+| Process description review | EUR 15 |
 
 Terms that go with it, for the terms of service (spec 07, legal scaffold):
 
 - Business customers only, which avoids the consumer withdrawal right for
   digital content. To confirm with the lawyer.
-- Credits expire 12 months after purchase. To confirm with the lawyer.
-- No refunds on unused credits, apart from the automatic refund when a check
-  fails on our side.
+- A check is paid when it runs and isn't collected if it fails on our side
+  (verify-then-settle, spec 03). There's no balance, so nothing to expire or
+  refund.
 - No free tier (D10). Instead, `/expert` shows one public sample report, of a
   public spec such as Petstore. It leaks a handful of findings, which is accepted
   as marketing.
+
+The first version of this decision used credits (1 credit about EUR 1) in packs
+of 10/50/200 at EUR 12/50/160, plus an annual plan from EUR 2,500. The per-check
+prices above are the same numbers without the pack discount.
 
 ## Why these numbers
 
@@ -60,40 +59,20 @@ than to use.
 - **Low anchor:** MCP buyers expect cents per call. EUR 10 only works if the tool
   descriptions and `/expert` say plainly that this is expert review, not a lookup,
   with the sample report as evidence.
-- **CI cost:** checking the same API on every commit adds up at 10 credits a run.
+- **CI cost:** checking the same API on every commit adds up at EUR 10 a run.
   A CI plan follows later, either a monthly subscription per API or discounted
   re-checks of the same API lineage. Spec 05 already tells legitimate CI history
   apart from probing.
 - **Thin evidence:** the human-review prices come from individual freelancer
   listings, not consultancy rate cards.
 
-## Direction: micropayments
+## Micropayments: decided in D13
 
-The longer-term direction is to move from prepaid packs towards paying per use in
-small amounts, so an agent pays exactly for what it calls, with no account
-balance to manage.
-
-Why not now:
-
-- **Card fees have a floor.** EU card payments cost a percentage plus a fixed fee
-  per charge (on Stripe, about EUR 0.25), so charging cards per check below a few
-  euros doesn't pay. Credit packs batch many checks into one card payment.
-- **The rails are young.** Candidates to track:
-  - x402: per-call payments in stablecoins over HTTP.
-  - Stripe's machine payments with session-based fiat aggregation, launched
-    March 2026 according to one secondary source. To verify.
-  - ACP itself, which works per checkout and is too heavy for a single call.
-
-  None is supported widely enough by buyers' agent clients yet.
-- **Anti-extraction needs friction.** Per-call payments without accounts
-  remove the identity, card linking and spending ceilings that spec 05 relies
-  on. Any micropayment design has to keep an identity per payer, such as a
-  wallet or payment credential bound to an account, or it gives up the main
-  defence against rule reconstruction.
-
-The gateway is already shaped for it: every paid call goes through one pipeline
-(`runPaidCheck`) with a price per check, so a per-call payment rail can replace
-`ledger.reserve` without touching the checks.
+The first version of this record treated micropayments as a later direction,
+mainly because card fees have a floor per charge. D13 settles it the other way:
+x402 settles in stablecoins for fractions of a cent, and MPP covers fiat, so the
+service charges per check from the start. The concerns raised here (identity per
+payer for anti-extraction, young rails) are answered in D13 and spec 03.
 
 ## Direction: the work as a data set
 
@@ -119,7 +98,7 @@ meet:
    by industry". Raw rules or a reconstructable rule set stay out.
 3. **Provenance.** Each sold slice is signed and versioned, with a per-buyer
    fingerprint (as in spec 05), so a resold copy can be traced.
-4. **Rails.** Micropayments fit this better than checks do. Data access is many
+4. **Rails.** The same x402/MPP rails as the checks (D13). Data access is many
    small reads, and an agent paying per record or per query is the natural model.
 
 No-regret preparation, starting now:
@@ -138,13 +117,12 @@ Revisit D6 at whichever comes first:
 
 - 90 days after paid checks go live,
 - 50 paying accounts,
-- a micropayment rail supported by at least two widely used agent clients,
-- a CI plan becoming necessary (more than a third of checks coming from CI
+- a CI discount becoming necessary (more than a third of checks coming from CI
   tokens).
 
 Measure before revisiting:
 
-- the pack mix,
+- the split between x402 and MPP payments,
 - checks per account per month,
 - the CI share of checks,
 - refunds and disputes,

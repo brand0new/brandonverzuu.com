@@ -8,8 +8,8 @@ folder is handed to one agent and implemented on its own branch and PR.
 ## Goal
 
 Sell Brandon's knowledge, experience and skills as paid, agent-callable checks. A
-buyer's agent (or a CI pipeline) sends an artifact, pays through the Agentic
-Commerce Protocol (ACP), and gets back the findings Brandon would give an employer
+buyer's agent (or a CI pipeline) sends an artifact, pays for that one check
+over a micropayment rail (x402 or MPP, decision D13), and gets back the findings Brandon would give an employer
 or client.
 
 Three products, all deterministic:
@@ -45,9 +45,8 @@ Cloudflare, in code that isn't in this public repo.**
 ```
 PUBLIC  brand0new/brandonverzuu.com (this repo, monorepo)
   apps/site            static site, incl. /expert pages
-  apps/expert-mcp      gateway Worker: MCP, REST, OAuth, ACP checkout, ledger, guard
+  apps/expert-mcp      gateway Worker: MCP, REST, OAuth, x402/MPP payments, guard
   apps/cli             thin CLI client
-  packages/acp         ACP 2026-04-17 types and validators
   packages/engine-api  the RPC contract between gateway and rules Worker (types only)
   packages/check-kit   generic, non-IP check primitives (parsers, JSONPath, AST walkers)
   products/skills      the thin public skills
@@ -94,10 +93,9 @@ state the standard being applied. That's the product, and it's accepted. Control
  buyer's agent ──MCP + OAuth──┐        developer / CI ──CLI or REST + token──┐
                               ▼                                              ▼
  mcp.brandonverzuu.com ── Worker "expert-mcp" (public repo)
-   ├─ /mcp                      MCP: check tools, account tools, ACP checkout tools,
+   ├─ /mcp                      MCP: check tools, account tools,
    │                            Skills extension (thin public skills as resources)
    ├─ /v1/*                     REST: same checks and account operations
-   ├─ /.well-known/acp.json     ACP discovery (transports: ["mcp"])
    ├─ /.well-known/oauth-*      OAuth metadata
    ├─ /webhooks/stripe
    ├─ DO McpSession, DO AccountGuard, D1 commerce, KV flags
@@ -110,16 +108,17 @@ state the standard being applied. That's the product, and it's accepted. Control
 
 ### Commerce model
 
-- The product is **credits**, sold in packs as ACP line items with `digital`
-  fulfilment. Fulfilment means crediting the buyer's ledger.
-- Each check costs a fixed number of credits per artifact, charged atomically
-  before the check runs and refunded if it fails.
-- Stripe is the PSP. ACP's delegated payment flow hands over a Shared Payment Token
-  that the gateway charges on `complete_checkout_session`.
-- A Stripe Checkout link is the fallback for agents and CLI users without ACP
-  payment delegation.
-- ACP version pinned to **`2026-04-17`** (latest stable; still labelled beta), with
-  its MCP binding.
+- **Pay per check, micropayment rails only** (decision D13). No checkout, credit
+  packs or balance.
+- An unpaid request gets a 402 with two challenges:
+  - **x402**: EURC or USDC on Base, through a facilitator.
+  - **MPP**: Stripe's Machine Payments Protocol, for fiat.
+- The gateway verifies the payment, runs the check, and only then settles. A
+  check that fails on our side is never paid.
+- Prices per check in EUR excluding VAT (D6): skill design 5, API governance 10
+  (+5 per 50 operations over 50), process review 15.
+- Every payer (wallet or Stripe customer) is bound to an OAuth account, so the
+  anti-extraction controls keep an identity per payer (spec 03, 05).
 
 ## Monorepo layout
 
@@ -129,7 +128,6 @@ npm workspaces (the repo already uses npm, lockfile v3, Node from `.node-version
 apps/site/            the Nuxt site, moved as-is, including its scripts/
 apps/expert-mcp/      gateway Worker
 apps/cli/             CLI
-packages/acp/
 packages/engine-api/
 packages/check-kit/
 products/skills/      thin public skills (served over MCP, installable from the repo)
@@ -144,13 +142,13 @@ skills/  docs/  wrangler.toml   stay at the root
 | # | Spec | Depends on | Parallel with |
 | --- | --- | --- | --- |
 | 00 | [Monorepo migration](00-monorepo.md) | — | — |
-| 01 | [ACP package](01-acp-package.md) | 00 | 02, 04, 07, 09, 10 |
-| 02 | [Gateway: MCP, REST, auth, accounts](02-mcp-server.md) | 00 | 01, 04, 07 |
-| 03 | [Commerce: checkout, payment, ledger](03-commerce.md) | 01, 02 | 04, 05 |
+| 01 | ~~[ACP package](01-acp-package.md)~~ superseded by D13, not built | — | — |
+| 02 | [Gateway: MCP, REST, auth, accounts](02-mcp-server.md) | 00 | 04, 07 |
+| 03 | [Payments: x402 and MPP](03-commerce.md) | 02 | 04, 05 |
 | 04 | [Check engine and private rules Worker](04-check-engine.md) | 00 | 02, 03 |
 | 05 | [Anti-extraction controls](05-anti-extraction.md) | 02, 04 (interfaces) | 03 |
 | 06 | [Infrastructure and deployment](06-infrastructure.md) | 00, then each of 02–05 | all |
-| 07 | [Public pages and terms](07-site-pages.md) | 00 | 01–05 |
+| 07 | [Public pages and terms](07-site-pages.md) | 00 | 02–05 |
 | 08 | [Extraction red-team and evals](08-evals.md) | 04, 05 | — |
 | 09 | [CLI](09-cli.md) | 02 (REST) | 03–05 |
 | 10 | [Thin public skills](10-public-skills.md) | 04 (input formats) | 03, 05, 09 |
@@ -193,14 +191,15 @@ interface CheckResult {
 interface RulesService { run(req: CheckRequest): Promise<CheckResult> }
 
 // apps/expert-mcp (spec 02)
-interface ToolContext { account: Account; requestId: string; ledger: Ledger; guard: Guard; env: Env }
+interface ToolContext { account: Account; requestId: string; payments: PaymentGate; guard: Guard; env: Env }
 
-interface Ledger {
-  balance(accountId: string): Promise<number>
-  reserve(accountId: string, credits: number, ref: string): Promise<Reservation> // throws InsufficientCredits
-  commit(r: Reservation): Promise<void>
-  refund(r: Reservation, reason: string): Promise<void>
-  grant(accountId: string, credits: number, orderId: string): Promise<void>
+// spec 03
+interface PaymentGate {
+  quote(kind: CheckKind, artifact: Artifact): Promise<Price>                 // EUR minor units, VAT applied per account
+  challenge(ctx: { account: Account; price: Price; resource: string }): PaymentChallenge  // the 402 body: x402 requirements + MPP challenge
+  verify(ctx: { account: Account; price: Price; payment: PaymentProof }): Promise<Authorization> // throws payer_not_bound, wrong_amount, reused
+  settle(a: Authorization): Promise<void>
+  void(a: Authorization, reason: string): Promise<void>                     // nothing collected; refund on MPP if capture can't be deferred
 }
 
 interface Guard {
@@ -214,9 +213,10 @@ Every paid check, over MCP, REST or CLI, goes through one pipeline that spec 02
 provides, so no entry point can skip a step:
 
 ```
-authenticate → validate + parse → guard.admit → ledger.reserve → rules.run
-  → guard.shape → ledger.commit → respond → guard.record
-                (on any failure: ledger.refund)
+authenticate → validate + parse → payments.quote → guard.admit
+  → no payment? 402 with payments.challenge (nothing runs)
+  → payments.verify → rules.run → guard.shape → payments.settle → respond → guard.record
+                (on any failure after verify: payments.void)
 ```
 
 ## Open decisions (Brandon)
@@ -228,9 +228,10 @@ authenticate → validate + parse → guard.admit → ledger.reserve → rules.r
 | D3 | Private repo for rules | **Decided:** `brand0new/expertise` (private). Brandon writes the rules; agents scaffold its structure only. |
 | D4 | Process description input format | **Researched:** no JSON Schema standard exists. Our own Process Description schema using BPMN 2.0 vocabulary, plus a governance block, published at a static URL and registered in SchemaStore (spec 04). Brandon reviews v1. |
 | D5 | Seller of record: legal entity, Stripe account, VAT | **Later.** Brandon's business entity with Stripe Tax on. Blocks live payments only; everything runs in Stripe test mode until then. |
-| D6 | Pricing and currency | **Decided, to reconsider:** 1 credit ≈ EUR 1 excl. VAT; packs 10/50/200 credits at EUR 12/50/160; API governance 10 credits (+5 per 50 operations over 50), skill design 5, process review 15. Direction: micropayments, and Brandon's work as a data set. See [decisions/D6-pricing.md](decisions/D6-pricing.md). |
+| D6 | Pricing and currency | **Decided, to reconsider:** per check, EUR excl. VAT: API governance 10 (+5 per 50 operations over 50), skill design 5, process review 15. Direction: Brandon's work as a data set. See [decisions/D6-pricing.md](decisions/D6-pricing.md). |
 | D7 | How agents deploy to Cloudflare | **Later.** Workers Builds (Git integration) for both Workers, plus one scoped API token for provisioning, held as a session secret, never in a repo. Blocks spec 06 only. |
 | D8 | Move the site into `apps/site` | **Decided:** yes, as its own PR, verified on a preview first |
+| D13 | Payment rails | **Decided:** x402 and MPP only, pay per check; no ACP, packs or balance. See [decisions/D13-payment-rails.md](decisions/D13-payment-rails.md). |
 | D9 | Hostname and CLI package name | **Decided:** `mcp.brandonverzuu.com`; npm package `@brandonverzuu/expertise` (binary `bv-expertise`) |
 | D10 | Free trial | **Decided:** none. Every check is paid. |
 | D11 | Data location | **Decided:** EU only (spec 06). |
