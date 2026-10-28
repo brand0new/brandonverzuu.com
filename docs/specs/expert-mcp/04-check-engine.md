@@ -1,5 +1,10 @@
 # 04: Check engine and private rules Worker
 
+Status: **in review** on `claude/expert-04-check-engine` (public: `engine-api`,
+`check-kit`, draft Process Description schema) and `claude/scaffold` in
+`brand0new/expertise` (rules Worker scaffold, no rule content). The schema stays a
+draft until Brandon has reviewed it.
+
 ## Scope
 
 The deterministic engine that runs Brandon's checks, split between public,
