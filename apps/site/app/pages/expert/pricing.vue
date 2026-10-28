@@ -11,8 +11,8 @@
 
     <ExpertNotice label="Coming soon" class="mb-12">
       <p>
-        Prices aren't set yet. Everything marked TBD will be filled in before
-        the service goes live.
+        These are the planned prices. They may still change before the service
+        goes live.
       </p>
     </ExpertNotice>
 
@@ -56,7 +56,17 @@
           </table>
         </div>
         <p class="mt-3 text-sm text-gray-600 dark:text-gray-400">
-          Prices in euros. Payment runs through Stripe.
+          Prices in euros, excluding VAT. Payment runs through Stripe.
+        </p>
+        <p
+          v-if="pricing.annualCommitment"
+          class="mt-2 text-sm text-gray-600 dark:text-gray-400"
+        >
+          For teams: an annual commitment from
+          {{
+            formatPrice(pricing.annualCommitment.priceFrom, pricing.currency)
+          }}
+          a year. {{ pricing.annualCommitment.note }}
         </p>
       </section>
 
@@ -84,7 +94,15 @@
                 <th scope="row" class="py-3 pr-4 font-semibold">
                   {{ check.name }}
                 </th>
-                <td class="py-3">{{ formatCredits(check.credits) }}</td>
+                <td class="py-3">
+                  {{ formatCredits(check.credits) }}
+                  <span
+                    v-if="check.note"
+                    class="block text-gray-600 dark:text-gray-400"
+                  >
+                    {{ check.note }}
+                  </span>
+                </td>
               </tr>
             </tbody>
           </table>

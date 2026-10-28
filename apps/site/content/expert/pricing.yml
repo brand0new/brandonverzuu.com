@@ -1,25 +1,30 @@
 # Credit packs and per-check prices for /expert and /expert/pricing.
-# Every amount is a placeholder until Brandon sets prices (decision D6).
-# Replace "TBD" with a number (euros for packs, credits for checks); the
-# schema in content.config.ts accepts either.
+# Decision D6 (docs/specs/expert-mcp/decisions/D6-pricing.md): 1 credit is
+# about EUR 1 list price, amounts in EUR excluding VAT. Planned prices, not live
+# yet. A number may still be replaced by "TBD"; the pages print it as-is.
 currency: EUR
 packs:
   - id: pack-10
     credits: 10
-    price: TBD
+    price: 12
   - id: pack-50
     credits: 50
-    price: TBD
+    price: 50
   - id: pack-200
     credits: 200
-    price: TBD
+    price: 160
+# Invoiced annual commitment for teams, with higher spending limits.
+annualCommitment:
+  priceFrom: 2500
+  note: Invoiced yearly, at about €0.70 per credit, with higher spending limits.
 checks:
   - kind: api-governance
     name: API governance check
-    credits: TBD
+    credits: 10
+    note: Up to 50 operations. Each further 50 operations adds 5 credits.
   - kind: skill-design
     name: Skill design check
-    credits: TBD
+    credits: 5
   - kind: process-review
     name: Process description review
-    credits: TBD
+    credits: 15

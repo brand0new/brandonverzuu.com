@@ -144,8 +144,17 @@ export default defineContentConfig({
             kind: z.enum(["api-governance", "skill-design", "process-review"]),
             name: z.string(),
             credits: z.union([z.number().positive(), z.literal("TBD")]),
+            // How the price scales, e.g. with the size of the artifact.
+            note: z.string().optional(),
           }),
         ),
+        // Invoiced annual plan for teams; shown below the packs.
+        annualCommitment: z
+          .object({
+            priceFrom: z.number().positive(),
+            note: z.string(),
+          })
+          .optional(),
       }),
     }),
     // Terms and privacy statement, one file per version

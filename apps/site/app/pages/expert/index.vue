@@ -55,11 +55,17 @@
                 </dd>
               </div>
             </dl>
+            <p
+              v-if="check.note"
+              class="mt-3 text-sm text-gray-600 dark:text-gray-400"
+            >
+              {{ check.note }}
+            </p>
           </article>
         </li>
       </ul>
       <p class="mt-3 text-sm text-gray-600 dark:text-gray-400">
-        Credit prices aren't set yet. See
+        A credit costs about a euro, less in larger packs. Planned prices, see
         <NuxtLink to="/expert/pricing" :class="linkClass">pricing</NuxtLink>.
       </p>
     </section>
