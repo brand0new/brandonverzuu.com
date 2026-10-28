@@ -1,0 +1,617 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://brandonverzuu.com/schemas/process-description/v1.json",
+  "title": "Process Description",
+  "description": "DRAFT, pending review by Brandon Verzuu; not yet published as v1 and may change before it is. A business process described with BPMN 2.0 (ISO/IEC 19510) vocabulary, plus a separate governance block for what BPMN lacks: RACI, controls, exceptions, SLAs, KPIs, systems of record, evidence, ownership and review cadence. Every element id is a BPMN-compatible NCName and unique within the document, so a BPMN XML export or import is a mapping. Properties starting with x- are extensions and ignored.",
+  "type": "object",
+  "required": ["processDescription", "process"],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "The schema URL, so editors can validate the file."
+    },
+    "processDescription": {
+      "description": "Version of this format the document follows.",
+      "const": "1.0"
+    },
+    "process": { "$ref": "#/$defs/process" },
+    "governance": { "$ref": "#/$defs/governance" }
+  },
+  "patternProperties": { "^x-": true },
+  "additionalProperties": false,
+  "$defs": {
+    "id": {
+      "description": "BPMN-compatible identifier (an XML NCName without colons), unique across the whole document.",
+      "type": "string",
+      "pattern": "^[A-Za-z_][A-Za-z0-9_.-]*$",
+      "maxLength": 128
+    },
+    "idRef": {
+      "description": "The id of another element in this document.",
+      "$ref": "#/$defs/id"
+    },
+    "idRefs": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/idRef" },
+      "uniqueItems": true
+    },
+    "name": { "type": "string", "minLength": 1, "maxLength": 500 },
+    "text": { "type": "string", "maxLength": 20000 },
+    "duration": {
+      "description": "ISO 8601 duration, e.g. P5D, PT4H, P1Y.",
+      "type": "string",
+      "pattern": "^P(?!$)(\\d+(\\.\\d+)?Y)?(\\d+(\\.\\d+)?M)?(\\d+(\\.\\d+)?W)?(\\d+(\\.\\d+)?D)?(T(?=\\d)(\\d+(\\.\\d+)?H)?(\\d+(\\.\\d+)?M)?(\\d+(\\.\\d+)?S)?)?$"
+    },
+    "extensible": {
+      "patternProperties": { "^x-": true }
+    },
+    "process": {
+      "description": "BPMN process. Flow nodes (tasks, events, gateways) are connected by sequence flows; message flows are handoffs between participants.",
+      "type": "object",
+      "required": ["id", "name"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "name": { "$ref": "#/$defs/name" },
+        "description": { "$ref": "#/$defs/text" },
+        "version": {
+          "description": "The process's own version, chosen by its owner.",
+          "type": "string",
+          "maxLength": 64
+        },
+        "participants": {
+          "description": "BPMN participants (pools): the organisations, units or external parties involved.",
+          "type": "array",
+          "items": { "$ref": "#/$defs/participant" }
+        },
+        "lanes": {
+          "description": "BPMN lanes: the roles that perform work, each inside a participant.",
+          "type": "array",
+          "items": { "$ref": "#/$defs/lane" }
+        },
+        "tasks": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/task" }
+        },
+        "events": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/event" }
+        },
+        "gateways": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/gateway" }
+        },
+        "flows": {
+          "description": "BPMN sequence flows between tasks, events and gateways.",
+          "type": "array",
+          "items": { "$ref": "#/$defs/sequenceFlow" }
+        },
+        "messages": {
+          "description": "BPMN message flows: handoffs between participants.",
+          "type": "array",
+          "items": { "$ref": "#/$defs/messageFlow" }
+        },
+        "dataObjects": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/dataObject" }
+        }
+      },
+      "$ref": "#/$defs/extensible",
+      "unevaluatedProperties": false
+    },
+    "participant": {
+      "type": "object",
+      "required": ["id", "name"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "name": { "$ref": "#/$defs/name" },
+        "description": { "$ref": "#/$defs/text" },
+        "external": {
+          "description": "True for parties outside the organisation that owns the process (customers, suppliers, regulators).",
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "$ref": "#/$defs/extensible",
+      "unevaluatedProperties": false
+    },
+    "lane": {
+      "type": "object",
+      "required": ["id", "name"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "name": { "$ref": "#/$defs/name" },
+        "description": { "$ref": "#/$defs/text" },
+        "participant": {
+          "description": "The participant (pool) this lane belongs to.",
+          "$ref": "#/$defs/idRef"
+        }
+      },
+      "$ref": "#/$defs/extensible",
+      "unevaluatedProperties": false
+    },
+    "flowNodeBase": {
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "name": { "$ref": "#/$defs/name" },
+        "description": { "$ref": "#/$defs/text" },
+        "lane": {
+          "description": "The lane (role) this node sits in.",
+          "$ref": "#/$defs/idRef"
+        }
+      }
+    },
+    "task": {
+      "description": "BPMN activity. `type` is the BPMN task type; `task` is an untyped (abstract) task.",
+      "type": "object",
+      "required": ["id", "name"],
+      "allOf": [
+        { "$ref": "#/$defs/flowNodeBase" },
+        { "$ref": "#/$defs/extensible" }
+      ],
+      "properties": {
+        "type": {
+          "enum": [
+            "task",
+            "user",
+            "manual",
+            "service",
+            "script",
+            "send",
+            "receive",
+            "businessRule"
+          ],
+          "default": "task"
+        },
+        "inputs": {
+          "description": "Data objects this task reads.",
+          "$ref": "#/$defs/idRefs"
+        },
+        "outputs": {
+          "description": "Data objects this task produces or changes.",
+          "$ref": "#/$defs/idRefs"
+        },
+        "loop": {
+          "description": "BPMN loop characteristics.",
+          "enum": [
+            "none",
+            "standard",
+            "multiInstanceSequential",
+            "multiInstanceParallel"
+          ],
+          "default": "none"
+        },
+        "implementation": {
+          "description": "For service, script and businessRule tasks: what carries the work out (an API, a script, a decision table).",
+          "type": "string",
+          "maxLength": 500
+        }
+      },
+      "unevaluatedProperties": false
+    },
+    "event": {
+      "description": "BPMN event. `position` is where it sits in the flow, `trigger` its BPMN event definition.",
+      "type": "object",
+      "required": ["id", "position"],
+      "allOf": [
+        { "$ref": "#/$defs/flowNodeBase" },
+        { "$ref": "#/$defs/extensible" },
+        {
+          "if": {
+            "properties": { "position": { "const": "boundary" } },
+            "required": ["position"]
+          },
+          "then": { "required": ["attachedTo"] },
+          "else": { "not": { "required": ["attachedTo"] } }
+        }
+      ],
+      "properties": {
+        "name": { "$ref": "#/$defs/name" },
+        "position": {
+          "enum": [
+            "start",
+            "end",
+            "intermediateCatch",
+            "intermediateThrow",
+            "boundary"
+          ]
+        },
+        "trigger": {
+          "enum": [
+            "none",
+            "message",
+            "timer",
+            "error",
+            "escalation",
+            "cancel",
+            "compensation",
+            "conditional",
+            "link",
+            "signal",
+            "terminate",
+            "multiple",
+            "parallelMultiple"
+          ],
+          "default": "none"
+        },
+        "attachedTo": {
+          "description": "For boundary events: the task the event is attached to.",
+          "$ref": "#/$defs/idRef"
+        },
+        "interrupting": {
+          "description": "For boundary events: whether the event cancels the task it's attached to.",
+          "type": "boolean",
+          "default": true
+        },
+        "timer": {
+          "description": "For timer events: exactly one of duration, date or cycle (ISO 8601).",
+          "type": "object",
+          "properties": {
+            "duration": { "$ref": "#/$defs/duration" },
+            "date": { "type": "string", "format": "date-time" },
+            "cycle": {
+              "description": "ISO 8601 repeating interval, e.g. R/P1D.",
+              "type": "string",
+              "maxLength": 100
+            }
+          },
+          "minProperties": 1,
+          "maxProperties": 1,
+          "additionalProperties": false
+        },
+        "condition": {
+          "description": "For conditional events: when the event fires.",
+          "type": "string",
+          "maxLength": 2000
+        },
+        "code": {
+          "description": "For error, escalation and signal events: the error code, escalation code or signal name.",
+          "type": "string",
+          "maxLength": 200
+        }
+      },
+      "unevaluatedProperties": false
+    },
+    "gateway": {
+      "type": "object",
+      "required": ["id", "type"],
+      "allOf": [
+        { "$ref": "#/$defs/flowNodeBase" },
+        { "$ref": "#/$defs/extensible" }
+      ],
+      "properties": {
+        "name": { "$ref": "#/$defs/name" },
+        "type": {
+          "enum": [
+            "exclusive",
+            "parallel",
+            "inclusive",
+            "eventBased",
+            "complex"
+          ]
+        },
+        "direction": {
+          "description": "BPMN gatewayDirection.",
+          "enum": ["unspecified", "diverging", "converging", "mixed"],
+          "default": "unspecified"
+        },
+        "default": {
+          "description": "For exclusive, inclusive and complex gateways: the outgoing sequence flow taken when no condition holds.",
+          "$ref": "#/$defs/idRef"
+        }
+      },
+      "unevaluatedProperties": false
+    },
+    "sequenceFlow": {
+      "type": "object",
+      "required": ["id", "source", "target"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "name": { "$ref": "#/$defs/name" },
+        "source": { "$ref": "#/$defs/idRef" },
+        "target": { "$ref": "#/$defs/idRef" },
+        "condition": {
+          "description": "When this flow is taken (an expression or plain language), for flows leaving a gateway.",
+          "type": "string",
+          "maxLength": 2000
+        }
+      },
+      "$ref": "#/$defs/extensible",
+      "unevaluatedProperties": false
+    },
+    "messageFlow": {
+      "description": "A handoff: something passes from one participant to another. Source and target are tasks, events or participants.",
+      "type": "object",
+      "required": ["id", "source", "target"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "name": { "$ref": "#/$defs/name" },
+        "description": { "$ref": "#/$defs/text" },
+        "source": { "$ref": "#/$defs/idRef" },
+        "target": { "$ref": "#/$defs/idRef" },
+        "payload": {
+          "description": "Data objects that travel with the message.",
+          "$ref": "#/$defs/idRefs"
+        },
+        "channel": {
+          "description": "How it travels, e.g. email, API, portal, paper.",
+          "type": "string",
+          "maxLength": 200
+        }
+      },
+      "$ref": "#/$defs/extensible",
+      "unevaluatedProperties": false
+    },
+    "dataObject": {
+      "type": "object",
+      "required": ["id", "name"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "name": { "$ref": "#/$defs/name" },
+        "description": { "$ref": "#/$defs/text" },
+        "collection": {
+          "description": "BPMN isCollection: the object is a set of items.",
+          "type": "boolean",
+          "default": false
+        },
+        "state": {
+          "description": "BPMN data state, e.g. draft, approved.",
+          "type": "string",
+          "maxLength": 200
+        }
+      },
+      "$ref": "#/$defs/extensible",
+      "unevaluatedProperties": false
+    },
+    "governance": {
+      "description": "What BPMN doesn't model: accountability, controls, exceptions, service levels, measures, records and ownership. Every reference points to an element id in `process` or in this block.",
+      "type": "object",
+      "properties": {
+        "owner": { "$ref": "#/$defs/owner" },
+        "reviewCadence": {
+          "description": "How often the description is reviewed, as an ISO 8601 duration (e.g. P1Y).",
+          "$ref": "#/$defs/duration"
+        },
+        "lastReviewed": { "type": "string", "format": "date" },
+        "raci": {
+          "description": "Responsibility assignment per task.",
+          "type": "array",
+          "items": { "$ref": "#/$defs/raci" }
+        },
+        "controls": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/control" }
+        },
+        "exceptions": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/exception" }
+        },
+        "slas": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/sla" }
+        },
+        "kpis": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/kpi" }
+        },
+        "systemsOfRecord": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/systemOfRecord" }
+        },
+        "evidence": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/evidence" }
+        }
+      },
+      "$ref": "#/$defs/extensible",
+      "unevaluatedProperties": false
+    },
+    "owner": {
+      "description": "Who owns this process description.",
+      "type": "object",
+      "required": ["name"],
+      "properties": {
+        "name": { "$ref": "#/$defs/name" },
+        "role": {
+          "description": "The owner's role: a lane or participant id, or a job title.",
+          "type": "string",
+          "maxLength": 200
+        },
+        "contact": { "type": "string", "maxLength": 320 }
+      },
+      "$ref": "#/$defs/extensible",
+      "unevaluatedProperties": false
+    },
+    "raci": {
+      "description": "RACI for one task. Roles are lane or participant ids. Exactly one role is accountable.",
+      "type": "object",
+      "required": ["task", "accountable"],
+      "properties": {
+        "task": { "$ref": "#/$defs/idRef" },
+        "responsible": { "$ref": "#/$defs/idRefs" },
+        "accountable": { "$ref": "#/$defs/idRef" },
+        "consulted": { "$ref": "#/$defs/idRefs" },
+        "informed": { "$ref": "#/$defs/idRefs" }
+      },
+      "$ref": "#/$defs/extensible",
+      "unevaluatedProperties": false
+    },
+    "control": {
+      "type": "object",
+      "required": ["id", "name"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "name": { "$ref": "#/$defs/name" },
+        "description": { "$ref": "#/$defs/text" },
+        "type": {
+          "enum": ["preventive", "detective", "corrective", "directive"]
+        },
+        "automation": { "enum": ["manual", "automated", "itDependentManual"] },
+        "appliesTo": {
+          "description": "Elements the control operates on (tasks, gateways, flows, messages, data objects).",
+          "$ref": "#/$defs/idRefs"
+        },
+        "performedBy": {
+          "description": "Lane or participant that operates the control.",
+          "$ref": "#/$defs/idRef"
+        },
+        "frequency": {
+          "description": "How often it operates, e.g. per transaction, daily, quarterly.",
+          "type": "string",
+          "maxLength": 200
+        },
+        "evidence": {
+          "description": "Evidence items the control produces.",
+          "$ref": "#/$defs/idRefs"
+        },
+        "references": {
+          "description": "Controls in an external catalogue this control implements, by NIST OSCAL control id.",
+          "type": "array",
+          "items": { "$ref": "#/$defs/oscalReference" }
+        }
+      },
+      "$ref": "#/$defs/extensible",
+      "unevaluatedProperties": false
+    },
+    "oscalReference": {
+      "type": "object",
+      "required": ["controlId"],
+      "properties": {
+        "catalog": {
+          "description": "URI of the OSCAL catalog, e.g. the NIST SP 800-53 rev5 catalog.",
+          "type": "string",
+          "format": "uri"
+        },
+        "controlId": {
+          "description": "OSCAL control id (a token such as ac-5 or ac-2.4).",
+          "type": "string",
+          "pattern": "^[A-Za-z_][A-Za-z0-9_.-]*$",
+          "maxLength": 128
+        }
+      },
+      "$ref": "#/$defs/extensible",
+      "unevaluatedProperties": false
+    },
+    "exception": {
+      "description": "A known way the process deviates from its normal path, and how it's handled.",
+      "type": "object",
+      "required": ["id", "name"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "name": { "$ref": "#/$defs/name" },
+        "description": { "$ref": "#/$defs/text" },
+        "raisedAt": {
+          "description": "Elements where the exception can arise.",
+          "$ref": "#/$defs/idRefs"
+        },
+        "handling": {
+          "description": "What happens when it arises.",
+          "$ref": "#/$defs/text"
+        },
+        "handledBy": {
+          "description": "The event, task or flow in the process that handles it, if modelled.",
+          "$ref": "#/$defs/idRef"
+        },
+        "escalateTo": {
+          "description": "Lane or participant it escalates to.",
+          "$ref": "#/$defs/idRef"
+        }
+      },
+      "$ref": "#/$defs/extensible",
+      "unevaluatedProperties": false
+    },
+    "sla": {
+      "description": "A service level: how long the span from one element to another may take.",
+      "type": "object",
+      "required": ["id", "name", "target"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "name": { "$ref": "#/$defs/name" },
+        "description": { "$ref": "#/$defs/text" },
+        "from": {
+          "description": "Element where the clock starts.",
+          "$ref": "#/$defs/idRef"
+        },
+        "to": {
+          "description": "Element where the clock stops.",
+          "$ref": "#/$defs/idRef"
+        },
+        "target": { "$ref": "#/$defs/duration" },
+        "calendar": { "enum": ["business", "calendar"], "default": "calendar" },
+        "attainment": {
+          "description": "Share of cases that must meet the target, in percent.",
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "owner": {
+          "description": "Lane or participant answerable for the SLA.",
+          "$ref": "#/$defs/idRef"
+        }
+      },
+      "$ref": "#/$defs/extensible",
+      "unevaluatedProperties": false
+    },
+    "kpi": {
+      "type": "object",
+      "required": ["id", "name"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "name": { "$ref": "#/$defs/name" },
+        "description": { "$ref": "#/$defs/text" },
+        "formula": { "type": "string", "maxLength": 2000 },
+        "unit": { "type": "string", "maxLength": 100 },
+        "target": { "type": ["number", "string"] },
+        "direction": {
+          "description": "Which way is better.",
+          "enum": ["increase", "decrease", "maintain"]
+        },
+        "frequency": { "type": "string", "maxLength": 200 },
+        "source": {
+          "description": "System of record the measure comes from.",
+          "$ref": "#/$defs/idRef"
+        },
+        "owner": { "$ref": "#/$defs/idRef" }
+      },
+      "$ref": "#/$defs/extensible",
+      "unevaluatedProperties": false
+    },
+    "systemOfRecord": {
+      "description": "The authoritative system for some of the process's data.",
+      "type": "object",
+      "required": ["id", "name"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "name": { "$ref": "#/$defs/name" },
+        "description": { "$ref": "#/$defs/text" },
+        "records": {
+          "description": "Data objects this system is authoritative for.",
+          "$ref": "#/$defs/idRefs"
+        },
+        "owner": { "$ref": "#/$defs/idRef" }
+      },
+      "$ref": "#/$defs/extensible",
+      "unevaluatedProperties": false
+    },
+    "evidence": {
+      "description": "A record that proves the process or a control ran.",
+      "type": "object",
+      "required": ["id", "name"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "name": { "$ref": "#/$defs/name" },
+        "description": { "$ref": "#/$defs/text" },
+        "producedBy": {
+          "description": "Elements that produce it.",
+          "$ref": "#/$defs/idRefs"
+        },
+        "storedIn": {
+          "description": "System of record that keeps it.",
+          "$ref": "#/$defs/idRef"
+        },
+        "retention": { "$ref": "#/$defs/duration" }
+      },
+      "$ref": "#/$defs/extensible",
+      "unevaluatedProperties": false
+    }
+  }
+}

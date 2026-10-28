@@ -1,0 +1,214 @@
+# yaml-language-server: $schema=../schemas/process-description.schema.json
+# Example: granting system access to a new employee. Illustrative only.
+$schema: https://brandonverzuu.com/schemas/process-description/v1.json
+processDescription: "1.0"
+process:
+  id: Process_AccessProvisioning
+  name: New-hire access provisioning
+  description: >-
+    HR records a signed contract, the hiring manager requests the access the role
+    needs, the IT service desk provisions accounts, and the new hire confirms on day
+    one.
+  participants:
+    - id: Participant_Org
+      name: Northwind Logistics
+    - id: Participant_NewHire
+      name: New hire
+      external: true
+  lanes:
+    - id: Lane_HR
+      name: HR operations
+      participant: Participant_Org
+    - id: Lane_HiringManager
+      name: Hiring manager
+      participant: Participant_Org
+    - id: Lane_ServiceDesk
+      name: IT service desk
+      participant: Participant_Org
+    - id: Lane_IAM
+      name: Identity platform
+      participant: Participant_Org
+  events:
+    - id: Event_ContractSigned
+      name: Contract signed
+      position: start
+      trigger: conditional
+      condition: Contract status in the HR system becomes signed
+      lane: Lane_HR
+    - id: Event_ProvisioningFailed
+      name: Provisioning failed
+      position: boundary
+      trigger: error
+      code: PROVISIONING_FAILED
+      attachedTo: Task_ProvisionAccounts
+    - id: Event_AccessReady
+      name: Access ready
+      position: end
+      lane: Lane_ServiceDesk
+  tasks:
+    - id: Task_CreateIdentity
+      name: Create identity from HR record
+      type: service
+      lane: Lane_IAM
+      implementation: HR-to-IAM connector
+      outputs: [Data_Identity]
+    - id: Task_RequestAccess
+      name: Request role-based access
+      type: user
+      lane: Lane_HiringManager
+      outputs: [Data_AccessRequest]
+    - id: Task_ApproveExtraAccess
+      name: Approve access outside the role profile
+      type: user
+      lane: Lane_HiringManager
+      inputs: [Data_AccessRequest]
+    - id: Task_ProvisionAccounts
+      name: Provision accounts
+      type: service
+      lane: Lane_IAM
+      inputs: [Data_Identity, Data_AccessRequest]
+      outputs: [Data_AccountList]
+    - id: Task_FixProvisioning
+      name: Fix provisioning manually
+      type: manual
+      lane: Lane_ServiceDesk
+    - id: Task_SendCredentials
+      name: Send first-login instructions
+      type: send
+      lane: Lane_ServiceDesk
+    - id: Task_ConfirmAccess
+      name: Confirm access on day one
+      type: receive
+      lane: Lane_ServiceDesk
+  gateways:
+    - id: Gateway_Split
+      type: parallel
+      direction: diverging
+      lane: Lane_HR
+    - id: Gateway_Sync
+      type: parallel
+      direction: converging
+      lane: Lane_IAM
+    - id: Gateway_ExtraAccess
+      name: Access beyond role profile?
+      type: exclusive
+      direction: diverging
+      lane: Lane_HiringManager
+      default: Flow_ProfileOnly
+    - id: Gateway_Merge
+      type: exclusive
+      direction: converging
+      lane: Lane_HiringManager
+  flows:
+    - { id: Flow_1, source: Event_ContractSigned, target: Gateway_Split }
+    - { id: Flow_2, source: Gateway_Split, target: Task_CreateIdentity }
+    - { id: Flow_3, source: Gateway_Split, target: Task_RequestAccess }
+    - { id: Flow_4, source: Task_RequestAccess, target: Gateway_ExtraAccess }
+    - id: Flow_Extra
+      source: Gateway_ExtraAccess
+      target: Task_ApproveExtraAccess
+      condition: Request includes entitlements outside the role profile
+    - {
+        id: Flow_ProfileOnly,
+        source: Gateway_ExtraAccess,
+        target: Gateway_Merge,
+      }
+    - { id: Flow_5, source: Task_ApproveExtraAccess, target: Gateway_Merge }
+    - { id: Flow_6, source: Gateway_Merge, target: Gateway_Sync }
+    - { id: Flow_7, source: Task_CreateIdentity, target: Gateway_Sync }
+    - { id: Flow_8, source: Gateway_Sync, target: Task_ProvisionAccounts }
+    - {
+        id: Flow_9,
+        source: Task_ProvisionAccounts,
+        target: Task_SendCredentials,
+      }
+    - {
+        id: Flow_10,
+        source: Event_ProvisioningFailed,
+        target: Task_FixProvisioning,
+      }
+    - {
+        id: Flow_11,
+        source: Task_FixProvisioning,
+        target: Task_SendCredentials,
+      }
+    - { id: Flow_12, source: Task_SendCredentials, target: Task_ConfirmAccess }
+    - { id: Flow_13, source: Task_ConfirmAccess, target: Event_AccessReady }
+  messages:
+    - id: Message_Credentials
+      name: First-login instructions
+      source: Task_SendCredentials
+      target: Participant_NewHire
+      channel: personal email
+    - id: Message_Confirmation
+      name: Day-one confirmation
+      source: Participant_NewHire
+      target: Task_ConfirmAccess
+      channel: service portal
+  dataObjects:
+    - { id: Data_Identity, name: Identity record }
+    - { id: Data_AccessRequest, name: Access request }
+    - { id: Data_AccountList, name: Provisioned accounts, collection: true }
+governance:
+  owner:
+    name: IT Service Management lead
+    role: Lane_ServiceDesk
+    contact: itsm@example.com
+  reviewCadence: P6M
+  raci:
+    - task: Task_RequestAccess
+      responsible: [Lane_HiringManager]
+      accountable: Lane_HiringManager
+      informed: [Lane_HR]
+    - task: Task_ApproveExtraAccess
+      responsible: [Lane_HiringManager]
+      accountable: Lane_HiringManager
+      consulted: [Lane_ServiceDesk]
+    - task: Task_ProvisionAccounts
+      responsible: [Lane_IAM]
+      accountable: Lane_ServiceDesk
+  controls:
+    - id: Control_RoleProfiles
+      name: Access granted from approved role profiles
+      type: preventive
+      automation: automated
+      appliesTo: [Task_ProvisionAccounts]
+      references:
+        - catalog: https://raw.githubusercontent.com/usnistgov/oscal-content/main/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json
+          controlId: ac-2
+      evidence: [Evidence_ProvisioningLog]
+  exceptions:
+    - id: Exception_StartDateMoved
+      name: Start date moves after provisioning
+      raisedAt: [Task_ProvisionAccounts]
+      handling: Accounts stay disabled until the new start date; HR updates the record.
+      escalateTo: Lane_HR
+  slas:
+    - id: SLA_AccessBeforeStart
+      name: Access ready before the first working day
+      from: Event_ContractSigned
+      to: Event_AccessReady
+      target: P5D
+      calendar: business
+  kpis:
+    - id: KPI_DayOneReady
+      name: New hires with working access on day one
+      unit: percent
+      direction: increase
+      frequency: monthly
+      source: System_ITSM
+  systemsOfRecord:
+    - id: System_HRIS
+      name: HR information system
+    - id: System_IAM
+      name: Identity platform
+      records: [Data_Identity, Data_AccountList]
+    - id: System_ITSM
+      name: IT service management tool
+      records: [Data_AccessRequest]
+  evidence:
+    - id: Evidence_ProvisioningLog
+      name: Provisioning log
+      producedBy: [Task_ProvisionAccounts]
+      storedIn: System_IAM
+      retention: P2Y
