@@ -1,5 +1,7 @@
 # 01: ACP package (`packages/acp`)
 
+Status: implemented in PR #128.
+
 ## Scope
 
 A typed, validated implementation of the ACP `2026-04-17` data model for the
