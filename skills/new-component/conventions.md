@@ -41,6 +41,12 @@ conventions, update this file in the same PR.
 - **Icons:** the `mage:*` set, wrapped in `<client-only>`, with `aria-hidden`. Any
   icon chosen dynamically must also be added to `icon.clientBundle.icons` in
   `apps/site/nuxt.config.ts`, or it 404s in the static build.
+- **Sub-pages get a breadcrumb, not a section menu.** Pages below an index
+  (`/topics/<slug>`, `/expert/pricing`) start with `AppBreadcrumb` (Home / section
+  / page). Links onward to sibling pages go at the end, as the `UButton
+  variant="link"` row ("Pricing →") the homepage sections use.
+- **Status labels are subtle rounded `UBadge`s**, as `ProjectCard`'s status ("WIP",
+  "Coming soon", "Being drafted"), not custom callout boxes.
 - **External links** get `external`, `target="_blank"` and
   `<span class="sr-only">(opens in new tab)</span>`.
 - **Static-build safety:** no runtime server routes, no IPX image URLs, no guessed
