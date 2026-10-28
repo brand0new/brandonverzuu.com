@@ -1,7 +1,7 @@
 <template>
   <!-- Shared body of /expert/terms and /expert/privacy. The page fetches the
        newest published version and passes it in; while there is none
-       (only drafts exist), the notice stands in for the text. Drafts are
+       (only drafts exist), a "being drafted" badge stands in for the text. Drafts are
        never rendered, so unapproved wording can't read as binding. -->
   <article class="prose max-w-none dark:prose-invert">
     <h1>{{ title }}</h1>
@@ -11,12 +11,18 @@
       </p>
       <ContentRenderer :value="document" />
     </template>
-    <ExpertNotice v-else label="Being drafted" class="not-prose">
-      <p>
+    <div v-else class="not-prose">
+      <UBadge
+        label="Being drafted"
+        variant="subtle"
+        size="sm"
+        class="rounded-full text-porcelain-700 dark:text-porcelain-300"
+      />
+      <p class="body-text mt-4 text-lg leading-relaxed">
         This text is still being written. The service isn't live yet, and it
         won't go live before the final version is published here.
       </p>
-    </ExpertNotice>
+    </div>
   </article>
 </template>
 

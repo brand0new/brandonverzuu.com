@@ -137,6 +137,8 @@ export default defineContentConfig({
           z.object({
             kind: z.enum(["api-governance", "skill-design", "process-review"]),
             name: z.string(),
+            // A mage:* icon, also listed in nuxt.config.ts clientBundle.
+            icon: z.string().startsWith("mage:"),
             price: z.union([z.number().positive(), z.literal("TBD")]),
             // How the price scales, e.g. with the size of the artifact.
             note: z.string().optional(),

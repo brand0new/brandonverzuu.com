@@ -1,6 +1,12 @@
 <template>
   <main class="min-h-screen">
-    <ExpertSectionNav />
+    <AppBreadcrumb
+      :items="[
+        { label: 'Home', to: '/' },
+        { label: 'Expertise', to: '/expert' },
+        { label: 'Privacy' },
+      ]"
+    />
     <ExpertLegalDocument
       title="Privacy statement"
       :document="privacy ?? null"

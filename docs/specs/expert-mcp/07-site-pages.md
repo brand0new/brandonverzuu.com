@@ -1,6 +1,8 @@
 # 07: Public pages and terms (`apps/site`)
 
-Status: **draft PR, unpublished.** `/expert`, `/expert/pricing`, `/expert/terms`
+Status: **draft PR, unpublished.** The navbar has an Expertise entry
+(`mage:file-check-fill`) at Brandon's request, so the section is reachable while
+it says "coming soon". `/expert`, `/expert/pricing`, `/expert/terms`
 and `/expert/privacy` exist, with placeholder prices and draft legal text that
 isn't rendered. TODO: the `/schemas/process-description/v1.json` route, once
 `packages/check-kit` has the schema (spec 04).

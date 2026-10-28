@@ -1,16 +1,20 @@
 # Prices per check for /expert and /expert/pricing, in EUR excluding VAT.
 # Decisions D6 and D13 (docs/specs/expert-mcp/decisions/): paid per check over
 # x402 or MPP, no packs or balance. Planned prices, not live yet. An amount may
-# be replaced by "TBD"; the pages print it as-is.
+# be replaced by "TBD"; the pages print it as-is. Icons are mage:* names and
+# must also be listed in nuxt.config.ts icon.clientBundle.icons.
 currency: EUR
 checks:
   - kind: api-governance
     name: API governance check
+    icon: mage:shield-check-fill
     price: 10
     note: Up to 50 operations. Each further 50 operations adds €5.
   - kind: skill-design
     name: Skill design check
+    icon: mage:robot-fill
     price: 5
   - kind: process-review
     name: Process description review
+    icon: mage:checklist-note-fill
     price: 15
