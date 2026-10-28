@@ -228,7 +228,7 @@ authenticate → validate + parse → guard.admit → ledger.reserve → rules.r
 | D3 | Private repo for rules | **Decided:** `brand0new/expertise` (private). Brandon writes the rules; agents scaffold its structure only. |
 | D4 | Process description input format | **Researched:** no JSON Schema standard exists. Our own Process Description schema using BPMN 2.0 vocabulary, plus a governance block, published at a static URL and registered in SchemaStore (spec 04). Brandon reviews v1. |
 | D5 | Seller of record: legal entity, Stripe account, VAT | **Later.** Brandon's business entity with Stripe Tax on. Blocks live payments only; everything runs in Stripe test mode until then. |
-| D6 | Pricing and currency | **Later.** EUR, packs of 10/50/200 credits. Placeholders until Brandon sets them. |
+| D6 | Pricing and currency | **Decided, to reconsider:** 1 credit ≈ EUR 1 excl. VAT; packs 10/50/200 credits at EUR 12/50/160; API governance 10 credits (+5 per 50 operations over 50), skill design 5, process review 15. Direction: micropayments, and Brandon's work as a data set. See [decisions/D6-pricing.md](decisions/D6-pricing.md). |
 | D7 | How agents deploy to Cloudflare | **Later.** Workers Builds (Git integration) for both Workers, plus one scoped API token for provisioning, held as a session secret, never in a repo. Blocks spec 06 only. |
 | D8 | Move the site into `apps/site` | **Decided:** yes, as its own PR, verified on a preview first |
 | D9 | Hostname and CLI package name | **Decided:** `mcp.brandonverzuu.com`; npm package `@brandonverzuu/expertise` (binary `bv-expertise`) |
