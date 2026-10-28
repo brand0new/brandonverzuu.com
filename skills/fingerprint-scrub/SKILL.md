@@ -1,6 +1,6 @@
 ---
 name: fingerprint-scrub
-description: Run the deterministic fingerprint scrub (scripts/scrub-fingerprint.mjs) over an article draft and resolve what it reports. Use on any article drafted or heavily edited by a model, after the voice self-critique and before frontmatter is final. Agent-agnostic.
+description: Run the deterministic fingerprint scrub (apps/site/scripts/scrub-fingerprint.mjs) over an article draft and resolve what it reports. Use on any article drafted or heavily edited by a model, after the voice self-critique and before frontmatter is final. Agent-agnostic.
 ---
 
 # Fingerprint scrub
@@ -16,17 +16,17 @@ It's a smell detector calibrated on Brandon's published articles, not a gate.
 ## 1. Apply the safe fixes
 
 ```
-npm run scrub:fingerprint -- --file content/articles/<slug>.md --fix
+npm run scrub:fingerprint -- --file apps/site/content/articles/<slug>.md --fix
 ```
 
-`--fix` only applies the fixable tier in `scripts/lib/fingerprint-patterns.mjs`:
+`--fix` only applies the fixable tier in `apps/site/scripts/lib/fingerprint-patterns.mjs`:
 chatbot artifacts ("I hope this helps!") and filler substitutions ("in order to" →
 "to"). These preserve meaning by construction.
 
 ## 2. Read the report
 
 ```
-npm run scrub:fingerprint -- --file content/articles/<slug>.md
+npm run scrub:fingerprint -- --file apps/site/content/articles/<slug>.md
 ```
 
 Add `--json` if you want to process the findings programmatically. It reports two

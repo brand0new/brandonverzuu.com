@@ -1,9 +1,10 @@
 # Cloudflare Pages project config, read by the Pages build when it builds from
-# GitHub (see docs/deployment.md). The site is fully static with no Pages
-# Functions, so compatibility_date has no runtime effect today. It's kept
+# GitHub (see docs/deployment.md). It stays at the repo root because the Pages
+# build runs from the root; the site itself lives in apps/site. The site is
+# fully static with no Pages Functions, so compatibility_date has no runtime effect today. It's kept
 # current so that anything added later starts on current Workers behaviour.
 # Bump it alongside wrangler/workerd upgrades: it must not be newer than the
 # workerd version in package-lock.json, or local `wrangler pages dev` refuses it.
 name = "personal-site"
 compatibility_date = "2026-10-06"
-pages_build_output_dir = "./dist"
+pages_build_output_dir = "./apps/site/dist"

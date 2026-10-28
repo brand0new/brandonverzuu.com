@@ -5,7 +5,7 @@ description: Turn a captured iPhone note into a publishable article on brandonve
 
 # Note to article
 
-Converts a raw, thumb-typed note into an article in `content/articles/`, opened as a
+Converts a raw, thumb-typed note into an article in `apps/site/content/articles/`, opened as a
 pull request that the agent merges itself once the repo's checks pass. The site is a
 static Cloudflare Pages build off `master`, so a merged PR is the only publish step.
 
@@ -108,11 +108,11 @@ from drafting the same note.
    - **Read two full example articles verbatim before drafting, not just the style
      guide's summary of them.** The style guide is a lossy description of the corpus;
      the actual prose is the real reference. For an English note, read
-     `content/articles/trust-in-ai.md` (personal/reflective register — rhetorical
-     questions, split verdict) and `content/articles/automate-api-governance.md`
+     `apps/site/content/articles/trust-in-ai.md` (personal/reflective register — rhetorical
+     questions, split verdict) and `apps/site/content/articles/automate-api-governance.md`
      (technical/implementation register — quote-opening, bookend close). For a Dutch
-     note, read `content/articles/begrijp-jij-bitcoin.md` and
-     `content/articles/de-waarde-van-een-blockchain.md` instead. Write to match their
+     note, read `apps/site/content/articles/begrijp-jij-bitcoin.md` and
+     `apps/site/content/articles/de-waarde-van-een-blockchain.md` instead. Write to match their
      sentence rhythm and paragraph shape directly — not just the numeric targets
      derived from them. Numbers are a floor; the examples are the actual target.
    - Match the note's language (Dutch stays Dutch), and note that the Dutch register
@@ -141,7 +141,7 @@ from drafting the same note.
    before frontmatter. It's deterministic, so it catches rhythm and filler that a
    reading pass misses, whichever model drafted the article.
 
-5. **Frontmatter.** Match the schema in `content.config.ts` exactly — a missing or
+5. **Frontmatter.** Match the schema in `apps/site/content.config.ts` exactly — a missing or
    mistyped field fails the build.
 
    ```
@@ -159,7 +159,7 @@ from drafting the same note.
    - `date` — the date the note was captured (the issue's creation date), unquoted,
      `YYYY/MM/DD`. Not today's date if the issue is older.
    - `slug` — kebab-case, and **the filename must match it**:
-     `content/articles/<slug>.md`. The article route resolves by file path.
+     `apps/site/content/articles/<slug>.md`. The article route resolves by file path.
    - `description` — required by the schema and must not be empty.
    - `image` — omit the key entirely unless a cover image actually exists at that
      path. A pointer to a missing file breaks social previews (this bug has already
@@ -173,7 +173,7 @@ from drafting the same note.
      the PR merges.
 
 6. **Images.** If the issue has attached images, download them to
-   `public/articles/<slug>/` and reference them with root-relative paths.
+   `apps/site/public/articles/<slug>/` and reference them with root-relative paths.
 
 7. **Cover image is not optional. Never skip it, even for an ad-hoc note with no
    GitHub issue.** Follow `skills/article-cover/`. Use an attached image as the

@@ -1,11 +1,11 @@
 ---
 name: article-cover
-description: Produce the dithered duotone cover (cover.png + cover-light.png) for an article on brandonverzuu.com with scripts/generate-cover.mjs. Use whenever an article is added or its cover changes, including articles written outside the note-to-article pipeline. Agent-agnostic.
+description: Produce the dithered duotone cover (cover.png + cover-light.png) for an article on brandonverzuu.com with apps/site/scripts/generate-cover.mjs. Use whenever an article is added or its cover changes, including articles written outside the note-to-article pipeline. Agent-agnostic.
 ---
 
 # Article cover
 
-Every article has a cover, and it always lives at `public/articles/<slug>/cover.png`
+Every article has a cover, and it always lives at `apps/site/public/articles/<slug>/cover.png`
 with a `cover-light.png` sibling. The site finds both by that path, not through
 frontmatter: `app.vue` uses it for the article page background, and `AppArticleCard`
 swaps in the light variant by string substitution. A missing cover therefore leaves a
@@ -39,12 +39,12 @@ npm run cover:generate -- --file <path> --slug <slug>
 
 Exactly one of `--url` / `--file`. Options:
 
-- `--collection reviews` writes to `public/reviews/<slug>/` for a review instead of
+- `--collection reviews` writes to `apps/site/public/reviews/<slug>/` for a review instead of
   an article. The rest of this skill applies the same way, with `reviews` in place of
   `articles`. `skills/new-review/` covers the review-specific parts.
 - `--dither zhou-fang` swaps the default Bayer 4×4 ordered dither
-  (`scripts/lib/bayer-dither.mjs`) for smoother error diffusion
-  (`scripts/lib/zhou-fang-dither.mjs`). Use it when Bayer turns a face or a gradient
+  (`apps/site/scripts/lib/bayer-dither.mjs`) for smoother error diffusion
+  (`apps/site/scripts/lib/zhou-fang-dither.mjs`). Use it when Bayer turns a face or a gradient
   into noise.
 - `--width` / `--height` / `--dark` / `--light` / `--seed` exist for experiments.
   Leave them at their defaults for real covers, so every card matches.

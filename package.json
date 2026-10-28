@@ -1,37 +1,24 @@
 {
-  "name": "personal-site",
+  "name": "brandonverzuu-monorepo",
   "version": "1.4.1",
-  "description": "My personal website",
+  "description": "brandonverzuu.com and the expertise service, as npm workspaces",
   "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
-    "dev": "nuxt dev",
-    "host": "nuxt dev --host",
-    "generate": "nuxt generate",
-    "preview": "nuxt preview",
-    "cover:generate": "node scripts/generate-cover.mjs",
-    "scrub:fingerprint": "node scripts/scrub-fingerprint.mjs",
-    "explainer:render": "node scripts/explainers/render.mjs"
+    "dev": "npm run dev -w apps/site --",
+    "host": "npm run host -w apps/site --",
+    "generate": "npm run generate -w apps/site --",
+    "preview": "npm run preview -w apps/site --",
+    "cover:generate": "npm run cover:generate -w apps/site --",
+    "scrub:fingerprint": "npm run scrub:fingerprint -w apps/site --",
+    "explainer:render": "npm run explainer:render -w apps/site --"
   },
   "devDependencies": {
-    "@iconify-json/lucide": "^1.2.147",
-    "@iconify-json/mage": "^1.2.4",
-    "@nuxt/content": "^3.16.2",
-    "@nuxt/devtools": "^3.4.1",
-    "@nuxtjs/sitemap": "^8.3.4",
-    "@tailwindcss/typography": "^0.5.20",
-    "nuxt": "^4.6.3",
-    "playwright": "1.64.1",
     "prettier": "^3.9.10",
-    "prettier-plugin-tailwindcss": "^0.8.1",
-    "sharp": "^0.35.5",
-    "wrangler": "^4.153.0"
-  },
-  "dependencies": {
-    "@nuxt/image": "^2.1.0",
-    "@nuxt/ui": "^4.10.0",
-    "better-sqlite3": "^12.11.1",
-    "tailwindcss": "^4.1.10",
-    "vue-use-fixed-header": "^2.0.0"
+    "prettier-plugin-tailwindcss": "^0.8.1"
   },
   "allowScripts": {
     "vue-demi@0.14.10": true,

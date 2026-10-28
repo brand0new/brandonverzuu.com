@@ -31,6 +31,6 @@ logs
 .env.*
 !.env.example
 
-# Licensed font files for local explainer renders (scripts/explainers/README.md)
-scripts/explainers/fonts/
-scripts/explainers/out/
+# Licensed font files for local explainer renders (apps/site/scripts/explainers/README.md)
+apps/site/scripts/explainers/fonts/
+apps/site/scripts/explainers/out/

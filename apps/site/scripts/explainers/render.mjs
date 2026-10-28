@@ -64,7 +64,10 @@ if (!["landscape", "feed"].includes(format)) fail(`unknown --format ${format} (l
 const feed = format === "feed";
 const size = feed ? { width: 1080, height: 1350 } : { width: 1280, height: 720 };
 const stills = args.stills ? String(args.stills).split(",").map(Number) : null;
-const outDir = args.out ? path.resolve(args.out)
+// npm runs workspace scripts from the workspace directory, so resolve paths
+// passed on the command line against where the command was typed (INIT_CWD).
+const callerCwd = process.env.INIT_CWD ?? process.cwd();
+const outDir = args.out ? path.resolve(callerCwd, args.out)
   : feed ? path.join(here, "out")
   : args.slug ? path.join(root, "public/articles", args.slug) : null;
 if (!outDir) fail("pass --slug <article-slug> or --out <dir>");
@@ -74,7 +77,7 @@ if (!stills && spawnSync("ffmpeg", ["-version"]).status !== 0) fail("ffmpeg is n
 
 // Fonts: local files when present (embedded as data URLs so the page needs no
 // network), otherwise Fontshare, the same source nuxt.config.ts uses.
-const fontDir = path.resolve(args.fonts ?? path.join(here, "fonts"));
+const fontDir = args.fonts ? path.resolve(callerCwd, args.fonts) : path.join(here, "fonts");
 const fontFiles = { 400: "GeneralSans-Regular.woff2", 600: "GeneralSans-Semibold.woff2" };
 let fontCss;
 if (Object.values(fontFiles).every((f) => existsSync(path.join(fontDir, f)))) {
