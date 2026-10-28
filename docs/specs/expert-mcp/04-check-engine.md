@@ -16,7 +16,7 @@ generic code in this repo and private IP in `brand0new/expertise`.
 | --- | --- |
 | `packages/engine-api`: request/result types, `RulesService` interface | Rule packs per check kind |
 | `packages/check-kit`: parsers (OpenAPI with `$ref` resolution, Markdown + frontmatter AST, process schema), JSONPath, generic predicates (exists, pattern, casing, length, enum, schema) | Which predicates apply where, with what options, severity, dimension, message and fix text |
-| Gateway: input size limits, parsing, validation | Scoring models: dimension weights, band cut-offs |
+| Gateway: input size limits, parsing, validation | Scoring models: dimension weights, severity penalties (0–100 rating, D14) |
 | | Bespoke check functions that are IP in themselves |
 | | Phrasing variants per message (spec 05) |
 

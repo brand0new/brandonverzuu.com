@@ -5,11 +5,13 @@
 An automated suite that attacks staging the way a rule reconstructor would. It runs
 before every production deploy of guard or rules changes, and weekly.
 
-## Test rule pack
+## Rules under test
 
-Runs against a **fixture rule pack** (fake rules written for the test, in the
-private repo's `test/` folder) on staging, so reconstruction can be scored exactly
-without exposing real rules to the eval harness.
+There are no fake rule packs (D14). The suite runs on staging against the **real
+packs**, so the harness lives in the **private repo** (`brand0new/expertise`,
+`evals/`): only there can it compare what an attacker reconstructed with the actual
+rules. Its reports stay private, as CI artifacts of that repo, never committed and
+never in this public repo.
 
 ## Attack classes
 
@@ -27,7 +29,7 @@ without exposing real rules to the eval harness.
 
 | Metric | Pass |
 | --- | --- |
-| Rules of the fixture pack reconstructed (condition and threshold) before the campaign is throttled | below the share set in `GUARD_CONFIG` |
+| Rules of the real packs reconstructed (condition and threshold) before the campaign is throttled | below the share set in `GUARD_CONFIG` |
 | Money needed to reconstruct that share | above the cost set in `GUARD_CONFIG` |
 | Sybil campaigns linked and throttled together (shared signal present) | 100% |
 | Rules Worker reachable from the internet | never |
@@ -35,7 +37,7 @@ without exposing real rules to the eval harness.
 
 ## Deliverables
 
-- `apps/expert-mcp/evals/`: harness (TypeScript) that runs against a URL with
+- `evals/` in the private repo: harness (TypeScript) that runs against a URL with
   testnet wallets (Base Sepolia) and Stripe test mode, bound to eval accounts.
 - Per-run Markdown report uploaded as a CI artifact, never committed.
 
