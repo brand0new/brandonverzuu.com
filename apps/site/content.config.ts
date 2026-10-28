@@ -122,7 +122,7 @@ export default defineContentConfig({
     }),
     // The expertise service (/expert, docs/specs/expert-mcp/). Prices live
     // in content rather than a component so Brandon can set them without
-    // touching code (spec 07). An amount is a number or the literal "TBD":
+    // touching code (spec 07, decision D6). An amount is a number or the literal "TBD":
     // the pages print "TBD" as-is, so no placeholder price can be mistaken
     // for a real one.
     expertPricing: defineCollection({
@@ -130,31 +130,18 @@ export default defineContentConfig({
       type: "data",
       schema: z.object({
         currency: z.literal("EUR"),
-        packs: z.array(
-          z.object({
-            id: z.string(),
-            credits: z.number().positive(),
-            price: z.union([z.number().positive(), z.literal("TBD")]),
-          }),
-        ),
-        // Credits charged per artifact, one entry per check kind
-        // (packages/engine-api CheckKind).
+        // Price per artifact in EUR excluding VAT, one entry per check kind
+        // (packages/engine-api CheckKind). Paid per check over x402 or MPP
+        // (decision D13), so there are no packs.
         checks: z.array(
           z.object({
             kind: z.enum(["api-governance", "skill-design", "process-review"]),
             name: z.string(),
-            credits: z.union([z.number().positive(), z.literal("TBD")]),
+            price: z.union([z.number().positive(), z.literal("TBD")]),
             // How the price scales, e.g. with the size of the artifact.
             note: z.string().optional(),
           }),
         ),
-        // Invoiced annual plan for teams; shown below the packs.
-        annualCommitment: z
-          .object({
-            priceFrom: z.number().positive(),
-            note: z.string(),
-          })
-          .optional(),
       }),
     }),
     // Terms and privacy statement, one file per version

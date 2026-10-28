@@ -34,7 +34,7 @@
               <span
                 class="text-sm font-medium text-gray-600 dark:text-gray-400"
               >
-                {{ formatCredits(check.credits) }} per artifact
+                {{ formatPrice(check.price, currency) }} per artifact
               </span>
             </div>
             <dl class="mt-3 space-y-2 text-sm">
@@ -65,14 +65,14 @@
         </li>
       </ul>
       <p class="mt-3 text-sm text-gray-600 dark:text-gray-400">
-        A credit costs about a euro, less in larger packs. Planned prices, see
+        Planned prices in euros, excluding VAT. See
         <NuxtLink to="/expert/pricing" :class="linkClass">pricing</NuxtLink>.
       </p>
     </section>
 
     <section aria-labelledby="ways-heading" class="body-text mb-12 space-y-4">
       <h2 id="ways-heading" class="text-2xl!">Three ways in</h2>
-      <p>All three call the same checks and spend the same credits.</p>
+      <p>All three call the same checks at the same prices.</p>
       <h3 class="text-xl!">MCP, for agents</h3>
       <p>
         Point your agent at
@@ -85,7 +85,7 @@
         <code :class="codeClass">bv-expertise</code>, from the npm package
         <code :class="codeClass">@brandonverzuu/expertise</code>. It checks your
         input locally before sending it, so a malformed file never costs
-        credits, and it can write text, JSON, SARIF or Markdown.
+        anything, and it can write text, JSON, SARIF or Markdown.
       </p>
       <pre
         class="overflow-x-auto rounded-lg bg-gray-100 p-4 font-mono text-sm text-gray-800 dark:bg-white/10 dark:text-gray-200"
@@ -130,17 +130,17 @@ bv-expertise review process process.json</code></pre>
       </p>
     </section>
 
-    <section aria-labelledby="buying-heading" class="body-text space-y-4">
-      <h2 id="buying-heading" class="text-2xl!">Buying credits</h2>
+    <section aria-labelledby="paying-heading" class="body-text space-y-4">
+      <h2 id="paying-heading" class="text-2xl!">Paying per check</h2>
       <p>
-        Checks are paid in credits, bought in packs. A check takes its credits
-        when it runs, and gives them back if it fails on my side.
+        You pay for each check as you run it. There are no packs and no balance.
+        You see the price for your file first, and a check that fails on my side
+        isn't charged.
       </p>
       <p>
-        An agent that supports the Agentic Commerce Protocol can buy a pack
-        through checkout on the MCP server, once you've approved it. Without
-        that, you get a Stripe payment link from your agent or from
-        <code :class="codeClass">bv-expertise buy</code>.
+        Payment goes with the request itself: over x402, in EURC or USDC from a
+        wallet linked to your account, or over Stripe's Machine Payments
+        Protocol in euros. Your agent or the CLI asks you before it pays.
       </p>
       <p>
         There's no free trial. Every check is paid. See
@@ -179,6 +179,8 @@ const descriptions: Record<CheckKind, { give: string; get: string }> = {
     get: "Findings on roles, handoffs, controls, exceptions and measurability, plus a score.",
   },
 };
+
+const currency = computed(() => pricing.value?.currency ?? "EUR");
 
 const checks = computed(() =>
   (pricing.value?.checks ?? []).map((check) => ({
