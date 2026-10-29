@@ -42,6 +42,14 @@ export default defineNuxtConfig({
       icons: [
         "mage:book-text-fill",
         "mage:bookmark-fill",
+        // The /expert section: navbar entry, the per-check icons from
+        // content/expert/pricing.yml and the "ways in" cards.
+        "mage:file-check-fill",
+        "mage:shield-check-fill",
+        "mage:robot-fill",
+        "mage:checklist-note-fill",
+        "mage:keyboard-fill",
+        "mage:dashboard-check-fill",
         "mage:folder-2-fill",
         "mage:tag-fill",
         "mage:arrow-right",

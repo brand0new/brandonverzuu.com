@@ -1,4 +1,6 @@
 <template>
+  <!-- Items are px-2 below sm so seven icons, the theme toggle and the
+       avatar fit a 390px screen; px-3 from sm up, as before. -->
   <header ref="headerRef" :style="styles" class="fixed top-2 z-50 w-full">
     <nav class="mx-auto max-w-2xl px-4 sm:px-6 lg:px-8">
       <ul
@@ -8,7 +10,7 @@
           <UTooltip :text="item.name">
             <ULink
               :to="item.path"
-              class="relative flex items-center justify-center px-3 py-4 transition hover:text-primary-600 dark:hover:text-primary-400"
+              class="relative flex items-center justify-center px-2 py-4 transition hover:text-primary-600 sm:px-3 dark:hover:text-primary-400"
               active-class="text-primary-600 dark:text-primary-400"
             >
               <client-only>
@@ -80,6 +82,11 @@ const items = [
     name: "Bookmarks",
     path: "/bookmarks",
     icon: "mage:bookmark-fill",
+  },
+  {
+    name: "Expertise",
+    path: "/expert",
+    icon: "mage:file-check-fill",
   },
 ];
 </script>

@@ -1,5 +1,13 @@
 # 07: Public pages and terms (`apps/site`)
 
+Status: **live as "coming soon"** (merged at Brandon's request before the legal
+wording). The navbar has an Expertise entry (`mage:file-check-fill`).
+`/expert`, `/expert/pricing`, `/expert/terms` and `/expert/privacy` are published:
+planned prices from `pricing.yml`, and terms and privacy show "Being drafted" until
+a version with `status: published` exists. The draft legal text is in the repo,
+not on the pages. TODO: the `/schemas/process-description/v1.json` route, once
+Brandon has reviewed the schema (spec 04, `packages/check-kit`).
+
 ## Scope
 
 Static pages on brandonverzuu.com that humans and agents read before buying. They
