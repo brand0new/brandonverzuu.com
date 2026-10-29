@@ -34,16 +34,27 @@ Staging and production never use the stubs; whatever isn't built yet answers
 | `src/index.ts`              | Routes, OAuth provider wiring, device-flow hook on `/token` |
 | `src/pipeline.ts`           | `runPaidCheck`, the one paid-check pipeline                 |
 | `src/pricing.ts`            | D6 prices, operation count, VAT                             |
-| `src/payments/`             | Where x402 and MPP travel over HTTP and MCP                 |
+| `src/payments/`             | PaymentGate (x402 + MPP), transports, binding, VAT, webhook |
+| `src/statements.ts`         | Monthly statements and CSV export                           |
 | `src/artifact.ts`           | Input schemas, limits and hardened parsing                  |
 | `src/mcp/`                  | `McpSession` (Durable Object), tools, Skills extension      |
 | `src/auth/`                 | Magic-link sign-in, consent, device flow, email senders     |
 | `src/rest.ts`               | `/v1/*`                                                     |
 | `src/types.ts`              | Gateway interfaces; re-exports `@brandonverzuu/engine-api`  |
-| `migrations/`               | D1 `commerce`: accounts, API tokens, sign-in state          |
+| `migrations/`               | D1 `commerce`: accounts, tokens, sign-in, payments          |
 | `scripts/bundle-skills.mjs` | Bundles `products/skills` into `src/generated/skills.ts`    |
 
-## Secrets
+## Secrets and payment config
 
-`EMAIL_HMAC_KEY` and `VARIANT_KEY` (`wrangler secret put`, per environment).
-Development falls back to fixed dev-only keys.
+Secrets (`wrangler secret put <NAME> --env <env>`, listed under `secrets.required`
+in `wrangler.jsonc`): `EMAIL_HMAC_KEY`, `VARIANT_KEY`, `PAYMENT_HMAC_KEY`,
+`X402_FACILITATOR_KEY` (CDP API key secret), `STRIPE_SECRET_KEY`,
+`STRIPE_WEBHOOK_SECRET`, `GUARD_CONFIG`. Development falls back to fixed
+dev-only HMAC keys and runs without the rest.
+
+Vars: `X402_NETWORK` (`base-sepolia` on staging, `base` in production),
+`X402_PAY_TO` (receiving address; the zero-address placeholder means x402 isn't
+offered), `X402_FACILITATOR_URL`, `X402_FACILITATOR_KEY_ID`,
+`MPP_STRIPE_NETWORK_ID` (Stripe profile id; empty means MPP isn't offered) and,
+in development only, `PAYMENT_GATE` (`stub` or `live`). Never commit keys or a
+wallet private key; local live testing reads them from `.dev.vars`.

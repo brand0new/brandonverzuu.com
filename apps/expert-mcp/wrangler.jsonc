@@ -37,9 +37,12 @@
     "watch_dir": "../../products/skills",
   },
   "observability": { "enabled": true },
-  // Daily cleanup of expired sign-in rows and OAuth records (src/index.ts `scheduled`).
-  // Spec 03 and 05 add their own sweeps.
-  "triggers": { "crons": ["17 3 * * *"] },
+  // src/index.ts `scheduled`:
+  // - daily: expired sign-in rows, OAuth records and idempotency rows; on the 1st,
+  //   last month's statements (spec 03);
+  // - every 15 minutes: payments a crash left between verify and settle (voided
+  //   or refunded, spec 03).
+  "triggers": { "crons": ["17 3 * * *", "*/15 * * * *"] },
   "vars": {
     "ENVIRONMENT": "development",
     "PUBLIC_ORIGIN": "http://localhost:8787",
@@ -50,6 +53,17 @@
     "PRIVACY_URL": "https://brandonverzuu.com/expert/privacy",
     "PROCESS_SCHEMA_URL": "https://brandonverzuu.com/schemas/process-description/v1.json",
     "EMAIL_FROM": "Brandon Verzuu <expert@brandonverzuu.com>",
+    // Payments (spec 03). X402_PAY_TO is Brandon's receiving address on Base:
+    // public, but a placeholder until he sets it; the zero address means x402
+    // isn't offered. MPP_STRIPE_NETWORK_ID is the Stripe Business Network
+    // profile id (profile_...) the MPP challenge names.
+    "X402_NETWORK": "base-sepolia",
+    "X402_PAY_TO": "0x0000000000000000000000000000000000000000",
+    "X402_FACILITATOR_URL": "https://api.cdp.coinbase.com/platform/v2/x402",
+    "X402_FACILITATOR_KEY_ID": "",
+    "MPP_STRIPE_NETWORK_ID": "",
+    // "stub" (in-memory, collects nothing) or "live" (real rails, keys in .dev.vars).
+    "PAYMENT_GATE": "stub",
   },
   "durable_objects": {
     "bindings": [{ "name": "MCP_SESSION", "class_name": "McpSession" }],
@@ -74,6 +88,18 @@
   "env": {
     "staging": {
       "name": "expert-mcp-staging",
+      // Set with `wrangler secret put <NAME> --env <env>`; never in this file.
+      "secrets": {
+        "required": [
+          "EMAIL_HMAC_KEY",
+          "VARIANT_KEY",
+          "PAYMENT_HMAC_KEY",
+          "X402_FACILITATOR_KEY",
+          "STRIPE_SECRET_KEY",
+          "STRIPE_WEBHOOK_SECRET",
+          "GUARD_CONFIG",
+        ],
+      },
       "routes": [
         { "pattern": "mcp-staging.brandonverzuu.com", "custom_domain": true },
       ],
@@ -85,6 +111,15 @@
         "PRIVACY_URL": "https://brandonverzuu.com/expert/privacy",
         "PROCESS_SCHEMA_URL": "https://brandonverzuu.com/schemas/process-description/v1.json",
         "EMAIL_FROM": "Brandon Verzuu <expert@brandonverzuu.com>",
+        // Payments (spec 03). X402_PAY_TO is Brandon's receiving address on Base:
+        // public, but a placeholder until he sets it; the zero address means x402
+        // isn't offered. MPP_STRIPE_NETWORK_ID is the Stripe Business Network
+        // profile id (profile_...) the MPP challenge names.
+        "X402_NETWORK": "base-sepolia",
+        "X402_PAY_TO": "0x0000000000000000000000000000000000000000",
+        "X402_FACILITATOR_URL": "https://api.cdp.coinbase.com/platform/v2/x402",
+        "X402_FACILITATOR_KEY_ID": "",
+        "MPP_STRIPE_NETWORK_ID": "",
       },
       "durable_objects": {
         "bindings": [{ "name": "MCP_SESSION", "class_name": "McpSession" }],
@@ -106,6 +141,18 @@
     },
     "production": {
       "name": "expert-mcp",
+      // Set with `wrangler secret put <NAME> --env <env>`; never in this file.
+      "secrets": {
+        "required": [
+          "EMAIL_HMAC_KEY",
+          "VARIANT_KEY",
+          "PAYMENT_HMAC_KEY",
+          "X402_FACILITATOR_KEY",
+          "STRIPE_SECRET_KEY",
+          "STRIPE_WEBHOOK_SECRET",
+          "GUARD_CONFIG",
+        ],
+      },
       "routes": [{ "pattern": "mcp.brandonverzuu.com", "custom_domain": true }],
       "vars": {
         "ENVIRONMENT": "production",
@@ -115,6 +162,15 @@
         "PRIVACY_URL": "https://brandonverzuu.com/expert/privacy",
         "PROCESS_SCHEMA_URL": "https://brandonverzuu.com/schemas/process-description/v1.json",
         "EMAIL_FROM": "Brandon Verzuu <expert@brandonverzuu.com>",
+        // Payments (spec 03). X402_PAY_TO is Brandon's receiving address on Base:
+        // public, but a placeholder until he sets it; the zero address means x402
+        // isn't offered. MPP_STRIPE_NETWORK_ID is the Stripe Business Network
+        // profile id (profile_...) the MPP challenge names.
+        "X402_NETWORK": "base",
+        "X402_PAY_TO": "0x0000000000000000000000000000000000000000",
+        "X402_FACILITATOR_URL": "https://api.cdp.coinbase.com/platform/v2/x402",
+        "X402_FACILITATOR_KEY_ID": "",
+        "MPP_STRIPE_NETWORK_ID": "",
       },
       "durable_objects": {
         "bindings": [{ "name": "MCP_SESSION", "class_name": "McpSession" }],

@@ -5,6 +5,8 @@
 import { isDevelopment } from "./config";
 import { hmacSha256Hex } from "./crypto";
 import { GatewayError } from "./errors";
+import { createLivePaymentGate } from "./payments/gate";
+import { D1IdempotencyStore } from "./payments/store";
 import {
   MemoryIdempotencyStore,
   StubGuard,
@@ -38,19 +40,29 @@ export function setDevServices(services: Services | undefined): void {
   devServices = services;
 }
 
-export function createDevServices(): Services {
+/**
+ * Development services. Payments use the stub gate unless the PAYMENT_GATE var
+ * is "live" (x402 on Base Sepolia and Stripe test mode, with real keys in
+ * .dev.vars); idempotency uses D1 when an env is given.
+ */
+export function createDevServices(env?: Env): Services {
   return {
-    payments: new StubPaymentGate(),
+    payments:
+      env?.PAYMENT_GATE === "live"
+        ? createLivePaymentGate(env)
+        : new StubPaymentGate(),
     guard: new StubGuard(),
     rules: new StubRules(),
-    idempotency: new MemoryIdempotencyStore(),
+    idempotency: env
+      ? new D1IdempotencyStore(env)
+      : new MemoryIdempotencyStore(),
     flags: { checksEnabled: async () => true },
   };
 }
 
 export function getServices(env: Env): Services {
   if (isDevelopment(env)) {
-    devServices ??= createDevServices();
+    devServices ??= createDevServices(env);
     return devServices;
   }
   const missing = (what: string, spec: string) => () => {
@@ -59,20 +71,23 @@ export function getServices(env: Env): Services {
       `${what} isn't available yet (${spec}).`,
     );
   };
-  const paymentsMissing = missing("Payments", "spec 03");
-  return {
-    // TODO(spec 03): x402 and MPP behind PaymentGate, and the D1 idempotency store.
-    payments: {
+  let payments: PaymentGate;
+  try {
+    payments = createLivePaymentGate(env);
+  } catch {
+    // PAYMENT_HMAC_KEY missing: every paid check answers not_configured.
+    const paymentsMissing = missing("Payments", "PAYMENT_HMAC_KEY");
+    payments = {
       quote: paymentsMissing,
       challenge: paymentsMissing,
       verify: paymentsMissing,
       settle: paymentsMissing,
       void: paymentsMissing,
-    },
-    idempotency: {
-      get: missing("Idempotency", "spec 03"),
-      put: missing("Idempotency", "spec 03"),
-    },
+    };
+  }
+  return {
+    payments,
+    idempotency: new D1IdempotencyStore(env),
     // TODO(spec 05): AccountGuard.
     guard: {
       admit: missing("Admission control", "spec 05"),

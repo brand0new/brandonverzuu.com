@@ -177,6 +177,8 @@ export interface Authorization {
   price: Price;
   /** Single-use reference of the proof (x402 nonce, MPP challenge id). */
   proofRef: string;
+  /** Rail-specific state between verify and settle. Never logged or returned. */
+  state?: unknown;
 }
 
 /** What the caller gets back after settlement, per transport. */

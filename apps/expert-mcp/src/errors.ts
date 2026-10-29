@@ -17,6 +17,7 @@ export type ErrorCode =
   | "payer_bound_elsewhere"
   | "wallet_limit"
   | "not_implemented"
+  | "payment_unavailable"
   | "rate_limited"
   | "spend_ceiling"
   | "forbidden"
@@ -41,6 +42,7 @@ const STATUS: Record<ErrorCode, number> = {
   payer_bound_elsewhere: 409,
   wallet_limit: 409,
   not_implemented: 501,
+  payment_unavailable: 503,
   rate_limited: 429,
   spend_ceiling: 429,
   forbidden: 403,
