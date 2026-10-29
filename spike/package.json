@@ -1,0 +1,19 @@
+{
+  "name": "personal-site-spike",
+  "version": "0.0.0",
+  "description": "Phase 1 spike of the Noise to Signal redesign, built with Astro as a static build tool",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "@astrojs/markdown-remark": "7.3.5",
+    "@fontsource-variable/newsreader": "5.3.0",
+    "@fontsource/big-shoulders-display": "5.3.0",
+    "@fontsource/ibm-plex-mono": "5.3.0",
+    "astro": "7.4.4"
+  }
+}

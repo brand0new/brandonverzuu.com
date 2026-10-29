@@ -1,0 +1,93 @@
+---
+// Chapter 01, name and face. The portrait resolves from the noise floor to signal over the
+// first screen of scroll. Copy is the live homepage's, unchanged.
+import { url } from "../lib/content";
+---
+
+<section class="hero wrap" aria-labelledby="hero-title">
+  <div class="hero-text">
+    <p class="label">Head of Innovation &amp; Product · Rosmalen, NL</p>
+    <h1 id="hero-title">Brandon<br />Verzuu<em>.</em></h1>
+    <div class="lede">
+      <p>
+        I help organisations shape how they innovate and integrate their systems, building on a background in Cloud
+        Integration, web-based APIs and API strategy development.
+      </p>
+      <p>
+        I love diving into things I don't understand in order to dissect, understand and make them accessible for
+        others.
+      </p>
+    </div>
+  </div>
+  <figure class="portrait">
+    <div class="frame">
+      <canvas class="dither" id="portrait" role="img" aria-label="Brandon Verzuu, drawn as a dithered portrait in terracotta dots"></canvas>
+      <img class="nojs-only" src={url("/avatar.jpg")} alt="Brandon Verzuu" width="396" height="396" />
+    </div>
+    <figcaption class="label" id="portrait-out" aria-hidden="true">Noise</figcaption>
+  </figure>
+</section>
+
+<script>
+  import { Source, resolve, sizeCanvas, loadImage, isDark, tok, photoTone, setReadout, reduce, onTheme } from "../scripts/signal.js";
+
+  const cv = document.getElementById("portrait") as HTMLCanvasElement & { _native?: number };
+  const out = document.getElementById("portrait-out")!;
+  const src = (document.querySelector(".portrait img") as HTMLImageElement).src;
+  let photo: HTMLImageElement | null = null;
+  let source: ReturnType<typeof Source> | null = null;
+
+  // A photo's signal is its own pixel grid, capped at the canvas's device pixels, so a large photo never aliases.
+  function portraitSource() {
+    const n = Math.min(photo!.naturalWidth, cv.width);
+    if (!source || source.w !== n) source = Source(photo!, n, Math.max(1, Math.round((n * photo!.naturalHeight) / photo!.naturalWidth)));
+    return source;
+  }
+  // Signal lands once the portrait's bottom edge has scrolled up to 70% of the viewport, and
+  // never sooner than 0.8 screens of scroll, so a portrait already in view still gets its resolve.
+  let distance = 1;
+  function measure() {
+    const r = cv.getBoundingClientRect();
+    distance = Math.max(window.innerHeight * 0.8, r.bottom + window.scrollY - window.innerHeight * 0.7);
+  }
+  function progress() {
+    return reduce ? 1 : Math.min(1, Math.max(0, window.scrollY / distance));
+  }
+  function draw(force = false) {
+    if (!photo) return;
+    sizeCanvas(cv, cv.parentElement!);
+    if (force) measure();
+    const dark = isDark();
+    const n = resolve(cv, portraitSource(), progress(), { on: tok("--dot"), off: tok("--paper"), force, tone: photoTone(dark) });
+    if (n > 0) {
+      const sig = n >= cv._native!;
+      setReadout(out, `${sig ? "Signal" : "Noise"} · ${n} of ${cv._native} columns`, sig);
+    }
+  }
+
+  loadImage(src).then((im) => {
+    photo = im;
+    draw(true);
+  });
+  window.addEventListener("scroll", () => draw(), { passive: true });
+  let rt = 0;
+  window.addEventListener("resize", () => {
+    clearTimeout(rt);
+    rt = window.setTimeout(() => draw(true), 120);
+  });
+  onTheme(() => draw(true));
+</script>
+
+<style>
+  .hero { padding-block: clamp(2rem, 5vw, 4.5rem) clamp(3rem, 6vw, 6rem); display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: clamp(1.5rem, 4vw, 4rem); align-items: end; min-height: calc(100svh - var(--barh)); }
+  .hero-text { display: flex; flex-direction: column; gap: 2rem; }
+  h1 { font-size: var(--step-4); font-weight: 900; line-height: .8; }
+  h1 em { font-style: normal; color: var(--accent); }
+  .lede { display: flex; flex-direction: column; gap: 1rem; font-size: var(--step-1); line-height: 1.35; max-width: 34ch; }
+  .lede p + p { color: var(--muted); }
+  .portrait { margin: 0; display: flex; flex-direction: column; gap: .8rem; }
+  .frame { aspect-ratio: 1; width: 100%; background: var(--paper); }
+  .frame img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  figcaption { align-self: flex-start; font-variant-numeric: tabular-nums; }
+  @media (max-width: 760px) { .hero { grid-template-columns: 1fr; min-height: 0; align-items: start; } .portrait { max-width: 420px; } }
+</style>

@@ -1,0 +1,239 @@
+---
+// The story template. Markdown and frontmatter stay exactly as they are; the template adds a
+// cover that resolves as the reader commits, a chapter rail from the article's own h2s, the
+// explainer as a full-bleed chapter, and billboard type for the title.
+import { render } from "astro:content";
+import Base from "../../layouts/Base.astro";
+import { publishedArticles, covers, readingMinutes, formatDate, url, type Article } from "../../lib/content";
+
+export async function getStaticPaths() {
+  const all = await publishedArticles();
+  return all.map((a) => ({ params: { slug: a.id }, props: { article: a } }));
+}
+
+const { article } = Astro.props as { article: Article };
+const d = article.data;
+const { Content, headings } = await render(article);
+const chapters = headings.filter((h) => h.depth === 2);
+const c = covers(article);
+const min = readingMinutes(article);
+const asset = (p?: string) => (p ? url(p) : undefined);
+---
+
+<Base title={`${d.title} — Brandon Verzuu`} description={d.description} image={d.image}>
+  <article class="story">
+    <header class="a-head wrap">
+      <p class="label">
+        <time datetime={d.date.toISOString().slice(0, 10)}>{formatDate(d.date)}</time> · {min} min read
+        {(d.tags ?? []).length > 0 && <> · {(d.tags ?? []).join(" · ")}</>}
+      </p>
+      <h1>{d.title}</h1>
+      <p class="lede">{d.description}</p>
+    </header>
+
+    <figure class="a-cover">
+      <div class="a-cover-frame" data-dark={c.dark} data-light={c.light}>
+        <canvas class="dither" aria-hidden="true"></canvas>
+        <picture class="nojs-only">
+          <source srcset={c.dark} media="(prefers-color-scheme: dark)" />
+          <img src={c.light} alt="" width="1200" height="630" />
+        </picture>
+      </div>
+      <figcaption class="wrap">
+        <span class="label" id="cover-out" aria-hidden="true">Noise</span>
+        {
+          d.imageSource && (
+            <span class="label">
+              Cover after <a href={d.imageSource}>{d.imageAuthor ?? "the original"}</a>
+              {d.imageLicense && <> · {d.imageLicense}</>}
+            </span>
+          )
+        }
+      </figcaption>
+    </figure>
+
+    <div class:list={["a-grid wrap", { "no-rail": chapters.length === 0 }]}>
+      {
+        chapters.length > 0 && (
+          <nav class="rail" aria-label="Chapters">
+            <p class="label">Chapters</p>
+            <ol>
+              {d.explainerVideo && (
+                <li>
+                  <a href="#explainer">Explainer</a>
+                </li>
+              )}
+              {chapters.map((h) => (
+                <li>
+                  <a href={`#${h.slug}`}>{h.text}</a>
+                </li>
+              ))}
+            </ol>
+          </nav>
+        )
+      }
+      <div class="a-body">
+        {
+          d.explainerVideo && (
+            <figure class="explainer" id="explainer">
+              <div class="ex-frame">
+                <video poster={asset(d.explainerPoster)} aria-label={d.explainerAlt} muted loop playsinline preload="metadata">
+                  {d.explainerVideoWebm && <source src={asset(d.explainerVideoWebm)} type="video/webm" />}
+                  <source src={asset(d.explainerVideo)} type="video/mp4" />
+                </video>
+                <button type="button" class="ex-toggle" aria-label="Play animation">
+                  <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+                    <path class="i-play" d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z" fill="currentColor" />
+                    <g class="i-pause" fill="currentColor"><rect x="6" y="5" width="4" height="14" /><rect x="14" y="5" width="4" height="14" /></g>
+                  </svg>
+                </button>
+              </div>
+              <figcaption class="label">Explainer · the article in under a minute</figcaption>
+            </figure>
+          )
+        }
+        <div class="prose">
+          <Content />
+        </div>
+        <p class="a-end"><a href={url("/#writing")}>← More writing</a></p>
+      </div>
+    </div>
+  </article>
+</Base>
+
+<script>
+  import { COVER_GRID, Source, resolve, sizeCanvas, loadImage, isDark, tok, coverTone, setReadout, reduce, onTheme, observeLockOn } from "../../scripts/signal.js";
+
+  // Cover: resolves to signal once its bottom edge has scrolled up to the top quarter of the
+  // screen, so the image is sharp by the time the reader is in the text.
+  const frame = document.querySelector(".a-cover-frame") as HTMLElement;
+  const cv = frame.querySelector("canvas") as HTMLCanvasElement & { _native?: number };
+  const out = document.getElementById("cover-out")!;
+  const src: Record<string, ReturnType<typeof Source>> = {};
+  let distance = 1;
+  function measure() {
+    const r = frame.getBoundingClientRect();
+    distance = Math.max(window.innerHeight * 0.5, r.bottom + window.scrollY - window.innerHeight * 0.25);
+  }
+  function draw(force = false) {
+    const dark = isDark(), s = src[dark ? "dark" : "light"];
+    if (!s) return;
+    sizeCanvas(cv, frame);
+    if (force) measure();
+    const p = reduce ? 1 : Math.min(1, Math.max(0, window.scrollY / distance));
+    const n = resolve(cv, s, p, { on: tok("--dot"), off: tok("--paper"), force, tone: coverTone(dark) });
+    if (n > 0) {
+      const sig = n >= cv._native!;
+      setReadout(out, `${sig ? "Signal" : "Noise"} · ${n} of ${cv._native} columns`, sig);
+    }
+  }
+  (["dark", "light"] as const).forEach((k) =>
+    loadImage(frame.dataset[k]!).then((im) => {
+      src[k] = Source(im, COVER_GRID[0], COVER_GRID[1]);
+      draw(true);
+    }),
+  );
+  window.addEventListener("scroll", () => draw(), { passive: true });
+  let rt = 0;
+  window.addEventListener("resize", () => {
+    clearTimeout(rt);
+    rt = window.setTimeout(() => draw(true), 120);
+  });
+  onTheme(() => draw(true));
+
+  // Chapter rail: marks the chapter being read.
+  const links = new Map([...document.querySelectorAll<HTMLAnchorElement>(".rail a")].map((a) => [a.hash.slice(1), a]));
+  if (links.size && "IntersectionObserver" in window) {
+    const targets = [...links.keys()].map((id) => document.getElementById(id)).filter(Boolean) as HTMLElement[];
+    const io = new IntersectionObserver(
+      () => {
+        let current = targets[0];
+        for (const t of targets) if (t.getBoundingClientRect().top < window.innerHeight * 0.35) current = t;
+        links.forEach((a, id) => (id === current.id ? a.setAttribute("aria-current", "true") : a.removeAttribute("aria-current")));
+      },
+      { rootMargin: "0px 0px -60% 0px", threshold: [0, 1] },
+    );
+    targets.forEach((t) => io.observe(t));
+  }
+
+  // Explainer: plays on load unless the reader prefers reduced motion. The pause button keeps the
+  // loop within WCAG 2.2.2.
+  const video = document.querySelector<HTMLVideoElement>(".explainer video");
+  const toggle = document.querySelector<HTMLButtonElement>(".ex-toggle");
+  if (video && toggle) {
+    video.muted = true;
+    const sync = () => {
+      toggle.setAttribute("aria-label", video.paused ? "Play animation" : "Pause animation");
+      toggle.dataset.playing = String(!video.paused);
+    };
+    video.addEventListener("play", sync);
+    video.addEventListener("pause", sync);
+    toggle.addEventListener("click", () => (video.paused ? video.play().catch(() => {}) : video.pause()));
+    if (!reduce) video.play().catch(() => {});
+  }
+
+  observeLockOn(document.querySelectorAll(".prose mark"));
+</script>
+
+<style>
+  .a-head { padding-block: clamp(2.5rem, 6vw, 5.5rem) clamp(1.5rem, 3vw, 2.5rem); display: flex; flex-direction: column; gap: 1.4rem; }
+  h1 { font-size: clamp(2.8rem, 1rem + 7vw, 8.5rem); font-weight: 900; line-height: .84; max-width: 16ch; }
+  .lede { font-size: var(--step-1); line-height: 1.35; max-width: 42ch; color: var(--muted); }
+  .a-cover { margin: 0; }
+  .a-cover-frame { aspect-ratio: 1200 / 630; max-height: 78svh; width: 100%; background: var(--paper); overflow: hidden; }
+  .a-cover-frame img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .a-cover figcaption { display: flex; justify-content: space-between; gap: .5rem 1.5rem; flex-wrap: wrap; padding-block: .8rem; }
+  .a-cover figcaption .label { font-variant-numeric: tabular-nums; }
+  .a-grid { display: grid; grid-template-columns: 13rem minmax(0, 1fr); gap: clamp(1.5rem, 4vw, 4rem); padding-block: clamp(2rem, 5vw, 4rem) clamp(3rem, 6vw, 6rem); }
+  .no-rail { grid-template-columns: minmax(0, 1fr); }
+  .no-rail .explainer { margin-left: 0; }
+  .rail { position: sticky; top: calc(var(--barh) + 1.5rem); align-self: start; display: flex; flex-direction: column; gap: .7rem; }
+  .rail ol { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: .55rem; }
+  .rail a { display: block; font-family: var(--mono); font-size: .8rem; line-height: 1.35; color: var(--muted); text-decoration: none; padding-left: .7rem; border-left: 2px solid var(--line); }
+  .rail a:hover { color: var(--ink); }
+  .rail a[aria-current] { color: var(--ink); border-color: var(--dot); }
+  .a-body { min-width: 0; display: flex; flex-direction: column; gap: 2.5rem; }
+  .a-end { font-family: var(--mono); font-size: var(--step--1); text-transform: uppercase; letter-spacing: .06em; }
+  .explainer { margin: 0 0 0 calc(-1 * (13rem + clamp(1.5rem, 4vw, 4rem))); display: flex; flex-direction: column; gap: .6rem; scroll-margin-top: calc(var(--barh) + 1rem); }
+  .ex-frame { position: relative; background: #09090b; border: 1px solid var(--line); }
+  .ex-frame video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; }
+  .ex-toggle { position: absolute; top: .75rem; right: .75rem; width: 2.75rem; height: 2.75rem; display: grid; place-items: center; border: 0; background: rgb(15 26 29 / .82); color: #e5eef0; cursor: pointer; }
+  .ex-toggle:hover { color: var(--signal); }
+  .ex-toggle .i-pause, .ex-toggle[data-playing="true"] .i-play { display: none; }
+  .ex-toggle[data-playing="true"] .i-pause { display: inline; }
+  @media (max-width: 980px) {
+    .a-grid { grid-template-columns: minmax(0, 1fr); }
+    .rail { position: static; }
+    .rail ol { flex-direction: row; overflow-x: auto; gap: 1rem; scrollbar-width: none; }
+    .rail a { white-space: nowrap; }
+    .explainer { margin-left: 0; }
+  }
+</style>
+
+<style is:global>
+  /* Reading: Newsreader at 65 characters on every screen. Nothing here moves while someone reads. */
+  .prose { max-width: 65ch; font-size: clamp(1.1rem, 1.02rem + .35vw, 1.28rem); line-height: 1.68; }
+  .prose > * + * { margin-top: 1.15em; }
+  .prose > p:first-child::first-letter { font-family: var(--display); font-style: normal; font-weight: 900; float: left; font-size: 4.6em; line-height: .78; padding: .04em .08em 0 0; color: var(--accent); }
+  .prose h2 { font-size: clamp(2rem, 1.2rem + 3vw, 3.6rem); margin-top: 2.2em; scroll-margin-top: calc(var(--barh) + 1.5rem); }
+  .prose h3 { font-size: var(--step-1); line-height: 1; margin-top: 1.8em; scroll-margin-top: calc(var(--barh) + 1.5rem); }
+  .prose h2 + *, .prose h3 + * { margin-top: .8em; }
+  .prose ul, .prose ol { padding-left: 1.3em; }
+  .prose li + li { margin-top: .4em; }
+  .prose li::marker { color: var(--accent); }
+  .prose blockquote { margin-inline: 0; border-left: 3px solid var(--dot); padding-left: 1.2rem; font-style: italic; }
+  .prose img { display: block; height: auto; margin-inline: auto; }
+  .prose hr { border: 0; border-top: 1px solid var(--line); margin-block: 2.5em; }
+  .prose code { font-family: var(--mono); font-size: .86em; background: var(--panel); padding: .08em .3em; }
+  .prose pre { font-size: .82rem; line-height: 1.55; padding: 1rem 1.2rem; overflow-x: auto; border: 1px solid var(--line); }
+  .prose pre code { background: none; padding: 0; font-size: inherit; }
+  .prose table { border-collapse: collapse; width: 100%; font-size: .92em; display: block; overflow-x: auto; }
+  .prose th, .prose td { text-align: left; vertical-align: top; padding: .55rem .9rem .55rem 0; border-bottom: 1px solid var(--line); }
+  .prose th { font-family: var(--mono); font-weight: 500; font-size: .8em; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+  /* Code follows the theme through Shiki's dual-theme variables. */
+  .prose .astro-code, .prose .astro-code span { color: var(--shiki-light); background-color: var(--shiki-light-bg); }
+  :root[data-theme="dark"] .prose .astro-code, :root[data-theme="dark"] .prose .astro-code span { color: var(--shiki-dark); background-color: var(--shiki-dark-bg); }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .prose .astro-code, :root:not([data-theme="light"]) .prose .astro-code span { color: var(--shiki-dark); background-color: var(--shiki-dark-bg); }
+  }
+</style>

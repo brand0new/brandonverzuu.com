@@ -1,0 +1,312 @@
+---
+// Chapter 04, the featured filmstrip. A pinned stage: vertical scroll drives horizontal travel,
+// and each card's focus (--p, 0 to 1) drives a four-step disclosure and the cover's resolve.
+// The markup is a plain swipeable row of links; the script upgrades it to the filmstrip unless
+// the reader prefers reduced motion, so without JS or motion everything is disclosed and resolved.
+import { featuredArticles, covers, readingMinutes, formatDate, url } from "../lib/content";
+
+const articles = await featuredArticles();
+const pad = (n: number) => String(n).padStart(2, "0");
+---
+
+<div class="fc" id="fc" data-variant="static" style={`--n:${articles.length}`}>
+  <div class="fc-stage" id="fc-stage">
+    <div class="fc-head">
+      <div class="stack" style="gap:.3rem">
+        <span class="label">Featured writing</span>
+        <span class="fc-count" id="fc-count" aria-hidden="true">01 <span>/ {pad(articles.length)}</span></span>
+      </div>
+      <div class="fc-nav">
+        <button type="button" id="fc-prev" aria-label="Previous article">←</button>
+        <button type="button" id="fc-next" aria-label="Next article">→</button>
+      </div>
+    </div>
+    <ol class="fc-track" id="fc-track">
+      {
+        articles.map((a, i) => {
+          const c = covers(a);
+          const min = readingMinutes(a);
+          return (
+            <li class="fc-item">
+              <a class="fc-card" href={url(`/articles/${a.id}/`)} data-dark={c.dark} data-light={c.light}>
+                <div class="fc-inner">
+                  <div class="fc-cover">
+                    <canvas class="dither" aria-hidden="true" />
+                    <picture class="nojs-only">
+                      <source srcset={c.dark} media="(prefers-color-scheme: dark)" />
+                      <img src={c.light} alt="" loading="lazy" width="1200" height="630" />
+                    </picture>
+                  </div>
+                  <div class="fc-text">
+                    <span class="fc-num" aria-hidden="true">
+                      {pad(i + 1)}
+                      <span class="drop" />
+                    </span>
+                    <p class="label s1">
+                      {formatDate(a.data.date)} · {(a.data.tags ?? []).slice(0, 3).join(" · ")}
+                    </p>
+                    <h3 class="fc-title">{a.data.title}</h3>
+                    <p class="fc-desc">{a.data.description}</p>
+                    <div class="fc-meta">
+                      <span class="label">{min} min read</span>
+                      {a.data.explainerVideo && <span class="label">▶ Explainer</span>}
+                      <span class="fc-cta" aria-hidden="true">Read article →</span>
+                    </div>
+                  </div>
+                </div>
+              </a>
+            </li>
+          );
+        })
+      }
+    </ol>
+    <div class="fc-foot" aria-hidden="true">
+      <div class="fc-bar"><i id="fc-fill"></i></div>
+      <span class="label fc-readout" id="fc-readout"></span>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { RESOLVE, COVER_GRID, Source, resolve, sizeCanvas, loadImage, isDark, tok, coverTone, glitch, setReadout, reduce, onTheme } from "../scripts/signal.js";
+
+  type Dither = HTMLCanvasElement & { _cols?: number; _native?: number };
+  type Card = { el: HTMLAnchorElement; box: HTMLElement; cv: Dither; src: { dark?: ReturnType<typeof Source>; light?: ReturnType<typeof Source> }; focus: number };
+
+  const fc = document.getElementById("fc")!;
+  const stage = document.getElementById("fc-stage")!;
+  const track = document.getElementById("fc-track")!;
+  const countEl = document.getElementById("fc-count")!;
+  const fill = document.getElementById("fc-fill")!;
+  const readout = document.getElementById("fc-readout")!;
+  const prevB = document.getElementById("fc-prev") as HTMLButtonElement;
+  const nextB = document.getElementById("fc-next") as HTMLButtonElement;
+  const pinned = !reduce;
+  const pad = (n: number) => String(n).padStart(2, "0");
+  fc.dataset.variant = pinned ? "film" : "static";
+
+  const cards: Card[] = [...track.querySelectorAll<HTMLAnchorElement>(".fc-card")].map((el) => ({
+    el,
+    box: el.querySelector(".fc-cover") as HTMLElement,
+    cv: el.querySelector("canvas") as Dither,
+    src: {},
+    focus: pinned ? 0 : 1,
+  }));
+  const N = cards.length;
+  let target = 0, cur = 0, running = false, secTop = 0, range = 1, cw = 0, gap = 28, pointer = false;
+
+  function paint(c: Card, force = false) {
+    const dark = isDark();
+    const src = c.src[dark ? "dark" : "light"];
+    if (!src) return;
+    resolve(c.cv, src, pinned ? c.focus : 1, { on: tok("--dot"), off: tok("--panel"), force, tone: coverTone(dark) });
+  }
+
+  // Covers load lazily: a card's two sources are sampled once, at the cover's native 400x210 grid.
+  function load(c: Card) {
+    if ((c as any)._loading) return;
+    (c as any)._loading = true;
+    (["dark", "light"] as const).forEach((k) =>
+      loadImage(c.el.dataset[k]!).then((im) => {
+        c.src[k] = Source(im, COVER_GRID[0], COVER_GRID[1]);
+        paint(c, true);
+      }),
+    );
+  }
+  if ("IntersectionObserver" in window) {
+    const io = new IntersectionObserver((es) => es.forEach((e) => e.isIntersecting && cards.forEach(load)), { rootMargin: "100% 0px" });
+    io.observe(fc);
+  } else cards.forEach(load);
+
+  cards.forEach((c, i) => {
+    c.el.addEventListener("click", (e) => {
+      if (pinned && Math.round(cur) !== i) {
+        e.preventDefault();
+        go(i);
+      }
+    });
+    c.el.addEventListener("pointerdown", () => (pointer = true));
+    c.el.addEventListener("focus", () => {
+      if (pinned && !pointer) go(i, true);
+      pointer = false;
+    });
+  });
+
+  function measure() {
+    const bar = document.querySelector(".bar") as HTMLElement;
+    fc.style.setProperty("--barh", bar.offsetHeight + "px");
+    const stageW = stage.clientWidth;
+    const narrow = stageW < 760;
+    fc.toggleAttribute("data-narrow", narrow);
+    if (pinned) {
+      const tr = track.getBoundingClientRect();
+      const ch = Math.round(Math.min(tr.height * 0.94, narrow ? 620 : 580));
+      gap = narrow ? 12 : 28;
+      cw = Math.round(Math.min(stageW * (narrow ? 0.84 : 0.74), 1000));
+      fc.style.setProperty("--cw", cw + "px");
+      fc.style.setProperty("--ch", ch + "px");
+      secTop = fc.getBoundingClientRect().top + window.scrollY;
+      range = Math.max(1, fc.offsetHeight - stage.offsetHeight);
+    }
+    cards.forEach((c) => {
+      sizeCanvas(c.cv, c.box);
+      paint(c, true);
+    });
+  }
+
+  function layout(f: number) {
+    cards.forEach((c, i) => {
+      const dd = i - f, ad = Math.abs(dd), focus = Math.max(0, 1 - ad);
+      const tx = dd * (cw + gap), sc = 0.9 + 0.1 * focus, dim = Math.min(0.45, ad * 0.35);
+      const li = c.el.parentElement!;
+      li.style.transform = `translate(calc(-50% + ${tx.toFixed(1)}px), -50%) scale(${sc.toFixed(4)})`;
+      li.style.zIndex = String(20 - Math.round(ad));
+      c.el.style.setProperty("--p", focus.toFixed(3));
+      c.el.style.setProperty("--dim", dim.toFixed(3));
+      c.focus = focus;
+      const locked = focus >= RESOLVE.signalAt;
+      if (locked && !c.el.classList.contains("is-signal")) glitch(c.el.querySelector(".fc-num .drop"));
+      c.el.classList.toggle("is-signal", locked);
+      if (ad < 1.6) paint(c);
+    });
+    const idx = Math.round(f), fo = Math.max(0, 1 - Math.abs(idx - f));
+    const cv0 = cards[idx].cv;
+    countEl.innerHTML = `${pad(idx + 1)} <span>/ ${pad(N)}</span>`;
+    fill.style.transform = `scaleX(${(f / Math.max(1, N - 1)).toFixed(4)})`;
+    const sig = fo >= RESOLVE.signalAt;
+    setReadout(readout, `${sig ? "Signal" : "Noise"} · ${cv0._cols || 0} of ${cv0._native || 0} columns`, sig);
+    prevB.disabled = f < 0.05;
+    nextB.disabled = f > N - 1.05;
+  }
+
+  // Light smoothing takes the jumps out of mouse-wheel ticks without decoupling from the scrollbar.
+  function tick() {
+    const diff = target - cur;
+    if (Math.abs(diff) < 0.0008) {
+      cur = target;
+      running = false;
+    } else {
+      cur += diff * 0.14;
+      requestAnimationFrame(tick);
+    }
+    layout(cur);
+  }
+  function kick() {
+    if (!running) {
+      running = true;
+      requestAnimationFrame(tick);
+    }
+  }
+  function readScroll() {
+    const p = Math.min(1, Math.max(0, (window.scrollY - secTop) / range));
+    target = p * (N - 1);
+    kick();
+  }
+  function go(i: number, instant = false) {
+    i = Math.max(0, Math.min(N - 1, i));
+    window.scrollTo({ top: secTop + (range * i) / Math.max(1, N - 1), behavior: instant ? "auto" : "smooth" });
+  }
+
+  if (pinned) {
+    prevB.addEventListener("click", () => go(Math.round(cur) - 1));
+    nextB.addEventListener("click", () => go(Math.round(cur) + 1));
+    window.addEventListener("scroll", readScroll, { passive: true });
+
+    // Horizontal intent (trackpad swipe, touch swipe) becomes page scroll, so all inputs share one position.
+    const perPx = () => range / Math.max(1, N - 1) / (cw + gap);
+    stage.addEventListener(
+      "wheel",
+      (e) => {
+        if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;
+        e.preventDefault();
+        window.scrollBy(0, e.deltaX * perPx());
+      },
+      { passive: false },
+    );
+    let tx0: number | null = null, ty0 = 0, horiz: boolean | null = null;
+    stage.addEventListener("touchstart", (e) => {
+      tx0 = e.touches[0].clientX;
+      ty0 = e.touches[0].clientY;
+      horiz = null;
+    }, { passive: true });
+    stage.addEventListener("touchmove", (e) => {
+      if (tx0 === null) return;
+      const x = e.touches[0].clientX, y = e.touches[0].clientY;
+      if (horiz === null && (Math.abs(x - tx0) > 6 || Math.abs(y - ty0) > 6)) horiz = Math.abs(x - tx0) > Math.abs(y - ty0);
+      if (horiz) {
+        window.scrollBy(0, (tx0 - x) * perPx() * 1.4);
+        tx0 = x;
+      }
+    }, { passive: true });
+    stage.addEventListener("touchend", () => {
+      if (horiz) go(Math.round(target));
+      tx0 = null;
+    }, { passive: true });
+  }
+
+  function relayout() {
+    measure();
+    if (pinned) {
+      readScroll();
+      cur = target;
+      layout(cur);
+    }
+  }
+  let rt = 0;
+  window.addEventListener("resize", () => {
+    clearTimeout(rt);
+    rt = window.setTimeout(relayout, 120);
+  });
+  onTheme(() => cards.forEach((c) => paint(c, true)));
+  relayout();
+  document.fonts?.ready.then(relayout);
+</script>
+
+<style>
+  .fc { --barh: 3.2rem; position: relative; height: calc((var(--n) - 1) * 85svh + 100svh); }
+  .fc-stage { position: sticky; top: var(--barh); height: calc(100svh - var(--barh)); overflow: clip; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; gap: 1rem; padding-block: 1.2rem; padding-inline: max(16px, env(safe-area-inset-left, 0px)) max(16px, env(safe-area-inset-right, 0px)); touch-action: pan-y; }
+  .fc-head, .fc-foot { width: 100%; max-width: 1240px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+  .fc-count { font-family: var(--display); font-weight: 900; font-size: 2rem; line-height: 1; font-variant-numeric: tabular-nums; }
+  .fc-count :global(span) { color: var(--muted); }
+  .fc-nav { display: flex; gap: .5rem; }
+  .fc-nav button { width: 2.8rem; height: 2.8rem; border: 1px solid var(--ink); background: var(--paper); color: var(--ink); font: 500 1.1rem/1 var(--mono); cursor: pointer; }
+  .fc-nav button:hover { background: var(--ink); color: var(--paper); }
+  .fc-nav button:disabled { opacity: .35; cursor: default; background: var(--paper); color: var(--ink); }
+  .fc-track { position: relative; min-height: 0; margin: 0; padding: 0; list-style: none; }
+  .fc-item { position: absolute; left: 50%; top: 50%; width: var(--cw); height: var(--ch); will-change: transform; }
+  .fc-card { position: relative; display: block; width: 100%; height: 100%; overflow: hidden; background: var(--panel); border: 1px solid var(--line); color: var(--ink); text-decoration: none; --p: 0;
+    --s1: clamp(0, calc((var(--p) - .3) * 3.5), 1);
+    --s2: clamp(0, calc((var(--p) - .55) * 4), 1);
+    --s3: clamp(0, calc((var(--p) - .8) * 5), 1); }
+  .fc-card:focus-visible { outline: 3px solid var(--signal-text); outline-offset: 4px; }
+  .fc-card::after { content: ""; position: absolute; inset: 0; background: var(--paper); opacity: var(--dim, 0); pointer-events: none; }
+  .fc-inner { width: 100%; height: 100%; display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); }
+  .fc-cover { position: relative; min-height: 0; overflow: hidden; }
+  .fc-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .fc-text { display: flex; flex-direction: column; gap: .7rem; padding: clamp(1rem, 2.5vw, 2rem); min-width: 0; min-height: 0; overflow: hidden; }
+  .fc-num { font-family: var(--display); font-weight: 900; font-size: clamp(3rem, 7vw, 6.5rem); line-height: .8; color: var(--accent); margin-bottom: auto; font-variant-numeric: tabular-nums; }
+  .fc-num .drop { vertical-align: baseline; opacity: var(--lock, 0); }
+  .fc-card.is-signal { --lock: 1; }
+  .fc-title { font-size: clamp(1.7rem, 3vw, 3rem); line-height: .9; transform: translateY(calc((1 - var(--s1)) * .4em)); }
+  .s1 { opacity: var(--s1); transform: translateY(calc((1 - var(--s1)) * 10px)); }
+  .fc-desc { opacity: var(--s2); max-height: calc(var(--s2) * 9em); overflow: hidden; font-size: 1.02rem; line-height: 1.5; transform: translateY(calc((1 - var(--s2)) * 14px)); }
+  .fc-meta { opacity: var(--s3); display: flex; flex-wrap: wrap; gap: .6rem 1rem; align-items: center; transform: translateY(calc((1 - var(--s3)) * 14px)); }
+  .fc-cta { font: 500 var(--step--1)/1 var(--mono); text-transform: uppercase; letter-spacing: .06em; background: var(--ink); color: var(--paper); padding: .65rem .9rem; margin-left: auto; }
+  .fc[data-narrow] .fc-inner { grid-template-columns: minmax(0, 1fr); grid-template-rows: 38% minmax(0, 1fr); }
+  .fc[data-narrow] .fc-num { font-size: 3rem; }
+  .fc-bar { flex: 1 1 200px; height: 2px; background: var(--line); position: relative; min-width: 0; }
+  .fc-bar i { position: absolute; inset: 0; background: var(--dot); transform-origin: left; transform: scaleX(0); }
+  .fc-readout { font-variant-numeric: tabular-nums; }
+
+  /* Static: no pinning, a swipeable row, everything disclosed and fully resolved.
+     The default markup, kept for reduced motion and for readers without JS. */
+  .fc[data-variant="static"] { height: auto; }
+  .fc[data-variant="static"] .fc-stage { position: relative; top: auto; height: auto; overflow: visible; }
+  .fc[data-variant="static"] .fc-track { display: flex; gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 1rem; max-width: 1240px; width: 100%; margin: 0 auto; }
+  .fc[data-variant="static"] .fc-item { position: relative; left: auto; top: auto; transform: none !important; flex: 0 0 min(84vw, 520px); width: auto; height: auto; scroll-snap-align: start; will-change: auto; }
+  .fc[data-variant="static"] .fc-card { --p: 1 !important; --dim: 0 !important; --lock: 1; }
+  .fc[data-variant="static"] .fc-inner { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto; }
+  .fc[data-variant="static"] .fc-cover { aspect-ratio: 1200 / 630; }
+  .fc[data-variant="static"] .fc-num { font-size: 3rem; margin-bottom: .4rem; }
+  .fc[data-variant="static"] .fc-foot, .fc[data-variant="static"] .fc-nav, .fc[data-variant="static"] .fc-count { display: none; }
+</style>

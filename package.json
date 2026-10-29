@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "nuxt dev",
     "host": "nuxt dev --host",
-    "generate": "nuxt generate",
+    "generate": "nuxt generate && npm run spike:build",
+    "spike:build": "npm ci --prefix spike && npm run build --prefix spike",
     "preview": "nuxt preview",
     "cover:generate": "node scripts/generate-cover.mjs",
     "scrub:fingerprint": "node scripts/scrub-fingerprint.mjs",
