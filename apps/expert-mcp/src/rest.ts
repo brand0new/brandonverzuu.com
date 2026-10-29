@@ -5,9 +5,21 @@ import { z } from "zod";
 import { createApiToken, revokeApiToken } from "./accounts";
 import { createToolContext } from "./context";
 import { sha256Hex } from "./crypto";
-import { DEFAULT_PRICES } from "./config";
 import { GatewayError, PaymentRequired } from "./errors";
 import { log, newRequestId } from "./log";
+import {
+  accountSummary,
+  bindWallet,
+  updateVat,
+  walletChallenge,
+} from "./payments/account";
+import { listPrices, removePayer } from "./payments/store";
+import {
+  isPeriod,
+  listStatements,
+  statementCsv,
+  statementFor,
+} from "./statements";
 import {
   challengeBody,
   challengeHeaders,
@@ -16,12 +28,7 @@ import {
 } from "./payments/transport";
 import { runPaidCheck as defaultRunPaidCheck } from "./pipeline";
 import { getServices } from "./services";
-import {
-  CHECK_KINDS,
-  isCheckKind,
-  type AuthProps,
-  type ToolContext,
-} from "./types";
+import { isCheckKind, type AuthProps, type ToolContext } from "./types";
 
 /** Largest JSON body accepted on /v1 and /mcp, before any parsing. */
 export const MAX_BODY_BYTES = 4 * 1024 * 1024;
@@ -29,6 +36,14 @@ export const MAX_BODY_BYTES = 4 * 1024 * 1024;
 const IDEMPOTENCY_KEY = /^[\x21-\x7e]{1,255}$/;
 
 const tokenBody = z.strictObject({ label: z.string().max(100).optional() });
+const walletBody = z.union([
+  z.strictObject({ address: z.string().regex(/^0x[0-9a-fA-F]{40}$/) }),
+  z.strictObject({
+    message: z.string().min(1).max(2000),
+    signature: z.string().regex(/^0x[0-9a-fA-F]{130}$/),
+  }),
+]);
+const vatBody = z.strictObject({ vat_id: z.string().max(20).nullable() });
 
 interface RestDeps {
   runPaidCheck: typeof defaultRunPaidCheck;
@@ -157,7 +172,9 @@ export function createRestHandler(
             ? "/v1/tokens/{id}"
             : route.startsWith("/v1/wallets/")
               ? "/v1/wallets/{id}"
-              : route,
+              : route.startsWith("/v1/statements/")
+                ? "/v1/statements/{period}"
+                : route,
           status,
           durationMs: Date.now() - started,
         });
@@ -246,30 +263,37 @@ async function route_(
     const tool = await context();
     return json(
       {
-        id: tool.account.id,
-        status: tool.account.status,
+        ...(await accountSummary(env, tool.account)),
         terms_version: tool.account.termsVersion,
         current_terms_version: env.TERMS_VERSION,
-        // TODO(spec 03, step 2): bound payers, month-to-date spend, spending ceiling.
-        payers: [],
-        month_to_date: null,
-        spending_ceiling: null,
       },
       200,
       requestId,
     );
   }
 
+  if (path === "/v1/account/vat" && method === "PUT") {
+    const parsed = vatBody.safeParse(parseJson(await readBodyText(request)));
+    if (!parsed.success)
+      throw new GatewayError("invalid_request", z.prettifyError(parsed.error));
+    const tool = await context();
+    return json(
+      await updateVat(env, tool.account, parsed.data.vat_id),
+      200,
+      requestId,
+    );
+  }
+
   if (path === "/v1/prices" && method === "GET") {
-    // TODO(spec 03, step 2): read the D1 `prices` table.
+    await context();
     return json(
       {
         currency: "EUR",
         vat: "excluded",
-        prices: CHECK_KINDS.map((kind) => {
-          const row = DEFAULT_PRICES[kind];
-          return {
-            kind,
+        prices: (await listPrices(env))
+          .filter((row) => row.active)
+          .map((row) => ({
+            kind: row.kind,
             amount: row.baseAmount,
             ...(row.stepOps
               ? {
@@ -278,25 +302,77 @@ async function route_(
                   step_amount: row.stepAmount,
                 }
               : {}),
-          };
-        }),
+          })),
       },
       200,
       requestId,
     );
   }
 
-  // TODO(spec 03, step 2): wallet binding (EIP-191) and monthly statements.
-  if (
-    (path === "/v1/wallets" && method === "POST") ||
-    (/^\/v1\/wallets\/[^/]+$/.test(path) && method === "DELETE") ||
-    (path === "/v1/statements" && method === "GET")
-  ) {
-    await context();
-    throw new GatewayError(
-      "not_implemented",
-      "Not available yet (spec 03, payments).",
+  if (path === "/v1/wallets" && method === "POST") {
+    const parsed = walletBody.safeParse(parseJson(await readBodyText(request)));
+    if (!parsed.success)
+      throw new GatewayError("invalid_request", z.prettifyError(parsed.error));
+    const tool = await context();
+    if ("address" in parsed.data)
+      return json(
+        await walletChallenge(env, tool.account, parsed.data.address),
+        200,
+        requestId,
+      );
+    const { payer, created } = await bindWallet(
+      env,
+      tool.account,
+      parsed.data.message,
+      parsed.data.signature,
     );
+    return json(
+      {
+        id: payer.id,
+        rail: payer.rail,
+        address: payer.ref,
+        bound_at: payer.boundAt,
+      },
+      created ? 201 : 200,
+      requestId,
+    );
+  }
+
+  const walletPath = /^\/v1\/wallets\/(payer_[0-9A-Z]{26})$/.exec(path);
+  if (walletPath && method === "DELETE") {
+    const tool = await context();
+    if (!(await removePayer(env, tool.account.id, walletPath[1]!)))
+      throw new GatewayError("not_found", "No such wallet.");
+    return new Response(null, {
+      status: 204,
+      headers: { "X-Request-Id": requestId },
+    });
+  }
+
+  if (path === "/v1/statements" && method === "GET") {
+    const tool = await context();
+    return json(await listStatements(env, tool.account.id), 200, requestId);
+  }
+
+  const statementPath = /^\/v1\/statements\/(\d{4}-\d{2})(\.csv)?$/.exec(path);
+  if (statementPath && method === "GET" && isPeriod(statementPath[1]!)) {
+    const tool = await context();
+    const statement = await statementFor(
+      env,
+      tool.account.id,
+      statementPath[1]!,
+    );
+    if (statementPath[2])
+      return new Response(statementCsv(statement.lines), {
+        status: 200,
+        headers: {
+          "Content-Type": "text/csv; charset=utf-8",
+          "Content-Disposition": `attachment; filename="statement-${statement.period}.csv"`,
+          "Cache-Control": "no-store",
+          "X-Request-Id": requestId,
+        },
+      });
+    return json(statement, 200, requestId);
   }
 
   if (path === "/v1/tokens" && method === "POST") {

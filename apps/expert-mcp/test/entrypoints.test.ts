@@ -62,10 +62,7 @@ describe("every paid entry point goes through runPaidCheck", () => {
         name,
         arguments: FREE_ARGS[name],
       });
-      // TODO(spec 03, step 2): bind_wallet is a stub until then.
-      if (name === "bind_wallet")
-        expect(JSON.stringify(result.content)).toContain("not_implemented");
-      else expect(result.isError, name).toBeFalsy();
+      expect(result.isError, name).toBeFalsy();
     }
     expect(spy).not.toHaveBeenCalled();
   });

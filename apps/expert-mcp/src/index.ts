@@ -7,7 +7,7 @@
 //   /device_authorization /device        RFC 8628 device flow (src/auth/device.ts)
 //   /signin /signin/verify               magic-link sign-in
 //   /healthz                             liveness, no data
-//   /webhooks/stripe                     TODO(spec 03): MPP (Stripe) webhooks, 404 until then
+//   POST /webhooks/stripe                MPP (Stripe) events: success, refunds, disputes (spec 03)
 //
 // Everything else is 404. There are no admin routes.
 
@@ -33,7 +33,11 @@ import { isDevelopment, OAUTH_SCOPE } from "./config";
 import { GatewayError } from "./errors";
 import { log } from "./log";
 import { AUTHENTICATED_ACCOUNT_HEADER, McpSession } from "./mcp/session";
+import { createLivePaymentGate } from "./payments/gate";
+import { IDEMPOTENCY_TTL_MS } from "./payments/store";
+import { handleStripeWebhook } from "./payments/webhook";
 import { createRestHandler, MAX_BODY_BYTES, readBodyText } from "./rest";
+import { issueStatements, previousPeriod } from "./statements";
 import type { AuthProps } from "./types";
 
 export { McpSession };
@@ -131,9 +135,8 @@ const defaultHandler = {
         return handleDevicePage(request, env);
       case "POST /device":
         return handleDeviceDecision(request, env);
-      // TODO(spec 03): Stripe webhooks.
       case "POST /webhooks/stripe":
-        return notFound();
+        return handleStripeWebhook(request, env);
       default:
         return notFound();
     }
@@ -298,19 +301,31 @@ export default {
     }
   },
 
-  async scheduled(_controller: ScheduledController, env: Env): Promise<void> {
-    const now = new Date().toISOString();
+  async scheduled(controller: ScheduledController, env: Env): Promise<void> {
+    if (controller.cron === "*/15 * * * *") {
+      // Payments a crash left between verify and settle (spec 03).
+      if (isDevelopment(env) && env.PAYMENT_GATE !== "live") return;
+      await createLivePaymentGate(env).sweep();
+      return;
+    }
+    const now = new Date(controller.scheduledTime);
+    const iso = now.toISOString();
     await env.COMMERCE.batch([
       env.COMMERCE.prepare("DELETE FROM magic_links WHERE expires_at < ?").bind(
-        now,
+        iso,
       ),
       env.COMMERCE.prepare(
         "DELETE FROM signin_sessions WHERE expires_at < ?",
-      ).bind(now),
+      ).bind(iso),
       env.COMMERCE.prepare(
         "DELETE FROM device_authorizations WHERE expires_at < ?",
-      ).bind(now),
+      ).bind(iso),
+      env.COMMERCE.prepare("DELETE FROM idempotency WHERE created_at < ?").bind(
+        new Date(now.getTime() - IDEMPOTENCY_TTL_MS).toISOString(),
+      ),
     ]);
     await providerFor(env).purgeExpiredData(env);
+    // Last month's statements, on the 1st (safe to repeat).
+    if (now.getUTCDate() === 1) await issueStatements(env, previousPeriod(now));
   },
 } satisfies ExportedHandler<Env>;

@@ -1,5 +1,7 @@
 # 03: Payments: x402 and MPP
 
+Status: **implemented in `apps/expert-mcp`, in review** (stacked on PR #130). Offline tests pass; the Base Sepolia and Stripe test-mode end-to-end runs are still to do, and the PR lists where the official x402 and MPP sources differ from this spec.
+
 ## Scope
 
 Pay per check over two micropayment rails, x402 and Stripe's Machine Payments
@@ -20,11 +22,11 @@ note in the PR where they differ from this spec:
 
 Per check, in EUR, excluding VAT (D6):
 
-| Check | Price |
-| --- | --- |
-| Skill design | EUR 5 |
-| API governance | EUR 10 for up to 50 operations, +EUR 5 per further 50 |
-| Process description review | EUR 15 |
+| Check                      | Price                                                 |
+| -------------------------- | ----------------------------------------------------- |
+| Skill design               | EUR 5                                                 |
+| API governance             | EUR 10 for up to 50 operations, +EUR 5 per further 50 |
+| Process description review | EUR 15                                                |
 
 Prices are configuration: a `prices` table seeded by a migration, amounts in minor
 units. `quote(kind, artifact)` computes the price from the parsed artifact before
@@ -71,7 +73,7 @@ paid.** That's the refund-on-failure promise without refunds.
 ### MPP
 
 - The same 402 response also carries an MPP challenge (`WWW-Authenticate:
-  Payment …`, per the RFC 9110 authentication framework), backed by Stripe.
+Payment …`, per the RFC 9110 authentication framework), backed by Stripe.
 - This rail is for buyers who pay in fiat without a crypto wallet. Use deferred
   capture if MPP supports it, so a failed check is voided like x402. If it
   doesn't, charge and refund automatically on failure, and record the refund.

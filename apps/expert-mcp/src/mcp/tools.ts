@@ -12,7 +12,7 @@ import type {
 } from "@modelcontextprotocol/sdk/types.js";
 import { z } from "zod";
 import { CHECK_INPUT_SCHEMAS, parseArtifact } from "../artifact";
-import { DEFAULT_PRICES } from "../config";
+import { DEFAULT_PRICES, type PriceRow } from "../config";
 import { GatewayError, PaymentRequired } from "../errors";
 import { log } from "../log";
 import {
@@ -20,7 +20,16 @@ import {
   proofFromMcpMeta,
   receiptMeta,
 } from "../payments/transport";
+import { sha256Hex } from "../crypto";
+import {
+  accountSummary,
+  bindWallet,
+  walletChallenge,
+} from "../payments/account";
+import { canonicalJson } from "../payments/encoding";
+import { listPrices } from "../payments/store";
 import { formatEur } from "../pricing";
+import { getServices } from "../services";
 import type { runPaidCheck as RunPaidCheck } from "../pipeline";
 import { CHECK_KINDS, type CheckKind, type ToolContext } from "../types";
 import { sdkSchema } from "./sdk-schema";
@@ -102,8 +111,9 @@ const paidOutputSchema = z.object({
 });
 
 /** "EUR 10 excl. VAT (+EUR 5 per further 50 operations over 50)" */
-function priceText(kind: CheckKind): string {
-  const row = DEFAULT_PRICES[kind];
+function priceText(
+  row: Pick<PriceRow, "baseAmount" | "stepOps" | "stepAmount">,
+): string {
   const step =
     row.stepOps && row.stepAmount
       ? ` for up to ${row.stepOps} operations, +${formatEur(row.stepAmount)} per further ${row.stepOps}`
@@ -164,7 +174,7 @@ export function registerTools(mcp: McpServer, deps: ToolDeps): void {
       name,
       {
         title: name.replace(/_/g, " "),
-        description: `${DESCRIPTIONS[kind]} This is expert review, paid per artifact: ${priceText(kind)}, plus Dutch VAT unless reverse charge applies. Paid over x402 (EURC or USDC on Base) or MPP (card, via Stripe); without a payment it returns the payment requirements and runs nothing. The payment is only collected if the check completes. Ask the user before paying. ${terms}`,
+        description: `${DESCRIPTIONS[kind]} This is expert review, paid per artifact: ${priceText(DEFAULT_PRICES[kind])}, plus Dutch VAT unless reverse charge applies. Paid over x402 (EURC or USDC on Base) or MPP (card, via Stripe); without a payment it returns the payment requirements and runs nothing. The payment is only collected if the check completes. Ask the user before paying. ${terms}`,
         inputSchema: sdkSchema(CHECK_INPUT_SCHEMAS[kind]),
         outputSchema: sdkSchema(paidOutputSchema),
         annotations: {
@@ -181,13 +191,31 @@ export function registerTools(mcp: McpServer, deps: ToolDeps): void {
           const proof = proofFromMcpMeta(
             extra._meta as Record<string, unknown> | undefined,
           );
+          // MCP has no Idempotency-Key header: a retry with the same payment
+          // and the same arguments replays the stored result and charges
+          // nothing (spec 03 "Idempotency").
+          const { idempotency } = getServices(deps.env);
+          const route = `mcp/${name}`;
+          const replayKey = proof
+            ? `proof:${await sha256Hex(canonicalJson(proof))}`
+            : null;
+          const argsHash = await sha256Hex(canonicalJson(args ?? {}));
+          if (replayKey) {
+            const previous = await idempotency.get(
+              ctx.account.id,
+              route,
+              replayKey,
+            );
+            if (previous?.bodyHash === argsHash)
+              return JSON.parse(previous.response) as CallToolResult;
+          }
           const { result, price, receipt } = await deps.runPaidCheck(
             ctx,
             kind,
             args,
             { resource: `mcp://tool/${name}`, proof },
           );
-          return {
+          const toolResult: CallToolResult = {
             ...ok({
               ...result,
               price,
@@ -195,6 +223,15 @@ export function registerTools(mcp: McpServer, deps: ToolDeps): void {
             }),
             _meta: receiptMeta(receipt),
           };
+          if (replayKey)
+            await idempotency.put(
+              ctx.account.id,
+              route,
+              replayKey,
+              argsHash,
+              JSON.stringify(toolResult),
+            );
+          return toolResult;
         } catch (error) {
           return toolError(error, name, ctx?.requestId);
         }
@@ -239,14 +276,7 @@ export function registerTools(mcp: McpServer, deps: ToolDeps): void {
     undefined,
     async (_args, context) => {
       const ctx = await context();
-      // TODO(spec 03, step 2): payers, month-to-date spend and the ceiling.
-      return {
-        id: ctx.account.id,
-        status: ctx.account.status,
-        payers: [],
-        monthToDate: null,
-        spendingCeiling: null,
-      };
+      return accountSummary(env, ctx.account);
     },
   );
 
@@ -254,11 +284,21 @@ export function registerTools(mcp: McpServer, deps: ToolDeps): void {
     "get_prices",
     "Return the price of each check in EUR, excluding VAT.",
     undefined,
-    async () => ({
-      currency: "EUR",
-      vat: "excluded",
-      prices: CHECK_KINDS.map((kind) => ({ kind, price: priceText(kind) })),
-    }),
+    async (_args, context) => {
+      await context();
+      const rows = await listPrices(env);
+      return {
+        currency: "EUR",
+        vat: "excluded",
+        prices: rows
+          .filter((row) => row.active)
+          .map((row) => ({
+            kind: row.kind,
+            amount: row.baseAmount,
+            price: priceText(row),
+          })),
+      };
+    },
   );
 
   free(
@@ -281,19 +321,41 @@ export function registerTools(mcp: McpServer, deps: ToolDeps): void {
 
   free(
     "bind_wallet",
-    "Return the message a wallet must sign (EIP-191) to be bound to this account, so it can pay for checks. Submit the signature with POST /v1/wallets.",
+    "Bind a wallet to this account so it can pay for checks over x402. Call it with the address to get the message to sign (EIP-191 personal_sign), then again with that message and the signature. Ask the user before binding a wallet.",
     z.strictObject({
       address: z
         .string()
         .regex(/^0x[0-9a-fA-F]{40}$/)
-        .describe("The wallet address to bind."),
+        .optional()
+        .describe("First call: the wallet address to bind."),
+      message: z
+        .string()
+        .max(2000)
+        .optional()
+        .describe("Second call: the message from the first call, unchanged."),
+      signature: z
+        .string()
+        .regex(/^0x[0-9a-fA-F]{130}$/)
+        .optional()
+        .describe(
+          "Second call: the wallet's personal_sign signature of the message.",
+        ),
     }),
-    async (_args, context) => {
-      await context();
-      // TODO(spec 03, step 2): the signed-challenge message.
+    async (args, context) => {
+      const ctx = await context();
+      if (args.message && args.signature) {
+        const { payer } = await bindWallet(
+          env,
+          ctx.account,
+          args.message,
+          args.signature,
+        );
+        return { id: payer.id, address: payer.ref, bound_at: payer.boundAt };
+      }
+      if (args.address) return walletChallenge(env, ctx.account, args.address);
       throw new GatewayError(
-        "not_implemented",
-        "Wallet binding isn't available yet (spec 03, payments).",
+        "invalid_request",
+        "Pass address to get the message, or message and signature to bind.",
       );
     },
   );

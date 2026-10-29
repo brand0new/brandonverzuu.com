@@ -51,10 +51,10 @@ describe("public routes", () => {
     expect(as.code_challenge_methods_supported).toEqual(["S256"]);
   });
 
-  it("returns 404 for webhooks (until spec 03), ACP discovery and unknown routes", async () => {
+  it("returns 404 for ACP discovery and unknown routes, 503 for unconfigured webhooks", async () => {
     expect((await call("/.well-known/acp.json")).status).toBe(404);
     expect((await call("/webhooks/stripe", { method: "POST" })).status).toBe(
-      404,
+      503,
     );
     expect((await call("/admin")).status).toBe(404);
     expect((await call("/")).status).toBe(404);
@@ -85,14 +85,15 @@ describe("REST", () => {
     });
     expect(response.status).toBe(200);
     expect(response.headers.get("X-Request-Id")).toMatch(/^req_/);
-    expect(await response.json()).toEqual({
+    expect(await response.json()).toMatchObject({
       id: account.id,
       status: "active",
       terms_version: env.TERMS_VERSION,
       current_terms_version: env.TERMS_VERSION,
       payers: [],
-      month_to_date: null,
+      month_to_date: { count: 0, total: 0, currency: "EUR" },
       spending_ceiling: null,
+      vat: { id: null, status: "none", treatment: "nl_standard" },
     });
   });
 
@@ -267,7 +268,7 @@ describe("REST", () => {
     ).toBe(200);
   });
 
-  it("serves prices, and answers 501 for the payment routes spec 03 adds", async () => {
+  it("serves prices from D1 and statements", async () => {
     const { token } = await apiToken();
     const auth = { Authorization: `Bearer ${token}` };
     const prices = await call("/v1/prices", { headers: auth });
@@ -276,18 +277,16 @@ describe("REST", () => {
       currency: "EUR",
       prices: [
         { kind: "api-governance", amount: 1000, step_amount: 500 },
-        { kind: "skill-design", amount: 500 },
         { kind: "process-review", amount: 1500 },
+        { kind: "skill-design", amount: 500 },
       ],
     });
-    expect(
-      (await call("/v1/wallets", { method: "POST", headers: auth })).status,
-    ).toBe(501);
-    expect(
-      (await call("/v1/wallets/w1", { method: "DELETE", headers: auth }))
-        .status,
-    ).toBe(501);
-    expect((await call("/v1/statements", { headers: auth })).status).toBe(501);
+    const statements = await call("/v1/statements", { headers: auth });
+    expect(statements.status).toBe(200);
+    expect(await statements.json()).toMatchObject({
+      current: { status: "open", count: 0, total: 0 },
+      issued: [],
+    });
     expect(
       (await call("/v1/purchase-links", { method: "POST", headers: auth }))
         .status,
