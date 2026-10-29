@@ -1,0 +1,138 @@
+// Gateway Worker for the expertise checks (docs/specs/expert-mcp/02-mcp-server.md).
+//
+// Three configurations:
+// - top level: local development (`wrangler dev`) and tests. Uses in-memory stub
+//   PaymentGate, Guard and RulesService (src/stubs.ts) and logs magic links to the
+//   console. Named `expert-mcp-dev` and not reachable, so an accidental
+//   `wrangler deploy` without `--env` can never replace staging or production.
+// - env.staging / env.production: the real deployables (spec 06). Stubs are
+//   never used there: anything not wired up yet fails closed.
+//
+// EU data location (decision D11):
+// - D1: create each database with `wrangler d1 create <name> --jurisdiction eu`.
+//   The jurisdiction is fixed at creation and isn't expressed in this file.
+// - Durable Objects: McpSession instances are created through
+//   `namespace.jurisdiction("eu")` (see src/index.ts), so their storage is EU-only.
+// - KV has no jurisdiction. OAUTH_KV holds the OAuth library's grants and tokens
+//   (hashed secrets, encrypted props, account ids as grant subjects) and FLAGS
+//   holds non-personal flags only. See the PR for the open question on OAUTH_KV.
+//
+// Resource ids below are placeholders until spec 06 provisions the resources.
+// Nothing here has been created in Cloudflare.
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "expert-mcp-dev",
+  "main": "src/index.ts",
+  // Must not be newer than the workerd in package-lock.json.
+  "compatibility_date": "2026-10-06",
+  // nodejs_compat: the MCP SDK and the Agents SDK use Node built-ins.
+  // global_fetch_strictly_public: required by the OAuth library before it fetches
+  // Client ID Metadata Documents, and keeps every outbound fetch off private IPs.
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "workers_dev": false,
+  "preview_urls": false,
+  // Bundles products/skills into src/generated/skills.ts before dev and deploy.
+  "build": {
+    "command": "node scripts/bundle-skills.mjs",
+    "watch_dir": "../../products/skills",
+  },
+  "observability": { "enabled": true },
+  // Daily cleanup of expired sign-in rows and OAuth records (src/index.ts `scheduled`).
+  // Spec 03 and 05 add their own sweeps.
+  "triggers": { "crons": ["17 3 * * *"] },
+  "vars": {
+    "ENVIRONMENT": "development",
+    "PUBLIC_ORIGIN": "http://localhost:8787",
+    // Placeholder until spec 07 publishes the terms. Bumping it makes every
+    // account accept the new version on its next sign-in.
+    "TERMS_VERSION": "0-placeholder",
+    "TERMS_URL": "https://brandonverzuu.com/expert/terms",
+    "PRIVACY_URL": "https://brandonverzuu.com/expert/privacy",
+    "PROCESS_SCHEMA_URL": "https://brandonverzuu.com/schemas/process-description/v1.json",
+    "EMAIL_FROM": "Brandon Verzuu <expert@brandonverzuu.com>",
+  },
+  "durable_objects": {
+    "bindings": [{ "name": "MCP_SESSION", "class_name": "McpSession" }],
+  },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["McpSession"] }],
+  "d1_databases": [
+    {
+      "binding": "COMMERCE",
+      "database_name": "expert-commerce-dev",
+      "database_id": "00000000-0000-0000-0000-000000000000",
+      "migrations_dir": "migrations",
+    },
+  ],
+  "kv_namespaces": [
+    { "binding": "OAUTH_KV", "id": "00000000000000000000000000000000" },
+    { "binding": "FLAGS", "id": "00000000000000000000000000000001" },
+  ],
+  // The private rules Worker (spec 04). Unused in development, where the stub
+  // RulesService answers instead.
+  "services": [{ "binding": "RULES", "service": "expert-rules-staging" }],
+
+  "env": {
+    "staging": {
+      "name": "expert-mcp-staging",
+      "routes": [
+        { "pattern": "mcp-staging.brandonverzuu.com", "custom_domain": true },
+      ],
+      "vars": {
+        "ENVIRONMENT": "staging",
+        "PUBLIC_ORIGIN": "https://mcp-staging.brandonverzuu.com",
+        "TERMS_VERSION": "0-placeholder",
+        "TERMS_URL": "https://brandonverzuu.com/expert/terms",
+        "PRIVACY_URL": "https://brandonverzuu.com/expert/privacy",
+        "PROCESS_SCHEMA_URL": "https://brandonverzuu.com/schemas/process-description/v1.json",
+        "EMAIL_FROM": "Brandon Verzuu <expert@brandonverzuu.com>",
+      },
+      "durable_objects": {
+        "bindings": [{ "name": "MCP_SESSION", "class_name": "McpSession" }],
+      },
+      "d1_databases": [
+        {
+          "binding": "COMMERCE",
+          "database_name": "expert-commerce-staging",
+          // Placeholder. Create with: wrangler d1 create expert-commerce-staging --jurisdiction eu
+          "database_id": "00000000-0000-0000-0000-000000000001",
+          "migrations_dir": "migrations",
+        },
+      ],
+      "kv_namespaces": [
+        { "binding": "OAUTH_KV", "id": "00000000000000000000000000000010" },
+        { "binding": "FLAGS", "id": "00000000000000000000000000000011" },
+      ],
+      "services": [{ "binding": "RULES", "service": "expert-rules-staging" }],
+    },
+    "production": {
+      "name": "expert-mcp",
+      "routes": [{ "pattern": "mcp.brandonverzuu.com", "custom_domain": true }],
+      "vars": {
+        "ENVIRONMENT": "production",
+        "PUBLIC_ORIGIN": "https://mcp.brandonverzuu.com",
+        "TERMS_VERSION": "0-placeholder",
+        "TERMS_URL": "https://brandonverzuu.com/expert/terms",
+        "PRIVACY_URL": "https://brandonverzuu.com/expert/privacy",
+        "PROCESS_SCHEMA_URL": "https://brandonverzuu.com/schemas/process-description/v1.json",
+        "EMAIL_FROM": "Brandon Verzuu <expert@brandonverzuu.com>",
+      },
+      "durable_objects": {
+        "bindings": [{ "name": "MCP_SESSION", "class_name": "McpSession" }],
+      },
+      "d1_databases": [
+        {
+          "binding": "COMMERCE",
+          "database_name": "expert-commerce",
+          // Placeholder. Create with: wrangler d1 create expert-commerce --jurisdiction eu
+          "database_id": "00000000-0000-0000-0000-000000000002",
+          "migrations_dir": "migrations",
+        },
+      ],
+      "kv_namespaces": [
+        { "binding": "OAUTH_KV", "id": "00000000000000000000000000000020" },
+        { "binding": "FLAGS", "id": "00000000000000000000000000000021" },
+      ],
+      "services": [{ "binding": "RULES", "service": "expert-rules" }],
+    },
+  },
+}

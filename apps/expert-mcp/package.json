@@ -1,0 +1,29 @@
+{
+  "name": "@brandonverzuu/expert-mcp",
+  "version": "0.0.0",
+  "description": "Gateway Worker for the expertise checks: MCP, REST, OAuth and accounts",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "prepare:generated": "node scripts/bundle-skills.mjs && wrangler types --strict-vars=false",
+    "dev": "wrangler dev",
+    "test": "npm run prepare:generated && node --test test/node/*.test.mjs && vitest run",
+    "typecheck": "npm run prepare:generated && tsc --noEmit",
+    "build": "wrangler deploy --dry-run --outdir dist"
+  },
+  "dependencies": {
+    "@brandonverzuu/engine-api": "0.1.0",
+    "@cloudflare/workers-oauth-provider": "^1.2.4",
+    "@modelcontextprotocol/sdk": "1.32.1",
+    "@modelcontextprotocol/server": "2.3.1",
+    "agents": "^0.31.0",
+    "yaml": "^2.9.0",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@cloudflare/vitest-plugin": "^1.4.9",
+    "typescript": "^6.0.3",
+    "vitest": "^5.0.5",
+    "wrangler": "^4.154.0"
+  }
+}
