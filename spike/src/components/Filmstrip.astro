@@ -1,6 +1,7 @@
 ---
-// Chapter 04, the featured filmstrip. A pinned stage: vertical scroll drives horizontal travel,
-// and each card's focus (--p, 0 to 1) drives a four-step disclosure and the cover's resolve.
+// Chapter 04, the featured filmstrip. A horizontal strip that never captures page scroll: it moves
+// by swipe, trackpad, the arrows or a click on a neighbouring card, and vertical scroll passes
+// straight past it. Each card's focus (--p, 0 to 1) drives a four-step disclosure and the cover's resolve.
 // The markup is a plain swipeable row of links; the script upgrades it to the filmstrip unless
 // the reader prefers reduced motion, so without JS or motion everything is disclosed and resolved.
 import { featuredArticles, covers, readingMinutes, formatDate, url } from "../lib/content";
@@ -93,7 +94,7 @@ const pad = (n: number) => String(n).padStart(2, "0");
     focus: pinned ? 0 : 1,
   }));
   const N = cards.length;
-  let target = 0, cur = 0, running = false, secTop = 0, range = 1, cw = 0, gap = 28, pointer = false;
+  let cur = 0, queued = false, cw = 0, gap = 28, pointer = false;
 
   function paint(c: Card, force = false) {
     const dark = isDark();
@@ -133,8 +134,6 @@ const pad = (n: number) => String(n).padStart(2, "0");
   });
 
   function measure() {
-    const bar = document.querySelector(".bar") as HTMLElement;
-    fc.style.setProperty("--barh", bar.offsetHeight + "px");
     const stageW = stage.clientWidth;
     const narrow = stageW < 760;
     fc.toggleAttribute("data-narrow", narrow);
@@ -145,8 +144,7 @@ const pad = (n: number) => String(n).padStart(2, "0");
       cw = Math.round(Math.min(stageW * (narrow ? 0.84 : 0.74), 1000));
       fc.style.setProperty("--cw", cw + "px");
       fc.style.setProperty("--ch", ch + "px");
-      secTop = fc.getBoundingClientRect().top + window.scrollY;
-      range = Math.max(1, fc.offsetHeight - stage.offsetHeight);
+      fc.style.setProperty("--gap", gap + "px");
     }
     cards.forEach((c) => {
       sizeCanvas(c.cv, c.box);
@@ -157,9 +155,9 @@ const pad = (n: number) => String(n).padStart(2, "0");
   function layout(f: number) {
     cards.forEach((c, i) => {
       const dd = i - f, ad = Math.abs(dd), focus = Math.max(0, 1 - ad);
-      const tx = dd * (cw + gap), sc = 0.9 + 0.1 * focus, dim = Math.min(0.45, ad * 0.35);
+      const sc = 0.9 + 0.1 * focus, dim = Math.min(0.45, ad * 0.35);
       const li = c.el.parentElement!;
-      li.style.transform = `translate(calc(-50% + ${tx.toFixed(1)}px), -50%) scale(${sc.toFixed(4)})`;
+      li.style.transform = `scale(${sc.toFixed(4)})`;
       li.style.zIndex = String(20 - Math.round(ad));
       c.el.style.setProperty("--p", focus.toFixed(3));
       c.el.style.setProperty("--dim", dim.toFixed(3));
@@ -179,77 +177,35 @@ const pad = (n: number) => String(n).padStart(2, "0");
     nextB.disabled = f > N - 1.05;
   }
 
-  // Light smoothing takes the jumps out of mouse-wheel ticks without decoupling from the scrollbar.
-  function tick() {
-    const diff = target - cur;
-    if (Math.abs(diff) < 0.0008) {
-      cur = target;
-      running = false;
-    } else {
-      cur += diff * 0.14;
-      requestAnimationFrame(tick);
-    }
+  // The strip's own scroll position is the only state, so swipes, momentum and snapping are the browser's.
+  function readScroll() {
+    queued = false;
+    cur = Math.min(N - 1, Math.max(0, track.scrollLeft / (cw + gap)));
     layout(cur);
   }
-  function kick() {
-    if (!running) {
-      running = true;
-      requestAnimationFrame(tick);
+  function onScroll() {
+    if (!queued) {
+      queued = true;
+      requestAnimationFrame(readScroll);
     }
-  }
-  function readScroll() {
-    const p = Math.min(1, Math.max(0, (window.scrollY - secTop) / range));
-    target = p * (N - 1);
-    kick();
   }
   function go(i: number, instant = false) {
     i = Math.max(0, Math.min(N - 1, i));
-    window.scrollTo({ top: secTop + (range * i) / Math.max(1, N - 1), behavior: instant ? "auto" : "smooth" });
+    track.scrollTo({ left: i * (cw + gap), behavior: instant ? "auto" : "smooth" });
   }
 
   if (pinned) {
     prevB.addEventListener("click", () => go(Math.round(cur) - 1));
     nextB.addEventListener("click", () => go(Math.round(cur) + 1));
-    window.addEventListener("scroll", readScroll, { passive: true });
-
-    // Horizontal intent (trackpad swipe, touch swipe) becomes page scroll, so all inputs share one position.
-    const perPx = () => range / Math.max(1, N - 1) / (cw + gap);
-    stage.addEventListener(
-      "wheel",
-      (e) => {
-        if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;
-        e.preventDefault();
-        window.scrollBy(0, e.deltaX * perPx());
-      },
-      { passive: false },
-    );
-    let tx0: number | null = null, ty0 = 0, horiz: boolean | null = null;
-    stage.addEventListener("touchstart", (e) => {
-      tx0 = e.touches[0].clientX;
-      ty0 = e.touches[0].clientY;
-      horiz = null;
-    }, { passive: true });
-    stage.addEventListener("touchmove", (e) => {
-      if (tx0 === null) return;
-      const x = e.touches[0].clientX, y = e.touches[0].clientY;
-      if (horiz === null && (Math.abs(x - tx0) > 6 || Math.abs(y - ty0) > 6)) horiz = Math.abs(x - tx0) > Math.abs(y - ty0);
-      if (horiz) {
-        window.scrollBy(0, (tx0 - x) * perPx() * 1.4);
-        tx0 = x;
-      }
-    }, { passive: true });
-    stage.addEventListener("touchend", () => {
-      if (horiz) go(Math.round(target));
-      tx0 = null;
-    }, { passive: true });
+    track.addEventListener("scroll", onScroll, { passive: true });
   }
 
   function relayout() {
+    const at = Math.round(cur);
     measure();
     if (pinned) {
+      track.scrollLeft = at * (cw + gap);
       readScroll();
-      cur = target;
-      layout(cur);
     }
   }
   let rt = 0;
@@ -263,8 +219,9 @@ const pad = (n: number) => String(n).padStart(2, "0");
 </script>
 
 <style>
-  .fc { --barh: 3.2rem; position: relative; height: calc((var(--n) - 1) * 85svh + 100svh); }
-  .fc-stage { position: sticky; top: var(--barh); height: calc(100svh - var(--barh)); overflow: clip; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; gap: 1rem; padding-block: 1.2rem; padding-inline: max(16px, env(safe-area-inset-left, 0px)) max(16px, env(safe-area-inset-right, 0px)); touch-action: pan-y; }
+  .fc { position: relative; }
+  .fc-stage { height: clamp(520px, 82svh, 760px); display: grid; grid-template-rows: auto minmax(0, 1fr) auto; gap: 1rem; padding-block: 1.2rem; }
+  .fc-head, .fc-foot { padding-inline: max(16px, env(safe-area-inset-left, 0px)) max(16px, env(safe-area-inset-right, 0px)); box-sizing: border-box; }
   .fc-head, .fc-foot { width: 100%; max-width: 1240px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
   .fc-count { font-family: var(--display); font-weight: 900; font-size: 2rem; line-height: 1; font-variant-numeric: tabular-nums; }
   .fc-count :global(span) { color: var(--muted); }
@@ -272,8 +229,11 @@ const pad = (n: number) => String(n).padStart(2, "0");
   .fc-nav button { width: 2.8rem; height: 2.8rem; border: 1px solid var(--ink); background: var(--paper); color: var(--ink); font: 500 1.1rem/1 var(--mono); cursor: pointer; }
   .fc-nav button:hover { background: var(--ink); color: var(--paper); }
   .fc-nav button:disabled { opacity: .35; cursor: default; background: var(--paper); color: var(--ink); }
-  .fc-track { position: relative; min-height: 0; margin: 0; padding: 0; list-style: none; }
-  .fc-item { position: absolute; left: 50%; top: 50%; width: var(--cw); height: var(--ch); will-change: transform; }
+  /* Film: a native horizontal scroller with centre snapping. The inline padding lets the first and last cards
+     reach the centre, so card i is centred at scrollLeft i * (cw + gap). Vertical wheel and swipes pass through. */
+  .fc-track { position: relative; min-height: 0; margin: 0; padding: 0 calc(50% - var(--cw, 0px) / 2); list-style: none; display: flex; align-items: center; gap: var(--gap, 28px); overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; scrollbar-width: none; overscroll-behavior-x: contain; }
+  .fc-track::-webkit-scrollbar { display: none; }
+  .fc-item { position: relative; flex: 0 0 var(--cw); height: var(--ch); scroll-snap-align: center; will-change: transform; }
   .fc-card { position: relative; display: block; width: 100%; height: 100%; overflow: hidden; background: var(--panel); border: 1px solid var(--line); color: var(--ink); text-decoration: none; --p: 0;
     --s1: clamp(0, calc((var(--p) - .3) * 3.5), 1);
     --s2: clamp(0, calc((var(--p) - .55) * 4), 1);
@@ -300,10 +260,10 @@ const pad = (n: number) => String(n).padStart(2, "0");
 
   /* Static: no pinning, a swipeable row, everything disclosed and fully resolved.
      The default markup, kept for reduced motion and for readers without JS. */
-  .fc[data-variant="static"] { height: auto; }
-  .fc[data-variant="static"] .fc-stage { position: relative; top: auto; height: auto; overflow: visible; }
-  .fc[data-variant="static"] .fc-track { display: flex; gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 1rem; max-width: 1240px; width: 100%; margin: 0 auto; }
-  .fc[data-variant="static"] .fc-item { position: relative; left: auto; top: auto; transform: none !important; flex: 0 0 min(84vw, 520px); width: auto; height: auto; scroll-snap-align: start; will-change: auto; }
+  .fc[data-variant="static"] .fc-stage { height: auto; }
+  .fc[data-variant="static"] .fc-track { align-items: stretch; gap: 16px; scrollbar-width: auto; padding: 0 16px 1rem; max-width: 1240px; width: 100%; margin: 0 auto; box-sizing: border-box; }
+  .fc[data-variant="static"] .fc-track::-webkit-scrollbar { display: initial; }
+  .fc[data-variant="static"] .fc-item { transform: none !important; flex: 0 0 min(84vw, 520px); height: auto; scroll-snap-align: start; will-change: auto; }
   .fc[data-variant="static"] .fc-card { --p: 1 !important; --dim: 0 !important; --lock: 1; }
   .fc[data-variant="static"] .fc-inner { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto; }
   .fc[data-variant="static"] .fc-cover { aspect-ratio: 1200 / 630; }
