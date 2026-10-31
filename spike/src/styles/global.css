@@ -87,7 +87,8 @@ mark.glitch, .chip-signal.glitch { animation: sig-glitch-bar 357ms steps(1, end)
 @media (prefers-reduced-motion: reduce) { .glitch { animation: none !important; } }
 
 /* Dithered canvases keep their dots square. The fallback image shows only without JS. */
-canvas.dither { display: block; width: 100%; height: 100%; image-rendering: pixelated; }
+/* Positioned out of flow: a canvas's own pixel size must never feed back into its frame's height. */
+canvas.dither { position: absolute; inset: 0; display: block; width: 100%; height: 100%; image-rendering: pixelated; }
 .js .nojs-only { display: none; }
 html:not(.js) canvas.dither { display: none; }
 

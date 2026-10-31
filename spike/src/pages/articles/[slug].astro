@@ -180,7 +180,7 @@ const asset = (p?: string) => (p ? url(p) : undefined);
   h1 { font-size: clamp(2.8rem, 1rem + 7vw, 8.5rem); font-weight: 900; line-height: .84; max-width: 16ch; }
   .lede { font-size: var(--step-1); line-height: 1.35; max-width: 42ch; color: var(--muted); }
   .a-cover { margin: 0; }
-  .a-cover-frame { aspect-ratio: 1200 / 630; max-height: 78svh; width: 100%; background: var(--paper); overflow: hidden; }
+  .a-cover-frame { position: relative; aspect-ratio: 1200 / 630; max-height: 78svh; width: 100%; background: var(--paper); overflow: hidden; }
   .a-cover-frame img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .a-cover figcaption { display: flex; justify-content: space-between; gap: .5rem 1.5rem; flex-wrap: wrap; padding-block: .8rem; }
   .a-cover figcaption .label { font-variant-numeric: tabular-nums; }
