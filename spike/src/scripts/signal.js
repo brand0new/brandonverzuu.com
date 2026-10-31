@@ -152,7 +152,8 @@ export function resolve(canvas, src, p, o) {
   const g = canvas.getContext("2d");
   g.imageSmoothingEnabled = false;
   g.drawImage(scratch, 0, 0, gw, gh, 0, 0, signal ? W : gw * cell, signal ? H : gh * cell);
-  canvas._cols = Math.round(signal ? sw : W / cell);
+  // Never report more columns than the source has: a frame wider than the source upsamples, it doesn't add detail.
+  canvas._cols = Math.round(signal ? sw : Math.min(sw, W / cell));
   canvas._native = Math.round(sw);
   return canvas._cols;
 }
