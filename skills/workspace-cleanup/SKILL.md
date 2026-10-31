@@ -16,17 +16,16 @@ in `apps/site/`:
 
 | Path | Created by |
 | --- | --- |
-| `apps/site/dist/`, `apps/site/.output/` | `npm run generate` |
-| `apps/site/.nuxt/`, `apps/site/.nitro/`, `apps/site/.cache/` | `npm run dev` / `generate` |
-| `apps/site/.data/` | Nuxt Content's local SQLite cache |
+| `apps/site/dist/` | `npm run generate` |
+| `apps/site/.astro/` | Astro's generated types and content cache (`npm run dev` / `generate`) |
+| `apps/site/node_modules/.astro/`, `node_modules/.vite/` | Astro and Vite caches |
 | `.wrangler/` (any workspace) | a local `wrangler` run |
 | `apps/site/scripts/explainers/out/` | explainer feed renders |
 
 Delete them once you're no longer running the dev server or inspecting a build:
 
 ```
-npx nuxi cleanup apps/site   # .nuxt, .output, node_modules/.vite, node_modules/.cache
-rm -rf apps/site/dist apps/site/.data
+rm -rf apps/site/dist apps/site/.astro apps/site/node_modules/.astro node_modules/.vite
 find . -name .wrangler -type d -prune -not -path './node_modules/*' -exec rm -rf {} +
 ```
 

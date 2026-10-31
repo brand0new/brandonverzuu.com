@@ -1,0 +1,17 @@
+---
+import Base from "../../layouts/Base.astro";
+import PageHead from "../../components/PageHead.astro";
+import ArticleRows from "../../components/ArticleRows.astro";
+import { publishedArticles } from "../../lib/content";
+
+const description = "All of my long form content on software development, technology, and more, shown in chronological order.";
+const articles = await publishedArticles();
+---
+
+<Base title="Articles | Brandon Verzuu" description={description}>
+  <PageHead title="Articles" kicker={`${articles.length} articles · newest first`} description={description} />
+  <div class="wrap section">
+    <ArticleRows articles={articles} />
+    <p class="more"><a href="/topics">Browse by topic →</a></p>
+  </div>
+</Base>

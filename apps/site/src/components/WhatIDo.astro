@@ -1,0 +1,45 @@
+---
+// Chapter 02, what I do. The /topics clusters as billboard rows. Counts and years are
+// counted from content/articles at build time, so the numbers are never a claim.
+import { clusterStats } from "../lib/content";
+
+const clusters = await clusterStats();
+---
+
+<section class="chapter wrap" id="what-i-do" aria-labelledby="wid-title">
+  <div class="chapter-head">
+    <p class="label">02 · What I do</p>
+    <h2 id="wid-title">Three things<br />I keep writing about</h2>
+  </div>
+  <ul class="disc">
+    {
+      clusters.map((c) => (
+        <li>
+          <a href={`/topics/${c.slug}`}>
+            <span class="t">{c.title}</span>
+            <span class="c">
+              {c.count} {c.count === 1 ? "article" : "articles"}
+              <span class="sep"> · </span>
+              <br />
+              {c.years}
+            </span>
+            <span class="s">{c.summary}</span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</section>
+
+<style>
+  .disc { list-style: none; margin: 0; padding: 0; border-top: 2px solid var(--ink); }
+  .disc li { border-bottom: 1px solid var(--line); }
+  .disc a { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: baseline; gap: .6rem 1.5rem; padding-block: 1.1rem 1.3rem; text-decoration: none; color: var(--ink); }
+  .t { font-family: var(--display); font-weight: 900; text-transform: uppercase; font-size: clamp(2.2rem, 6.2vw, 5.4rem); line-height: .88; text-wrap: balance; transition: color .25s, transform .35s cubic-bezier(.2, .7, .2, 1); }
+  .c { font-family: var(--mono); font-variant-numeric: tabular-nums; color: var(--muted); font-size: var(--step--1); text-align: right; text-transform: uppercase; letter-spacing: .06em; white-space: nowrap; }
+  .s { grid-column: 1; max-width: 60ch; color: var(--muted); }
+  .disc a:hover .t, .disc a:focus-visible .t { color: var(--accent); transform: translateX(.12em); }
+  @media (prefers-reduced-motion: reduce) { .t { transition: color .25s; } .disc a:hover .t, .disc a:focus-visible .t { transform: none; } }
+  .sep { display: none; }
+  @media (max-width: 640px) { .disc a { grid-template-columns: minmax(0, 1fr); } .c { text-align: left; } .c br { display: none; } .sep { display: inline; } }
+</style>

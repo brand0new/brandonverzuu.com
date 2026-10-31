@@ -141,7 +141,7 @@ from drafting the same note.
    before frontmatter. It's deterministic, so it catches rhythm and filler that a
    reading pass misses, whichever model drafted the article.
 
-5. **Frontmatter.** Match the schema in `apps/site/content.config.ts` exactly — a missing or
+5. **Frontmatter.** Match the `articles` schema in `apps/site/src/content.config.ts` exactly — a missing or
    mistyped field fails the build.
 
    ```
@@ -174,6 +174,11 @@ from drafting the same note.
 
 6. **Images.** If the issue has attached images, download them to
    `apps/site/public/articles/<slug>/` and reference them with root-relative paths.
+
+   **Story blocks** (`::pull`, `:::sidenote`, `::chapter`, `::figure`, `==highlight==`,
+   documented in `apps/site/src/plugins/remark-story.mjs`) are Brandon's choices, not
+   decoration: a pull quote and the one signal highlight are lines he picks. Don't add them
+   unless the note marks them. Plain markdown renders fully on its own.
 
 7. **Cover image is not optional. Never skip it, even for an ad-hoc note with no
    GitHub issue.** Follow `skills/article-cover/`. Use an attached image as the

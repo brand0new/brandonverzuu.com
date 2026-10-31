@@ -10,13 +10,12 @@ updates:
       day: monday
     open-pull-requests-limit: 5
     groups:
-      # Nuxt and its modules move together; splitting them produces PRs
+      # Astro and its own packages move together; splitting them produces PRs
       # that can't build on their own.
-      nuxt:
+      astro:
         patterns:
-          - "nuxt"
-          - "@nuxt/*"
-          - "@nuxtjs/*"
+          - "astro"
+          - "@astrojs/*"
       dev-dependencies:
         dependency-type: development
         update-types: [minor, patch]

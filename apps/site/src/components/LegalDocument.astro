@@ -1,0 +1,32 @@
+---
+// The body of /expert/terms and /expert/privacy: the newest published version, or a "being
+// drafted" notice while only drafts exist. Drafts are never rendered, so unapproved wording
+// can't read as binding.
+import { getCollection, render } from "astro:content";
+import PageHead from "./PageHead.astro";
+import { formatDate } from "../lib/content";
+import type { Crumb } from "../lib/schema";
+
+interface Props {
+  title: string;
+  collection: "expertTerms" | "expertPrivacy";
+  crumbs: Crumb[];
+}
+const { title, collection, crumbs } = Astro.props;
+const published = (await getCollection(collection, (d) => d.data.status === "published")).sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+const doc = published[0];
+const Content = doc ? (await render(doc)).Content : null;
+---
+
+<PageHead title={title} crumbs={crumbs} kicker={doc ? `Version ${doc.data.version} · ${formatDate(doc.data.date, "long")}` : "Being drafted"} />
+<div class="wrap section">
+  {
+    Content ? (
+      <div class="prose">
+        <Content />
+      </div>
+    ) : (
+      <p class="prose">This text is still being written. The service isn't live yet, and it won't go live before the final version is published here.</p>
+    )
+  }
+</div>

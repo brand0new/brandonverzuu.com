@@ -1,0 +1,18 @@
+---
+// A mage:* icon as inline SVG, read from @iconify-json/mage at build time. Nothing is fetched
+// at runtime, and an unknown name fails the build instead of rendering a blank box.
+import icons from "@iconify-json/mage/icons.json";
+
+interface Props {
+  name: string;
+  size?: number;
+  class?: string;
+}
+const { name, size = 20, class: className } = Astro.props;
+const key = name.replace(/^mage:/, "");
+const icon = (icons.icons as Record<string, { body: string; width?: number; height?: number }>)[key];
+if (!icon) throw new Error(`Unknown icon "${name}". Pick one from @iconify-json/mage.`);
+const w = icon.width ?? icons.width ?? 24, h = icon.height ?? icons.height ?? 24;
+---
+
+<svg class={className} viewBox={`0 0 ${w} ${h}`} width={size} height={size} aria-hidden="true" focusable="false" set:html={icon.body} />

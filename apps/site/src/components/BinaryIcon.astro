@@ -1,0 +1,30 @@
+---
+// A keyword drawn as its literal ASCII binary: one column per character, that character's
+// 8 bits stacked top to bottom (src/lib/binary.ts). Each /topics cluster's icon ("API", "AI",
+// "BTC"), in the same dithered, binary language as the covers. Decorative: the topic's name
+// is always next to it.
+import { toBinaryColumns } from "../lib/binary";
+
+interface Props {
+  keyword: string;
+  size?: string;
+}
+const { keyword, size = ".7rem" } = Astro.props;
+---
+
+<div class="bin" aria-hidden="true" style={`font-size:${size}`}>
+  {
+    toBinaryColumns(keyword).map((col) => (
+      <span class="col">
+        {col.map((b) => (
+          <span>{b}</span>
+        ))}
+      </span>
+    ))
+  }
+</div>
+
+<style>
+  .bin { display: flex; gap: .25em; flex: none; font-family: var(--mono); font-weight: 500; line-height: 1; color: var(--accent); user-select: none; }
+  .col { display: flex; flex-direction: column; }
+</style>

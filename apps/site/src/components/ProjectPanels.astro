@@ -1,0 +1,60 @@
+---
+// Projects as large panels. Each takes its accent colour and title face from its own content
+// file (accentColor, accentFont), never from code per slug, and a slow dither field in that
+// colour fills the panel's right side.
+import { getCollection } from "astro:content";
+
+const projects = (await getCollection("projects")).sort((a, b) => a.id.localeCompare(b.id, "en", { numeric: true }));
+const host = (u: string) => new URL(u).host.replace(/^www\./, "");
+---
+
+<ul class="projects">
+  {
+    projects.map((p, i) => (
+      <li>
+        <a class="proj" href={p.data.url} style={p.data.accentColor ? `--pa:${p.data.accentColor}` : undefined} data-seed={i * 7 + 3}>
+          <canvas class="dither field" aria-hidden="true" />
+          <span class="label">{host(p.data.url)}</span>
+          <span class:list={["pt", { face: p.data.accentFont }]} style={p.data.accentFont ? `font-family:var(--font-${p.data.accentFont.toLowerCase()}), var(--serif)` : undefined}>
+            {p.data.name}
+          </span>
+          <span class="pd">{p.data.description}</span>
+          <span class="tags">
+            <span class="tag on">{p.data.status}</span>
+            {p.data.opensource && <span class="tag">Open source</span>}
+            <span class="sr-only">(external site)</span>
+          </span>
+        </a>
+      </li>
+    ))
+  }
+</ul>
+
+<script>
+  import { field, tok } from "../scripts/signal.js";
+
+  document.querySelectorAll<HTMLAnchorElement>(".proj").forEach((el) => {
+    const seed = Number(el.dataset.seed) || 0;
+    field(el.querySelector("canvas")!, {
+      cell: 6,
+      seed,
+      speed: 0.02,
+      color: () => getComputedStyle(el).getPropertyValue("--pa").trim() || tok("--dot"),
+      // Dots gather towards the right edge, so the text side stays calm.
+      shape: (u: number, v: number, t: number) => (0.5 + 0.5 * Math.sin(u * 6 + seed + t) * Math.cos(v * 5 - seed * 0.7 - t * 0.6)) * Math.max(0, (u - 0.58) / 0.42),
+    });
+  });
+</script>
+
+<style>
+  .projects { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+  .proj { position: relative; overflow: hidden; height: 100%; min-height: 280px; display: flex; flex-direction: column; gap: .9rem; padding: clamp(1.2rem, 3vw, 1.8rem); background: var(--panel); color: var(--ink); text-decoration: none; border: 1px solid var(--line); }
+  .proj > :not(canvas) { position: relative; max-width: 56%; }
+  .proj canvas { opacity: .9; }
+  .pt { font-family: var(--display); font-weight: 800; text-transform: uppercase; font-size: clamp(2.6rem, 1.5rem + 4vw, 4.6rem); line-height: .9; color: var(--pa, var(--accent)); margin-top: auto; }
+  .pt.face { text-transform: none; font-weight: 500; }
+  .pd { color: var(--ink); }
+  .proj:hover .pt { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: .12em; }
+  .proj:focus-visible { outline: 3px solid var(--signal-text); outline-offset: 3px; }
+  @media (max-width: 700px) { .projects { grid-template-columns: 1fr; } .proj > :not(canvas) { max-width: 62%; } }
+</style>

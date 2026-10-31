@@ -1,0 +1,85 @@
+---
+// A review uses the story template, with the rating as a billboard numeral. The rating,
+// verdict and words are Brandon's; the template only stages them.
+import { render } from "astro:content";
+import Base from "../../layouts/Base.astro";
+import Breadcrumb from "../../components/Breadcrumb.astro";
+import ResolvingCover from "../../components/ResolvingCover.astro";
+import StoryEnhance from "../../components/StoryEnhance.astro";
+import ReviewRating from "../../components/ReviewRating.astro";
+import { publishedReviews, covers, formatDate, isoDate, SITE, type Review } from "../../lib/content";
+import { media } from "../../lib/reviews";
+import { breadcrumbSchema, reviewSchema, type Crumb } from "../../lib/schema";
+import "../../styles/story.css";
+
+export async function getStaticPaths() {
+  const all = await publishedReviews();
+  return all.map((r) => ({ params: { slug: r.id }, props: { review: r } }));
+}
+
+const { review } = Astro.props as { review: Review };
+const d = review.data;
+const { Content } = await render(review);
+const c = covers("reviews", review.id);
+const url = `${SITE}/reviews/${review.id}`;
+const crumbs: Crumb[] = [{ label: "Home", href: "/" }, { label: "Reviews", href: "/reviews" }, { label: d.title }];
+const subjectLine = [media[d.medium].label, d.subject.year, d.subject.creator].filter(Boolean).join(" · ");
+const schema = [reviewSchema({ title: d.title, description: d.description, url, date: d.date, image: d.image, medium: d.medium, subject: d.subject, rating: d.rating }), breadcrumbSchema(crumbs, url)];
+---
+
+<Base title={`${d.title} | Brandon Verzuu`} description={d.description} image={d.image} schema={schema} type="article">
+  <article class="story">
+    <header class="a-head wrap">
+      <Breadcrumb crumbs={crumbs} />
+      <p class="label"><time datetime={isoDate(d.date)}>{formatDate(d.date)}</time> · {subjectLine}</p>
+      <h1>{d.title}</h1>
+      <div class="verdict">
+        <ReviewRating rating={d.rating} size="l" />
+        <div class="stack">
+          <p class="subject">{d.subject.name}</p>
+          <p class="lede">{d.verdict}</p>
+        </div>
+      </div>
+    </header>
+
+    <ResolvingCover dark={c.dark} light={c.light} credit={{ author: d.imageAuthor, source: d.imageSource, license: d.imageLicense, prefix: "Cover art:" }} />
+
+    <div class="a-grid no-rail wrap">
+      <div class="a-body">
+        {
+          d.details?.length && (
+            <dl class="details">
+              {d.details.map((x) => (
+                <div>
+                  <dt class="label">{x.label}</dt>
+                  <dd>{x.value}</dd>
+                </div>
+              ))}
+            </dl>
+          )
+        }
+        <div class="prose dropcap">
+          <Content />
+        </div>
+        {
+          (d.tags ?? []).length > 0 && (
+            <ul class="tags" aria-label="Tags">
+              {(d.tags ?? []).map((t) => (
+                <li class="tag">{t}</li>
+              ))}
+            </ul>
+          )
+        }
+      </div>
+    </div>
+  </article>
+  <StoryEnhance />
+</Base>
+
+<style>
+  .verdict { display: flex; gap: clamp(1.2rem, 3vw, 2.5rem); align-items: flex-end; flex-wrap: wrap; }
+  .subject { font-family: var(--display); font-weight: 800; text-transform: uppercase; font-size: var(--step-1); line-height: 1; }
+  .details { margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); border-top: 2px solid var(--ink); max-width: 65ch; }
+  .details > div { padding: .8rem 1rem .8rem 0; border-bottom: 1px solid var(--line); display: flex; flex-direction: column; gap: .3rem; }
+  dd { margin: 0; }
+</style>

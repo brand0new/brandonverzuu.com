@@ -1,0 +1,22 @@
+---
+// The billboard head of an index page: an optional breadcrumb or kicker, the title, and a lede
+// (the description prop, or whatever is slotted in).
+import Breadcrumb from "./Breadcrumb.astro";
+import type { Crumb } from "../lib/schema";
+
+interface Props {
+  title: string;
+  kicker?: string;
+  description?: string;
+  crumbs?: Crumb[];
+}
+const { title, kicker, description, crumbs } = Astro.props;
+---
+
+<header class="page-head wrap">
+  {crumbs && <Breadcrumb crumbs={crumbs} />}
+  {kicker && <p class="label">{kicker}</p>}
+  <h1>{title}<em>.</em></h1>
+  {description && <p class="lede">{description}</p>}
+  {Astro.slots.has("default") && <div class="lede"><slot /></div>}
+</header>

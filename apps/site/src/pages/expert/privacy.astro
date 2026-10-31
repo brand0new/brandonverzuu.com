@@ -1,0 +1,12 @@
+---
+import Base from "../../layouts/Base.astro";
+import LegalDocument from "../../components/LegalDocument.astro";
+import { SITE } from "../../lib/content";
+import { breadcrumbSchema, type Crumb } from "../../lib/schema";
+
+const crumbs: Crumb[] = [{ label: "Home", href: "/" }, { label: "Expertise", href: "/expert" }, { label: "Privacy" }];
+---
+
+<Base title="Privacy statement | Brandon Verzuu" description="What Brandon Verzuu's expertise service stores about you, why, and for how long." schema={[breadcrumbSchema(crumbs, `${SITE}/expert/privacy`)]}>
+  <LegalDocument title="Privacy statement" collection="expertPrivacy" crumbs={crumbs} />
+</Base>

@@ -7,9 +7,10 @@ description: Produce the dithered duotone cover (cover.png + cover-light.png) fo
 
 Every article has a cover, and it always lives at `apps/site/public/articles/<slug>/cover.png`
 with a `cover-light.png` sibling. The site finds both by that path, not through
-frontmatter: `app.vue` uses it for the article page background, and `AppArticleCard`
-swaps in the light variant by string substitution. A missing cover therefore leaves a
-blank band on the article page as well as an empty card.
+frontmatter: the story template (`apps/site/src/components/ResolvingCover.astro`) and the
+homepage filmstrip re-dither both files in the browser as the cover resolves from noise to
+signal, and show them as-is without JS. A missing cover therefore leaves a blank band on the
+article page as well as an empty card.
 
 The script runs locally in Node at build time. Nothing in it ships to the browser.
 

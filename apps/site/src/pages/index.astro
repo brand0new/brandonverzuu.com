@@ -1,0 +1,84 @@
+---
+// The homepage as one scroll story in six chapters: name and face, what I do, work, writing,
+// in numbers, say hello. Every chapter fills about a screen on a phone and a desktop alike.
+import Base from "../layouts/Base.astro";
+import Hero from "../components/Hero.astro";
+import WhatIDo from "../components/WhatIDo.astro";
+import ProjectPanels from "../components/ProjectPanels.astro";
+import Filmstrip from "../components/Filmstrip.astro";
+import InNumbers from "../components/InNumbers.astro";
+import SayHello from "../components/SayHello.astro";
+import { publishedArticles, formatDate } from "../lib/content";
+import { personSchema } from "../lib/schema";
+
+const all = await publishedArticles();
+const years = [...new Set(all.map((a) => a.data.date.getUTCFullYear()))];
+---
+
+<Base
+  title="Brandon Verzuu — Cloud Integration, API Strategy & Emerging Tech"
+  description="Head of Innovation & Product from Rosmalen, The Netherlands. Practitioner writing on cloud integration, API governance and strategy, and how AI and blockchain reshape technology and people."
+  schema={[personSchema()]}
+  telma
+>
+  <Hero />
+  <WhatIDo />
+
+  <section class="chapter wrap" id="work" aria-labelledby="work-title">
+    <div class="chapter-head">
+      <p class="label">03 · Work</p>
+      <h2 id="work-title">Things I'm<br />building</h2>
+      <p class="measure">Side projects, some finished and some in progress. <a href="/projects">All projects</a></p>
+    </div>
+    <ProjectPanels />
+  </section>
+
+  <section class="chapter wrap writing-head" id="writing" aria-labelledby="writing-title">
+    <div class="chapter-head">
+      <p class="label">04 · Writing</p>
+      <h2 id="writing-title">Featured,<br />side by side</h2>
+      <p class="measure">Swipe or use the arrows. Each article resolves from noise to signal as it reaches the centre.</p>
+    </div>
+  </section>
+  <Filmstrip />
+
+  <section class="wrap index" aria-labelledby="index-title">
+    <div class="index-head">
+      <h2 id="index-title" class="label">Everything, by year</h2>
+      <a class="more" href="/articles">All articles →</a>
+    </div>
+    {
+      years.map((y) => (
+        <div class="year">
+          <p class="y">{y}</p>
+          <ul>
+            {all
+              .filter((a) => a.data.date.getUTCFullYear() === y)
+              .map((a) => (
+                <li>
+                  <a href={`/articles/${a.id}`}>{a.data.title}</a>
+                  <span class="label">{formatDate(a.data.date)}</span>
+                </li>
+              ))}
+          </ul>
+        </div>
+      ))
+    }
+  </section>
+
+  <InNumbers />
+  <SayHello />
+</Base>
+
+<style>
+  .writing-head { padding-bottom: 1rem; }
+  .index { padding-block: clamp(3rem, 6vw, 5rem); display: flex; flex-direction: column; gap: 1.2rem; }
+  .index-head { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; }
+  .year { display: grid; grid-template-columns: 6rem minmax(0, 1fr); gap: 1rem; border-top: 1px solid var(--line); padding-top: .9rem; }
+  .y { font-family: var(--display); font-weight: 900; font-size: 2rem; line-height: 1; color: var(--accent); }
+  ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: .55rem; }
+  li { display: flex; justify-content: space-between; align-items: baseline; gap: .3rem 1.5rem; flex-wrap: wrap; }
+  li a { color: var(--ink); text-decoration-color: var(--line); }
+  li a:hover { color: var(--accent); text-decoration-color: currentColor; }
+  @media (max-width: 560px) { .year { grid-template-columns: 1fr; gap: .4rem; } }
+</style>

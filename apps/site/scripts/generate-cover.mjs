@@ -27,6 +27,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import sharp from "sharp";
 import { toLinearLuminance } from "./lib/color.mjs";
+import * as tokens from "./lib/tokens.mjs";
 import { zhouFangDither } from "./lib/zhou-fang-dither.mjs";
 import { bayerDither } from "./lib/bayer-dither.mjs";
 
@@ -90,21 +91,13 @@ async function main() {
 
   const width = Number(args.width ?? 1200);
   const height = Number(args.height ?? 630);
-  // Complementary duotone defaults: porcelain-950 (public/css/main.css, the
-  // site's dark brand tone, hue ~192°) against a warm terracotta accent at
-  // roughly the complementary hue (~19°) — a warm highlight against the
-  // site's cool teal chrome, rather than a same-hue tint of it.
-  const light = hexToRgb(args.light ?? "#d97a4d");
-  const dark = hexToRgb(args.dark ?? "#1d2e34");
-  // Near-white "off" tone for the light-theme cover variant (--light-bg),
-  // matching App/DitherCanvas.vue's OFF_WHITE exactly so the article
-  // cards' dither texture reads as the same visual language as the
-  // homepage hero background in light mode, rather than two different
-  // "off" tones that happen to both be pale. Dark theme's variant reuses
-  // the existing `dark` value above (its own "off" tone was always fine
-  // against a near-black page — no visual change needed there, only
-  // light mode gets a second variant).
-  const lightBg = hexToRgb(args["light-bg"] ?? "#fbfbf8");
+  // Complementary duotone defaults from the shared palette (scripts/lib/tokens.mjs):
+  // terracotta dots (~19°) against the dark porcelain panel (~192°), and a near-white
+  // "off" tone for the light variant. The site re-dithers covers in the browser with
+  // the theme's own tokens, so these decide only the PNGs shipped as the no-JS fallback.
+  const light = hexToRgb(args.light ?? tokens.cover.dot);
+  const dark = hexToRgb(args.dark ?? tokens.cover.darkBg);
+  const lightBg = hexToRgb(args["light-bg"] ?? tokens.cover.lightBg);
   const seed = args.seed ?? args.url ?? args.file;
   const ditherMode = args.dither ?? "bayer";
   const bayerSize = Number(args["bayer-size"] ?? 4);

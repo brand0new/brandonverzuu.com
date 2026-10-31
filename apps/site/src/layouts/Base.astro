@@ -1,0 +1,165 @@
+---
+// The one layout. It owns <head> (canonical, social cards, JSON-LD), the theme tokens, the
+// top bar and the footer. Pages pass their own title, description and structured data.
+import "@fontsource/big-shoulders-display/500";
+import "@fontsource/big-shoulders-display/800";
+import "@fontsource/big-shoulders-display/900";
+import "@fontsource-variable/newsreader/opsz";
+import "@fontsource-variable/newsreader/opsz-italic";
+import "@fontsource/ibm-plex-mono/400";
+import "@fontsource/ibm-plex-mono/500";
+import "../styles/global.css";
+import { Font } from "astro:assets";
+import { cssVars } from "../../scripts/lib/tokens.mjs";
+import { SITE } from "../lib/content";
+import type { JsonLd } from "../lib/schema";
+
+interface Props {
+  title: string;
+  description: string;
+  /** Root-relative path of the social card image. Defaults to the avatar. */
+  image?: string;
+  /** JSON-LD objects for <head>. */
+  schema?: JsonLd[];
+  /** og:type, "article" on articles and reviews. */
+  type?: string;
+  /** Load the Telma face (projects with accentFont: Telma). */
+  telma?: boolean;
+  lang?: string;
+}
+const { title, description, image = "/avatar.jpg", schema = [], type = "website", telma = false, lang = "en" } = Astro.props;
+
+// Self-referencing canonical on the production domain, so the *.pages.dev preview copies
+// of every page never compete with the real ones. No trailing slash, like the sitemap.
+const path = Astro.url.pathname.replace(/\.html$/, "").replace(/\/+$/, "") || "/";
+const canonical = SITE + path;
+
+const nav = [
+  { label: "Articles", href: "/articles" },
+  { label: "Topics", href: "/topics" },
+  { label: "Reviews", href: "/reviews" },
+  { label: "Projects", href: "/projects" },
+  { label: "Bookmarks", href: "/bookmarks" },
+  { label: "Expertise", href: "/expert" },
+];
+const current = (href: string) => path === href || path.startsWith(href + "/");
+
+const tokens = `:root{${cssVars("light")};color-scheme:light}` +
+  `@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){${cssVars("dark")};color-scheme:dark}}` +
+  `:root[data-theme="dark"]{${cssVars("dark")};color-scheme:dark}`;
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="author" content="Brandon Verzuu" />
+    <meta property="og:type" content={type} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={SITE + image} />
+    <meta property="og:site_name" content="Brandon Verzuu" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" href="/favicon.ico" />
+    <link rel="sitemap" href="/sitemap.xml" />
+    <style set:html={tokens}></style>
+    <!-- Theme before first paint, so the wrong theme never flashes. "light", "dark" or unset
+         (follow the system). Also reads the key the Nuxt site used, so a reader's choice survives. -->
+    <script is:inline>
+      (function () {
+        var d = document.documentElement;
+        d.classList.add("js");
+        try {
+          var m = localStorage.getItem("theme") || localStorage.getItem("nuxt-color-mode");
+          if (m === "light" || m === "dark") d.setAttribute("data-theme", m);
+        } catch (e) {}
+      })();
+    </script>
+    {telma && <Font cssVariable="--font-telma" preload />}
+    {schema.map((s) => <script type="application/ld+json" set:html={JSON.stringify(s)} />)}
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <header class="bar">
+      <div class="wrap">
+        <a class="mark" href="/" aria-label="Brandon Verzuu, home" aria-current={path === "/" ? "page" : undefined}>B<span>V</span></a>
+        <nav aria-label="Main">
+          <ul>
+            {
+              nav.map((n) => (
+                <li>
+                  <a href={n.href} aria-current={current(n.href) ? "page" : undefined}>{n.label}</a>
+                </li>
+              ))
+            }
+          </ul>
+        </nav>
+        <button type="button" class="theme" id="theme" aria-label="Dark theme" aria-pressed="false">
+          <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1Zm0 1.5v11a5.5 5.5 0 0 1 0-11Z" fill="currentColor"></path></svg>
+        </button>
+      </div>
+    </header>
+    <main id="main">
+      <slot />
+    </main>
+    <footer class="foot wrap">
+      <p class="label">© {new Date().getFullYear()} Brandon Verzuu · Rosmalen, NL</p>
+      <ul>
+        <li><a href="https://www.linkedin.com/in/brandonverzuu/" rel="me">LinkedIn</a></li>
+        <li><a href="https://github.com/brand0new" rel="me">GitHub</a></li>
+        <li><a href="https://medium.com/@brandon-verzuu" rel="me">Medium</a></li>
+        <li><a href="https://twitter.com/brandonverzuu" rel="me">X</a></li>
+      </ul>
+    </footer>
+    <script>
+      const btn = document.getElementById("theme")!;
+      const root = document.documentElement;
+      const sys = window.matchMedia("(prefers-color-scheme: dark)");
+      const dark = () => (root.dataset.theme ? root.dataset.theme === "dark" : sys.matches);
+      const sync = () => btn.setAttribute("aria-pressed", String(dark()));
+      btn.addEventListener("click", () => {
+        const next = dark() ? "light" : "dark";
+        root.dataset.theme = next;
+        try {
+          localStorage.setItem("theme", next);
+          localStorage.removeItem("nuxt-color-mode");
+        } catch {}
+        sync();
+      });
+      sys.addEventListener("change", sync);
+      sync();
+    
+      // On a phone the nav scrolls sideways; bring the current section's link into view.
+      const navList = document.querySelector<HTMLElement>(".bar nav ul");
+      const here = navList?.querySelector<HTMLElement>("[aria-current]");
+      if (navList && here && navList.scrollWidth > navList.clientWidth) {
+        navList.scrollLeft = here.offsetLeft - (navList.clientWidth - here.offsetWidth) / 2;
+      }
+    </script>
+  </body>
+</html>
+
+
+<style is:global>
+  .bar { position: sticky; top: 0; z-index: 30; background: var(--paper); border-bottom: 1px solid var(--line); padding-top: env(safe-area-inset-top, 0px); }
+  .bar .wrap { display: flex; gap: 1.25rem; align-items: center; min-height: var(--barh); }
+  .bar nav { flex: 1; min-width: 0; display: flex; justify-content: flex-end; }
+  /* On a phone the six words scroll sideways instead of wrapping or hiding behind a menu. */
+  .bar nav ul { position: relative; list-style: none; margin: 0; padding: 0; display: flex; gap: 1.1rem; overflow-x: auto; scrollbar-width: none; mask-image: linear-gradient(to right, transparent 0, #000 .75rem, #000 calc(100% - .75rem), transparent 100%); padding-inline: .75rem; }
+  .bar nav ul::-webkit-scrollbar { display: none; }
+  .bar nav a { display: block; padding-block: .9rem; font-family: var(--mono); font-size: var(--step--1); text-transform: uppercase; letter-spacing: .06em; color: var(--muted); text-decoration: none; white-space: nowrap; }
+  .bar nav a:hover { color: var(--accent); }
+  .bar nav a[aria-current] { color: var(--ink); box-shadow: inset 0 -2px 0 var(--dot); }
+  .mark { font-family: var(--display); font-weight: 900; font-size: 1.6rem; line-height: 1; color: var(--ink); text-decoration: none; flex: none; }
+  .mark span { color: var(--accent); }
+  .theme { flex: none; display: grid; place-items: center; width: 2.75rem; height: 2.75rem; margin-right: -.6rem; border: 0; background: none; color: var(--ink); cursor: pointer; }
+  .theme:hover { color: var(--accent); }
+  .foot { border-top: 2px solid var(--ink); padding-block: 2rem 3rem; display: flex; justify-content: space-between; align-items: baseline; gap: 1rem 2rem; flex-wrap: wrap; }
+  .foot ul { list-style: none; margin: 0; padding: 0; display: flex; gap: 1.2rem; flex-wrap: wrap; font-family: var(--mono); font-size: var(--step--1); text-transform: uppercase; letter-spacing: .06em; }
+  .foot ul a { color: var(--ink); }
+</style>

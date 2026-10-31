@@ -1,0 +1,14 @@
+---
+import Base from "../layouts/Base.astro";
+import PageHead from "../components/PageHead.astro";
+import ProjectPanels from "../components/ProjectPanels.astro";
+
+const description = "A collection of my projects, open source and otherwise. Some are in progress, some are finished, and some are just ideas. I hope you find something interesting here.";
+---
+
+<Base title="Projects | Brandon Verzuu" description={description} telma>
+  <PageHead title="Projects" description={description} />
+  <div class="wrap section">
+    <ProjectPanels />
+  </div>
+</Base>

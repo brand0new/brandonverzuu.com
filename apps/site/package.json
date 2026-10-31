@@ -1,34 +1,32 @@
 {
   "name": "@brandonverzuu/site",
   "version": "1.4.1",
-  "description": "My personal website",
+  "description": "My personal website, built with Astro as a static build tool",
   "private": true,
   "scripts": {
-    "dev": "nuxt dev",
-    "host": "nuxt dev --host",
-    "generate": "nuxt generate",
-    "preview": "nuxt preview",
+    "dev": "astro dev",
+    "host": "astro dev --host",
+    "generate": "node scripts/check-contrast.mjs && astro build && node scripts/check-urls.mjs",
+    "preview": "astro preview",
     "cover:generate": "node scripts/generate-cover.mjs",
     "scrub:fingerprint": "node scripts/scrub-fingerprint.mjs",
     "explainer:render": "node scripts/explainers/render.mjs"
   },
   "devDependencies": {
-    "@iconify-json/lucide": "^1.2.147",
-    "@iconify-json/mage": "^1.2.4",
-    "@nuxt/content": "^3.16.2",
-    "@nuxt/devtools": "^3.4.1",
-    "@nuxtjs/sitemap": "^8.3.4",
-    "@tailwindcss/typography": "^0.5.20",
-    "nuxt": "^4.6.3",
     "playwright": "1.64.1",
     "sharp": "^0.35.5",
     "wrangler": "^4.153.0"
   },
   "dependencies": {
-    "@nuxt/image": "^2.1.0",
-    "@nuxt/ui": "^4.10.0",
-    "better-sqlite3": "^12.11.1",
-    "tailwindcss": "^4.1.10",
-    "vue-use-fixed-header": "^2.0.0"
-  }
+    "@astrojs/markdown-remark": "^7.3.5",
+    "@fontsource-variable/newsreader": "^5.3.0",
+    "@fontsource/big-shoulders-display": "^5.3.0",
+    "@fontsource/ibm-plex-mono": "^5.3.0",
+    "@iconify-json/mage": "^1.2.4",
+    "astro": "^7.4.4",
+    "cookie": "^2.0.1",
+    "remark-directive": "^4.0.0",
+    "yaml": "^2.9.1"
+  },
+  "type": "module"
 }
