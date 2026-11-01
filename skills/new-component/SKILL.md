@@ -16,7 +16,7 @@ component to copy from.
 kind = classify(component):
   "list"        renders several content items as links    → copy ArticleRows.astro
   "panel"       one item with its own image or field       → copy ProjectPanels.astro
-  "chapter"     a homepage chapter that reads content      → copy WhatIDo.astro, InNumbers.astro
+  "chapter"     a homepage chapter that reads content      → copy WhatIDo.astro
   "resolving"   an image that goes from noise to signal    → copy ResolvingCover.astro
   "decorative"  a texture with no content                  → use field() from src/scripts/signal.js
                                                              (see SayHello.astro)

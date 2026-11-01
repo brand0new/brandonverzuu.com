@@ -10,7 +10,7 @@ changes one of these conventions, update this file in the same PR.
   runs in the browser.
 - **Presentational by default.** Most components take typed props (`articles`, `crumbs`,
   `rating`) and render them; the page fetches and computes. Homepage chapters (`Hero`,
-  `WhatIDo`, `InNumbers`) and shared blocks (`ProjectPanels`, `LegalDocument`) may query
+  `WhatIDo`) and shared blocks (`ProjectPanels`, `LegalDocument`) may query
   content themselves through `src/lib/content.ts` or `astro:content`.
 - **Look is driven by data, not code.** Per-item styling (a project's `accentColor` and
   `accentFont`) comes from content fields, never from a per-slug class.
