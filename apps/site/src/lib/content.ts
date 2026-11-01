@@ -74,18 +74,6 @@ export function language(a: Article): "nl" | "en" {
   return count(["de", "het", "een", "en", "van", "niet", "zijn"]) > count(["the", "and", "of", "is", "not", "are"]) ? "nl" : "en";
 }
 
-// "In numbers": only facts the build can count from the content itself.
-export async function siteNumbers() {
-  const all = await publishedArticles();
-  return {
-    articles: all.length,
-    since: Math.min(...all.map((a) => a.data.date.getUTCFullYear())),
-    explainers: all.filter((a) => a.data.explainerVideo).length,
-    topics: topicClusters.length,
-    languages: new Set(all.map(language)).size,
-  };
-}
-
 export function plural(n: number, one: string, many = one + "s"): string {
   return `${n} ${n === 1 ? one : many}`;
 }
