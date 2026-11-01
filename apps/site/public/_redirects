@@ -1,0 +1,5 @@
+# Expertise service paused; temporary until /expert returns.
+/expert / 302
+/expert/pricing / 302
+/expert/terms / 302
+/expert/privacy / 302
