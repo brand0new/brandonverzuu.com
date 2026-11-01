@@ -1,8 +1,5 @@
-# Nuxt dev/build outputs
-.output
-.data
-.nuxt
-.nitro
+# Build outputs and caches
+.astro
 .cache
 .wrangler
 dist

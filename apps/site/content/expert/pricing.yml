@@ -1,8 +1,8 @@
 # Prices per check for /expert and /expert/pricing, in EUR excluding VAT.
 # Decisions D6 and D13 (docs/specs/expert-mcp/decisions/): paid per check over
 # x402 or MPP, no packs or balance. Planned prices, not live yet. An amount may
-# be replaced by "TBD"; the pages print it as-is. Icons are mage:* names and
-# must also be listed in nuxt.config.ts icon.clientBundle.icons.
+# be replaced by "TBD"; the pages print it as-is. Icons are mage:* names from
+# @iconify-json/mage; an unknown name fails the build.
 currency: EUR
 checks:
   - kind: api-governance

@@ -1,0 +1,85 @@
+---
+// The story template. Markdown and frontmatter stay exactly as they are; the template adds a
+// cover that resolves as the reader commits, a chapter rail from the article's own h2s, the
+// explainer as its own chapter, and billboard type for the title. Story blocks in the
+// markdown (src/plugins/remark-story.mjs) add pull quotes, sidenotes and resolving figures.
+import { render } from "astro:content";
+import Base from "../../layouts/Base.astro";
+import Breadcrumb from "../../components/Breadcrumb.astro";
+import ResolvingCover from "../../components/ResolvingCover.astro";
+import StoryEnhance from "../../components/StoryEnhance.astro";
+import { publishedArticles, covers, readingMinutes, formatDate, isoDate, language, SITE, type Article } from "../../lib/content";
+import { articleSchema, breadcrumbSchema, type Crumb } from "../../lib/schema";
+import { explainerHtml } from "../../lib/explainer.mjs";
+import "../../styles/story.css";
+
+export async function getStaticPaths() {
+  const all = await publishedArticles();
+  return all.map((a, i) => ({ params: { slug: a.id }, props: { article: a, newer: all[i - 1], older: all[i + 1] } }));
+}
+
+const { article, newer, older } = Astro.props as { article: Article; newer?: Article; older?: Article };
+const d = article.data;
+const { Content, headings, remarkPluginFrontmatter } = await render(article);
+const chapters = headings.filter((h) => h.depth === 2);
+const explainerTop = d.explainerVideo && !remarkPluginFrontmatter.explainerInline;
+const c = covers("articles", article.id);
+const min = readingMinutes(article);
+const lang = language(article);
+const url = `${SITE}/articles/${article.id}`;
+const crumbs: Crumb[] = [{ label: "Home", href: "/" }, { label: "Articles", href: "/articles" }, { label: d.title }];
+const schema = [articleSchema({ title: d.title, description: d.description, url, date: d.date, image: d.image, tags: d.tags }), breadcrumbSchema(crumbs, url)];
+---
+
+<Base title={`${d.title} | Brandon Verzuu`} description={d.description} image={d.image} schema={schema} type="article">
+  <article class="story" lang={lang}>
+    <header class="a-head wrap">
+      <Breadcrumb crumbs={crumbs} />
+      <p class="label">
+        <time datetime={isoDate(d.date)}>{formatDate(d.date)}</time> · {min} min read
+      </p>
+      <h1>{d.title}</h1>
+      <p class="lede">{d.description}</p>
+      {
+        (d.tags ?? []).length > 0 && (
+          <ul class="tags" aria-label="Tags">
+            {(d.tags ?? []).map((t) => (
+              <li class="tag">{t}</li>
+            ))}
+          </ul>
+        )
+      }
+    </header>
+
+    <ResolvingCover dark={c.dark} light={c.light} credit={{ author: d.imageAuthor, source: d.imageSource, license: d.imageLicense }} />
+
+    {explainerTop && <div class="wrap a-explainer" set:html={explainerHtml(d)} />}
+
+    <div class:list={["a-grid wrap", { "no-rail": chapters.length === 0 }]}>
+      {
+        chapters.length > 0 && (
+          <nav class="rail" aria-label="Chapters">
+            <p class="label">Chapters</p>
+            <ol>
+              {chapters.map((h) => (
+                <li>
+                  <a href={`#${h.slug}`}>{h.text}</a>
+                </li>
+              ))}
+            </ol>
+          </nav>
+        )
+      }
+      <div class="a-body">
+        <div class="prose dropcap">
+          <Content />
+        </div>
+        <nav class="a-next" aria-label="More articles">
+          {newer && <a href={`/articles/${newer.id}`}><span class="label">Newer</span><span class="t">{newer.data.title}</span></a>}
+          {older && <a href={`/articles/${older.id}`}><span class="label">Older</span><span class="t">{older.data.title}</span></a>}
+        </nav>
+      </div>
+    </div>
+  </article>
+  <StoryEnhance />
+</Base>

@@ -1,0 +1,12 @@
+---
+import Base from "../../layouts/Base.astro";
+import LegalDocument from "../../components/LegalDocument.astro";
+import { SITE } from "../../lib/content";
+import { breadcrumbSchema, type Crumb } from "../../lib/schema";
+
+const crumbs: Crumb[] = [{ label: "Home", href: "/" }, { label: "Expertise", href: "/expert" }, { label: "Terms" }];
+---
+
+<Base title="Terms of service | Brandon Verzuu" description="Terms of service for Brandon Verzuu's expertise service: API governance, skill design and process description checks." schema={[breadcrumbSchema(crumbs, `${SITE}/expert/terms`)]}>
+  <LegalDocument title="Terms of service" collection="expertTerms" crumbs={crumbs} />
+</Base>

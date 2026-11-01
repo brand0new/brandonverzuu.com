@@ -1,0 +1,16 @@
+---
+// The visible breadcrumb trail. Pair it with breadcrumbSchema() from src/lib/schema.ts and the
+// same crumbs: a BreadcrumbList that matches the page is the one search engines reward.
+import type { Crumb } from "../lib/schema";
+
+interface Props {
+  crumbs: Crumb[];
+}
+const { crumbs } = Astro.props;
+---
+
+<nav class="crumbs" aria-label="Breadcrumb">
+  <ol>
+    {crumbs.map((c) => <li>{c.href ? <a href={c.href}>{c.label}</a> : <span aria-current="page">{c.label}</span>}</li>)}
+  </ol>
+</nav>

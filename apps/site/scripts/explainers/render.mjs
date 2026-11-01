@@ -76,7 +76,7 @@ const fps = Number(args.fps ?? 30);
 if (!stills && spawnSync("ffmpeg", ["-version"]).status !== 0) fail("ffmpeg is not on PATH");
 
 // Fonts: local files when present (embedded as data URLs so the page needs no
-// network), otherwise Fontshare, the same source nuxt.config.ts uses.
+// network), otherwise Fontshare.
 const fontDir = args.fonts ? path.resolve(callerCwd, args.fonts) : path.join(here, "fonts");
 const fontFiles = { 400: "GeneralSans-Regular.woff2", 600: "GeneralSans-Semibold.woff2" };
 let fontCss;

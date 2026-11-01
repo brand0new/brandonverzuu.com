@@ -1,124 +1,105 @@
 ---
 name: new-component
-description: Add a new Vue component to brandonverzuu.com that matches the existing component conventions (placement, props, theming, accessibility, static-build safety). Use when creating or substantially reworking anything under apps/site/app/components/. Agent-agnostic.
+description: Add a new Astro component to brandonverzuu.com that matches the Noise to Signal conventions (placement, props, tokens, motion, accessibility, static-build safety). Use when creating or substantially reworking anything under apps/site/src/components/. Agent-agnostic.
 ---
 
 # New component
 
 The conventions themselves are listed in `conventions.md` next to this file. Read it
-first. This file is the procedure that applies them. The pseudo-code below is a
-decision template, not literal code: walk it top to bottom and each branch tells you
-which existing component to copy from.
+first. This file is the procedure that applies them. The pseudo-code below is a decision
+template, not literal code: walk it top to bottom and each branch tells you which existing
+component to copy from.
 
 ## 1. Classify it
 
 ```
 kind = classify(component):
-  "card"        if it renders one content item as a link   → copy App/TopicCard.vue
-  "image-card"  if that item has a cover image             → copy App/ArticleCard.vue
-  "section"     if it is a homepage block that fetches data → copy Home/FeaturedProjects.vue
-  "decorative"  if it is a background/texture, no content  → extend App/PageBackground.vue
-                                                             (canvas: App/DitherCanvas.vue)
-  "icon"        if it is a generated glyph                 → copy App/TopicBinaryIcon.vue
-  "chrome"      if it is nav/footer/toggle                 → copy App/Navbar.vue, App/ThemeToggle.vue
+  "list"        renders several content items as links    → copy ArticleRows.astro
+  "panel"       one item with its own image or field       → copy ProjectPanels.astro
+  "chapter"     a homepage chapter that reads content      → copy WhatIDo.astro, InNumbers.astro
+  "resolving"   an image that goes from noise to signal    → copy ResolvingCover.astro
+  "decorative"  a texture with no content                  → use field() from src/scripts/signal.js
+                                                             (see SayHello.astro)
+  "glyph"       a generated, decorative mark               → copy BinaryIcon.astro, ReviewRating.astro
+  "chrome"      bar, footer, theme toggle                  → edit src/layouts/Base.astro
 
-folder = 
-  "Home/"        if used only on the homepage
-  "<Section>/"   if used only in one section AND that folder will hold ≥ 2 components
-  "App/"         otherwise
-name = PascalCase noun, no folder prefix in the filename
-       (Nuxt auto-imports App/TopicCard.vue as <AppTopicCard>)
+file = apps/site/src/components/<PascalCaseNoun>.astro
 ```
 
-## 2. Shape the script
+## 2. Shape the frontmatter
 
 ```
-<script setup lang="ts">
-  import type { Item } from "~/utils/<domain>"      // reuse the type the data already has
+---
+// Header comment: what it's for, which sibling it mirrors, any constraint
+// that isn't visible in the code.
+import type { Article } from "../lib/content";      // reuse the type the data already has
 
-  props = defineProps<{
-    item: Item                    // ONE domain object, named for the domain
-    /** why this exists, if not obvious */
-    derivedValue?: number         // computed by the CALLER, not here
-  }>()
-  // withDefaults(...) only for presentation knobs (size, fontSize)
+interface Props {
+  articles: Article[];          // domain objects, named for the domain
+  /** why this exists, if not obvious */
+  size?: "s" | "l";             // presentation knobs only
+}
+const { articles, size = "s" } = Astro.props;
 
-  if kind == "section":
-    data = await useAsyncData("<name>-<page>", () =>
-             queryCollection("<collection>").where(...).order(...).all())
-  else:
-    NO data fetching. NO useColorMode(). NO route reads.
+if kind == "chapter":
+  data = await clusterStats() / publishedArticles() / getCollection(...)   // src/lib/content.ts
+else:
+  NO content queries. The page passes what you render.
 
-  derived = computed(() => pure transform of props)    // e.g. cover → cover-light path
-  shared logic → apps/site/app/utils/*.ts (pure) or apps/site/app/composables/use*.ts (state/head)
+shared logic → apps/site/src/lib/*.ts (pure)
+---
+```
+
+## 3. Shape the markup and styles
+
+```
+markup:
+  semantic element first (ul/ol of links, section with aria-labelledby, figure)
+  lists use .rows / .row / .row-title / .row-meta / .row-desc from global.css
+  labels and metadata use .label; tags use .tag
+  every decorative element: aria-hidden="true"
+
+<style> (scoped):
+  colours: var(--token) only (conventions.md, "Colours come from tokens")
+  type: var(--display) / var(--serif) / var(--mono) and the --step-* scale
+  layout must work at 390px wide with no horizontal page scroll
+  @media (prefers-reduced-motion: reduce) for any transition you add
+```
+
+## 4. Behaviour (only if it has any)
+
+```
+<script>
+  import { resolve, field, glitch, tok, onTheme, reduce } from "../scripts/signal.js";
+  the HTML must already be complete; the script upgrades it
+  canvases: class="dither" (absolutely positioned in a relative frame), sized with sizeCanvas()
+  redraw on onTheme(); read colours with tok()
+  if reduce: draw the final, resolved state once, no animation loop
+  animate only while on screen (IntersectionObserver), on the 14 fps clock for timed motion
 </script>
 ```
 
-## 3. Shape the template
-
-```
-<template>
-  if kind in ["card", "image-card"]:
-    <NuxtLink :to="..." class="group block" [external target="_blank" if off-site]>
-      <article class="relative flex items-start gap-4 rounded-xl
-                      border border-gray-200 p-5 transition-colors
-                      group-hover:border-gray-300
-                      dark:border-white/10 dark:group-hover:border-white/20">
-        <h2 class="group-hover:text-primary-600 dark:group-hover:text-primary-400
-                   dark:text-gray-100">{{ title }}</h2>
-        <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">{{ summary }}</p>
-        [<span class="sr-only">(opens in new tab)</span> if external]
-      </article>
-    </NuxtLink>
-
-  if kind == "image-card":
-    gradient fallback on wrapper: "from-terracotta to-porcelain-950 bg-gradient-to-br"
-    for each theme variant:
-      <div v-if="item.image" class="absolute inset-0 bg-cover dark:hidden"        :style=light />
-      <div v-if="item.image" class="absolute inset-0 bg-cover hidden dark:block"  :style=dark  />
-    overlay for text contrast, credit line v-if="item.imageAuthor"
-
-  if kind == "decorative":
-    there is ONE page background (AppPageBackground, mounted in app.vue);
-    add a variant to it rather than mounting a second background in a page
-    root has aria-hidden="true", class="pointer-events-none absolute inset-x-0 top-0 -z-10"
-    fixed height + CSS mask fade, NOT measured from the page (measuring pops in after hydration)
-    canvas animation: client-only, clean up in onUnmounted
-    if prefers-reduced-motion: draw one frame, no requestAnimationFrame loop
-
-  for every icon:
-    <client-only><Icon :name="mage:..." aria-hidden="true" /></client-only>
-    if name is dynamic: add it to apps/site/nuxt.config.ts → icon.clientBundle.icons
-</template>
-```
-
-## 4. Colour and contrast
+## 5. Colour and contrast
 
 ```
 for each colour you add:
-  token = pick from apps/site/public/css/main.css or Nuxt UI alias (primary, neutral)
-          NEVER a raw hex in the template; raw hex only in <canvas> code,
-          with a comment naming the CSS token it mirrors
-  for theme in [light, dark]:
-    ratio = contrast(token, background(theme))
-    if ratio < 4.5:   pick a different shade for that theme with `dark:` prefix
-    if the shade isn't the obvious one: write the ratio in a comment
-  terracotta on text: light → text-terracotta-heading, dark → text-terracotta
+  add it to apps/site/scripts/lib/tokens.mjs, for both themes
+  if text sits on it, or it's a focus ring or meaningful mark:
+    add the pair to `pairs` there (4.5 for text, 3 for large text and non-text)
+  npm run generate runs scripts/check-contrast.mjs first and fails below AA
 ```
 
-## 5. Static-build checks
+## 6. Static-build checks
 
 ```
-assert no server/API route is needed at runtime
-assert every image is rendered only when its data declares it (v-if)
-run `npm run generate`; open the page in both themes and with reduced motion on
+assert nothing needs a server, an image proxy or a third-party request at runtime
+assert every image is rendered only when its data declares it
+run `npm run generate`; open the page in both themes, at phone width, and with
+reduced motion on
 ```
 
-## 6. Comments and PR
+## 7. Comments and PR
 
-- Write a header comment on any non-trivial component. Say what it is for, which
-  sibling it mirrors, and any constraint that isn't visible in the code: a contrast
-  ratio, a static-build pitfall, an approach you rejected.
 - PR title: `design: <summary>` for visual work, `feat: <summary>` for new behaviour.
   Ship it with `skills/ship-change/`.
 - If this component changes a convention, update `conventions.md` (and this file, if

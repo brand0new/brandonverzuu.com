@@ -1,0 +1,26 @@
+---
+// A 0–10 rating as its 4-bit binary (8 -> 1000, src/lib/reviews.ts) set as a billboard
+// numeral, with the decimal score beside it. One screen-reader sentence replaces both, since
+// read separately they'd come out as "one zero zero zero, eight slash ten".
+import { MAX_RATING, ratingToBits } from "../lib/reviews";
+
+interface Props {
+  rating: number;
+  size?: "s" | "l";
+}
+const { rating, size = "s" } = Astro.props;
+---
+
+<div class:list={["rating", size]}>
+  <span class="sr-only">Rated {rating} out of {MAX_RATING}</span>
+  <span class="bits" aria-hidden="true">{ratingToBits(rating)}</span>
+  <span class="score" aria-hidden="true">{rating}/{MAX_RATING}</span>
+</div>
+
+<style>
+  .rating { display: flex; flex-direction: column; gap: .3rem; flex: none; }
+  .bits { font-family: var(--display); font-weight: 900; line-height: .8; color: var(--accent); font-variant-numeric: tabular-nums; letter-spacing: .02em; }
+  .s .bits { font-size: 2.4rem; }
+  .l .bits { font-size: clamp(4.5rem, 2rem + 10vw, 9rem); }
+  .score { font-family: var(--mono); font-size: var(--step--1); color: var(--muted); font-variant-numeric: tabular-nums; }
+</style>

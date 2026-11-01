@@ -8,9 +8,9 @@ no step-by-step procedures. Those live in `skills/`.
 
 `brandonverzuu.com` is Brandon Verzuu's personal site: articles on APIs, platforms
 and technology, plus reviews (films, games, books), projects, bookmarks and a uses
-page. It's a Nuxt 4 + Nuxt
-Content + Nuxt UI app, **statically generated**. `npm run generate` prerenders every
-route, and the result is served as plain files by Cloudflare Pages. There's no server
+page. It's built with Astro, used purely as a build tool: **statically generated**, with
+no UI framework in the browser. `npm run generate` prerenders every route, and the result
+is served as plain files by Cloudflare Pages. There's no server
 runtime in production, and that constraint shapes most technical decisions here: if a
 feature needs a server at request time, it doesn't fit.
 
@@ -18,8 +18,9 @@ feature needs a server at request time, it doesn't fit.
 
 The repo is an npm-workspaces monorepo with one lockfile at the root:
 
-- `apps/site/`: the site (`app/`, `content/`, `public/`, `scripts/`, the Nuxt and
-  Content configs). Everything this file says about the site lives here.
+- `apps/site/`: the site (`src/` with its pages, components and content schemas,
+  `content/`, `public/`, `scripts/`, `astro.config.mjs`). Everything this file says about
+  the site lives here.
 - `apps/`, `packages/`, `products/`: the paid expertise service, planned in
   `docs/specs/expert-mcp/` and built spec by spec. Until a workspace has a
   `package.json`, it's only a placeholder.
@@ -46,10 +47,13 @@ details: what runs where, why the build runs twice, configuration and secrets.
   element meets WCAG AA in both, and the first paint never flashes the wrong theme.
 - **Look comes from data.** Per-item styling is declared in content, not hard-coded
   per slug.
-- **The dithered visual language** (Bayer and Zhou-Fang dithering, terracotta on
-  porcelain) is shared by covers, page backgrounds and explainer videos. The
-  algorithms live once in `apps/site/scripts/lib/` and are ported, with attribution, where the
-  browser needs them.
+- **The dithered visual language** is *Noise to Signal*: terracotta dither on cool
+  porcelain, one fluorescent signal colour used as a drop, billboard type. Images resolve
+  from a coarse noise floor to their own native grid as the reader commits to them. It's
+  shared by covers, the site and explainer videos. The algorithms and the palette
+  (`tokens.mjs`) live once in `apps/site/scripts/lib/` and are ported, with attribution,
+  where the browser needs them (`apps/site/src/scripts/signal.js`). Component conventions
+  are in `skills/new-component/conventions.md`.
 
 ## Content contract
 
@@ -57,15 +61,19 @@ These are facts the build and the pages rely on:
 
 - An article is `apps/site/content/articles/<slug>.md`, its filename equals its `slug`
   frontmatter, and its frontmatter matches the `articles` schema in
-  `apps/site/content.config.ts`. A mismatch fails the build.
+  `apps/site/src/content.config.ts`. A mismatch fails the build. Optional story blocks
+  (`::pull`, `:::sidenote`, `::chapter`, `::figure`, `::explainer`, `==highlight==`) are
+  documented in `apps/site/src/plugins/remark-story.mjs`.
 - Every article has a cover at `apps/site/public/articles/<slug>/cover.png` with a
   `cover-light.png` sibling. The page background and the article cards find them by
   that path, not through frontmatter.
 - Reviews follow the same pattern in `apps/site/content/reviews/` (the `reviews` schema) and
   `apps/site/public/reviews/<slug>/`. Brandon writes them by hand. Ratings, verdicts and
   opinions are his alone, and agents never supply them.
-- Tags form a small, reused vocabulary. `apps/site/app/utils/topicClusters.ts` maps them to the
+- Tags form a small, reused vocabulary. `apps/site/src/lib/topicClusters.ts` maps them to the
   `/topics` hubs.
+- Every URL the site has served is listed in `apps/site/scripts/url-baseline.txt`, and
+  `npm run generate` fails if one stops existing.
 
 ## Autonomy
 
@@ -128,13 +136,13 @@ that up on its side and points it at `note-to-article`.
 
 ## Local environment
 
-- The Node version is pinned in `.node-version`. `better-sqlite3` is native, so it
-  needs `npm rebuild` after switching Node majors.
+- The Node version is pinned in `.node-version` (Astro needs 22.23.4 or later). `sharp`
+  is native, so it needs `npm rebuild` after switching Node majors.
 - Run npm from the repo root. `npm ci` installs exactly what CI and Cloudflare
   install, for every workspace. The root scripts (`dev`, `generate`,
   `cover:generate` …) run the site's own scripts in `apps/site`, and
   `npm run generate` produces the static build in `apps/site/dist/`. Paths passed
   to a script resolve against the directory you run it from.
-- Build output (`dist/`, `.output/`, `.nuxt/`, `.data/` under `apps/site/`) is disposable and
+- Build output (`dist/` and `.astro/` under `apps/site/`) is disposable and
   git-ignored. Agents work in git worktrees under `.claude/worktrees/`, one per task,
   and clean up after merging.

@@ -1,0 +1,29 @@
+# Every URL the site served before the Astro migration (from the Nuxt build's sitemap,
+# 31 Oct 2026). scripts/check-urls.mjs fails the build if one stops existing. Add new URLs
+# here only to protect them too; never remove one without a redirect in public/_redirects.
+/
+/articles
+/articles/automate-api-governance
+/articles/azure-native-service-bus-publishing-with-api-management
+/articles/begrijp-jij-bitcoin
+/articles/blockchain-in-afrika
+/articles/building-platforms-for-vendor-led-enterprises
+/articles/capture-api-changes-with-overlay
+/articles/de-waarde-van-een-blockchain
+/articles/everything-about-openapi-4
+/articles/first-post
+/articles/improving-dx-with-arazzo
+/articles/maturity-models-and-tech
+/articles/the-serverless-site-my-customer-needed
+/articles/trust-in-ai
+/bookmarks
+/expert
+/expert/pricing
+/expert/privacy
+/expert/terms
+/projects
+/reviews
+/topics
+/topics/ai-trust-and-ethics
+/topics/api-governance-integration
+/topics/blockchain-and-crypto

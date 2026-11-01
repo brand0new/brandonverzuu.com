@@ -1,0 +1,84 @@
+---
+// A full-width dithered cover that resolves from the noise floor to signal as the reader
+// scrolls into the page. The real PNGs are in the HTML (cover.png for dark, cover-light.png for
+// light, by the content contract's paths) and stay as the picture without JS.
+interface Props {
+  dark: string;
+  light: string;
+  /** Credit line, for covers made from someone else's image. */
+  credit?: { author?: string; source?: string; license?: string; prefix?: string };
+}
+const { dark, light, credit } = Astro.props;
+---
+
+<figure class="a-cover">
+  <div class="a-cover-frame" data-dark={dark} data-light={light}>
+    <canvas class="dither" aria-hidden="true"></canvas>
+    <picture class="nojs-only">
+      <source srcset={dark} media="(prefers-color-scheme: dark)" />
+      <img src={light} alt="" width="1200" height="630" />
+    </picture>
+  </div>
+  <figcaption class="wrap">
+    <span class="label" id="cover-out" aria-hidden="true">Noise</span>
+    {
+      credit?.source && (
+        <span class="label">
+          {credit.prefix ?? "Cover after"} <a href={credit.source}>{credit.author ?? "the original"}</a>
+          {credit.license && <> · {credit.license}</>}
+        </span>
+      )
+    }
+  </figcaption>
+</figure>
+
+<script>
+  import { COVER_GRID, Source, resolve, sizeCanvas, loadImage, isDark, tok, coverTone, setReadout, reduce, onTheme } from "../scripts/signal.js";
+
+  // Resolves to signal once the cover's bottom edge has scrolled up to the top quarter of the
+  // screen, so the image is sharp by the time the reader is in the text.
+  const frame = document.querySelector<HTMLElement>(".a-cover-frame");
+  if (frame) {
+    const cv = frame.querySelector("canvas") as HTMLCanvasElement & { _native?: number };
+    const out = document.getElementById("cover-out")!;
+    const src: Record<string, ReturnType<typeof Source>> = {};
+    let distance = 1;
+    const measure = () => {
+      const r = frame.getBoundingClientRect();
+      distance = Math.max(window.innerHeight * 0.5, r.bottom + window.scrollY - window.innerHeight * 0.25);
+    };
+    const draw = (force = false) => {
+      const dark = isDark(), s = src[dark ? "dark" : "light"];
+      if (!s) return;
+      sizeCanvas(cv, frame);
+      if (force) measure();
+      const p = reduce ? 1 : Math.min(1, Math.max(0, window.scrollY / distance));
+      const n = resolve(cv, s, p, { on: tok("--dot"), off: tok("--paper"), force, tone: coverTone(dark) });
+      if (n > 0) {
+        const sig = n >= cv._native!;
+        setReadout(out, `${sig ? "Signal" : "Noise"} · ${n} of ${cv._native} columns`, sig);
+      }
+    };
+    (["dark", "light"] as const).forEach((k) =>
+      loadImage(frame.dataset[k]!).then((im) => {
+        src[k] = Source(im, COVER_GRID[0], COVER_GRID[1]);
+        draw(true);
+      }),
+    );
+    window.addEventListener("scroll", () => draw(), { passive: true });
+    let rt = 0;
+    window.addEventListener("resize", () => {
+      clearTimeout(rt);
+      rt = window.setTimeout(() => draw(true), 120);
+    });
+    onTheme(() => draw(true));
+  }
+</script>
+
+<style>
+  .a-cover { margin: 0; }
+  .a-cover-frame { position: relative; aspect-ratio: 1200 / 630; max-height: 78svh; width: 100%; background: var(--paper); overflow: hidden; }
+  .a-cover-frame img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  figcaption { display: flex; justify-content: space-between; gap: .5rem 1.5rem; flex-wrap: wrap; padding-block: .8rem; }
+  figcaption .label { font-variant-numeric: tabular-nums; }
+</style>

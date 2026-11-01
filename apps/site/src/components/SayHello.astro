@@ -1,0 +1,47 @@
+---
+// Chapter 06, the sign-off: where to find Brandon, over a slow dither field.
+const links = [
+  { name: "LinkedIn", url: "https://www.linkedin.com/in/brandonverzuu/" },
+  { name: "GitHub", url: "https://github.com/brand0new" },
+  { name: "Medium", url: "https://medium.com/@brandon-verzuu" },
+  { name: "X", url: "https://twitter.com/brandonverzuu" },
+];
+---
+
+<section class="hello" id="hello" aria-labelledby="hello-title">
+  <canvas class="dither" aria-hidden="true"></canvas>
+  <div class="wrap inner">
+    <p class="label">06 · Say hello</p>
+    <h2 id="hello-title">Find me<br />on</h2>
+    <ul>
+      {
+        links.map((l) => (
+          <li>
+            <a href={l.url} rel="me">
+              <span>{l.name}</span>
+              <span aria-hidden="true">↗</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<script>
+  import { field } from "../scripts/signal.js";
+  const cv = document.querySelector<HTMLCanvasElement>(".hello canvas");
+  // A field that thins out towards the top, so the heading always sits on calm paper.
+  if (cv) field(cv, { cell: 7, speed: 0.025, shape: (u: number, v: number, t: number) => ((Math.sin(u * 9 + t) * Math.cos(v * 6 - t * 0.6) + Math.sin((u + v) * 4 + t * 0.5) + 2) / 4) * Math.max(0, v - 0.45) * 1.6 });
+</script>
+
+<style>
+  .hello { position: relative; overflow: hidden; border-top: 1px solid var(--line); }
+  .hello canvas { opacity: .55; }
+  .inner { position: relative; padding-block: clamp(3.5rem, 8vw, 7.5rem) clamp(5rem, 12vw, 10rem); display: flex; flex-direction: column; gap: 1.5rem; }
+  h2 { font-size: var(--step-3); }
+  ul { list-style: none; margin: 0; padding: 0; border-top: 2px solid var(--ink); max-width: 760px; }
+  li { border-bottom: 1px solid var(--line); background: var(--paper); }
+  a { display: flex; justify-content: space-between; align-items: baseline; padding: .9rem 0; font-family: var(--display); font-weight: 800; text-transform: uppercase; font-size: var(--step-2); line-height: 1; color: var(--ink); text-decoration: none; }
+  a:hover, a:focus-visible { color: var(--accent); }
+</style>
