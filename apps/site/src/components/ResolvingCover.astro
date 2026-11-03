@@ -33,10 +33,11 @@ const { dark, light, credit } = Astro.props;
 </figure>
 
 <script>
-  import { COVER_GRID, Source, resolve, sizeCanvas, loadImage, isDark, tok, coverTone, setReadout, reduce, onTheme } from "../scripts/signal.js";
+  import { COVER_GRID, Source, resolve, centreFocus, sizeCanvas, loadImage, isDark, tok, coverTone, setReadout, reduce, onTheme } from "../scripts/signal.js";
 
   // Resolves to signal once the cover's bottom edge has scrolled up to the top quarter of the
-  // screen, so the image is sharp by the time the reader is in the text.
+  // screen, so the image is sharp by the time the reader is in the text, and sooner if its centre
+  // already sits in the middle of the screen.
   const frame = document.querySelector<HTMLElement>(".a-cover-frame");
   if (frame) {
     const cv = frame.querySelector("canvas") as HTMLCanvasElement & { _native?: number };
@@ -52,7 +53,7 @@ const { dark, light, credit } = Astro.props;
       if (!s) return;
       sizeCanvas(cv, frame);
       if (force) measure();
-      const p = reduce ? 1 : Math.min(1, Math.max(0, window.scrollY / distance));
+      const p = reduce ? 1 : Math.max(centreFocus(frame), Math.min(1, Math.max(0, window.scrollY / distance)));
       const n = resolve(cv, s, p, { on: tok("--dot"), off: tok("--paper"), force, tone: coverTone(dark) });
       if (n > 0) {
         const sig = n >= cv._native!;

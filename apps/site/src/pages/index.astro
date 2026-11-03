@@ -35,7 +35,7 @@ const years = [...new Set(all.map((a) => a.data.date.getUTCFullYear()))];
   <section class="chapter wrap writing-head" id="writing" aria-labelledby="writing-title">
     <div class="chapter-head">
       <p class="label">04 · Writing</p>
-      <h2 id="writing-title">Featured,<br />side by side</h2>
+      <h2 id="writing-title">Featured</h2>
       <p class="measure">Swipe or use the arrows. Each article resolves from noise to signal as it reaches the centre.</p>
     </div>
   </section>
@@ -50,7 +50,7 @@ const years = [...new Set(all.map((a) => a.data.date.getUTCFullYear()))];
       years.map((y) => (
         <div class="year">
           <p class="y">{y}</p>
-          <ul>
+          <ul class="timeline">
             {all
               .filter((a) => a.data.date.getUTCFullYear() === y)
               .map((a) => (
@@ -75,6 +75,12 @@ const years = [...new Set(all.map((a) => a.data.date.getUTCFullYear()))];
   .year { display: grid; grid-template-columns: 6rem minmax(0, 1fr); gap: 1rem; border-top: 1px solid var(--line); padding-top: .9rem; }
   .y { font-family: var(--display); font-weight: 900; font-size: 2rem; line-height: 1; color: var(--accent); }
   ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: .55rem; }
+  /* A vertical timeline beside the articles: a faint signal-green rule with a drop on each entry.
+     Light paper takes the signal's text shade for the rule and an ink keyline round the drop (tokens.mjs). */
+  .timeline { --tl-x: .3rem; position: relative; padding-left: 1.6rem; }
+  .timeline::before { content: ""; position: absolute; left: var(--tl-x); top: .55em; bottom: .55em; width: 1px; background: color-mix(in srgb, var(--signal-text) 40%, transparent); }
+  .timeline li { position: relative; }
+  .timeline li::before { content: ""; position: absolute; left: calc(var(--tl-x) - 1.6rem - 3px); top: .55em; width: 7px; height: 7px; border-radius: 50%; background: var(--signal); box-shadow: 0 0 0 1.5px var(--signal-edge); }
   li { display: flex; justify-content: space-between; align-items: baseline; gap: .3rem 1.5rem; flex-wrap: wrap; }
   li a { color: var(--ink); text-decoration-color: var(--line); }
   li a:hover { color: var(--accent); text-decoration-color: currentColor; }
