@@ -15,6 +15,7 @@
 /articles/improving-dx-with-arazzo
 /articles/maturity-models-and-tech
 /articles/the-serverless-site-my-customer-needed
+/articles/the-siren-song-of-inference
 /articles/trust-in-ai
 /bookmarks
 /expert
