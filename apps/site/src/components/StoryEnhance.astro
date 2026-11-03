@@ -5,7 +5,7 @@
 ---
 
 <script>
-  import { Source, resolve, sizeCanvas, loadImage, isDark, tok, photoTone, glitch, reduce, onTheme, observeLockOn } from "../scripts/signal.js";
+  import { Source, resolve, centreFocus, sizeCanvas, loadImage, isDark, tok, photoTone, glitch, reduce, onTheme, observeLockOn } from "../scripts/signal.js";
 
   // Chapter rail.
   const links = new Map([...document.querySelectorAll<HTMLAnchorElement>(".rail a")].map((a) => [decodeURIComponent(a.hash.slice(1)), a]));
@@ -54,13 +54,16 @@
     cv.className = "dither";
     cv.setAttribute("aria-hidden", "true");
     let source: ReturnType<typeof Source> | null = null;
+    let photo: HTMLImageElement | null = null;
     let locked = false;
     const draw = (force = false) => {
       if (!source) return;
       sizeCanvas(cv, frame);
-      const r = frame.getBoundingClientRect();
+      // A frame wider than the first sample (after a resize) gets a finer source, up to the photo's own pixels.
+      const want = Math.min(photo!.naturalWidth, cv.width);
+      if (source.w < want) source = Source(photo!, want, Math.max(1, Math.round((want * photo!.naturalHeight) / photo!.naturalWidth)));
       // Noise as it enters at the bottom, signal by the time its centre reaches the middle.
-      const p = reduce ? 1 : Math.min(1, Math.max(0, (window.innerHeight - r.top) / (window.innerHeight * 0.5 + r.height / 2)));
+      const p = reduce ? 1 : centreFocus(frame);
       const n = resolve(cv, source, p, { on: tok("--dot"), off: tok("--paper"), force, tone: photoTone(isDark()) });
       if (n > 0) {
         const sig = n >= cv._native!;
@@ -69,6 +72,7 @@
       }
     };
     loadImage(img.currentSrc || img.src).then((im) => {
+      photo = im;
       frame.style.aspectRatio = `${im.naturalWidth} / ${im.naturalHeight}`;
       frame.prepend(cv);
       frame.classList.add("live");
@@ -78,6 +82,8 @@
       draw(true);
     });
     window.addEventListener("scroll", () => draw(), { passive: true });
+    let rt = 0;
+    window.addEventListener("resize", () => { clearTimeout(rt); rt = window.setTimeout(() => draw(true), 120); });
     onTheme(() => draw(true));
   });
 

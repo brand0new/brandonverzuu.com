@@ -29,7 +29,7 @@
 </section>
 
 <script>
-  import { Source, resolve, sizeCanvas, loadImage, isDark, tok, photoTone, setReadout, reduce, onTheme } from "../scripts/signal.js";
+  import { Source, resolve, centreFocus, sizeCanvas, loadImage, isDark, tok, photoTone, setReadout, reduce, onTheme } from "../scripts/signal.js";
 
   const cv = document.getElementById("portrait") as HTMLCanvasElement & { _native?: number };
   const out = document.getElementById("portrait-out")!;
@@ -45,13 +45,14 @@
   }
   // Signal lands once the portrait's bottom edge has scrolled up to 70% of the viewport, and
   // never sooner than 0.8 screens of scroll, so a portrait already in view still gets its resolve.
+  // Whenever its centre sits in the middle of the screen, though, it's at full resolution.
   let distance = 1;
   function measure() {
     const r = cv.getBoundingClientRect();
     distance = Math.max(window.innerHeight * 0.8, r.bottom + window.scrollY - window.innerHeight * 0.7);
   }
   function progress() {
-    return reduce ? 1 : Math.min(1, Math.max(0, window.scrollY / distance));
+    return reduce ? 1 : Math.max(centreFocus(cv), Math.min(1, Math.max(0, window.scrollY / distance)));
   }
   function draw(force = false) {
     if (!photo) return;

@@ -158,6 +158,14 @@ export function resolve(canvas, src, p, o) {
   return canvas._cols;
 }
 
+// Vertical focus: 0 while an element is still below the screen, rising to 1 (signal) by the time
+// its centre reaches the middle of the viewport, and staying there. Every scroll-driven image
+// takes at least this, so whatever sits in the middle of the screen is always at full resolution.
+export function centreFocus(el) {
+  const r = el.getBoundingClientRect(), mid = window.innerHeight / 2;
+  return Math.min(1, Math.max(0, (window.innerHeight - r.top) / (mid + r.height / 2)));
+}
+
 // Integer device-pixel canvas matching the element's box, DPR capped at 2.
 export function sizeCanvas(cv, el) {
   const w = Math.max(1, Math.round(el.clientWidth * DPR)), h = Math.max(1, Math.round(el.clientHeight * DPR));
