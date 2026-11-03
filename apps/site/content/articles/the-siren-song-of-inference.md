@@ -132,7 +132,7 @@ So where does that leave us? With a habit, I think: asking what a task actually 
 
 I picture it as three overlapping circles.
 
-::figure[Hand a task to a model where these three overlap.]{src="/articles/the-siren-song-of-inference/venn.png" alt="Venn diagram of three overlapping circles. 01 Verifiable: I understand it well enough to check the output. 02 Tedious: repetitive work that builds no skill I want to keep. 03 Reversible: cheap to be wrong, easy to spot and easy to undo. The centre, where all three overlap, reads: hand it over."}
+::figure[Hand a task to a model where these three overlap.]{src="/articles/the-siren-song-of-inference/venn.png" dark="/articles/the-siren-song-of-inference/venn-dark.png" alt="Venn diagram of three overlapping circles. 01 Verifiable: I understand it well enough to check the output. 02 Tedious: repetitive work that builds no skill I want to keep. 03 Reversible: cheap to be wrong, easy to spot and easy to undo. The centre, where all three overlap, reads: hand it over."}
 
 - **Verifiable**: I understand it well enough to check the output. I could do it myself, I just don't need to.
 - **Tedious**: the work is repetitive and doesn't build any skill I want to keep.

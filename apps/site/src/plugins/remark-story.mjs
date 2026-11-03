@@ -10,6 +10,9 @@
 //   ::figure[Caption]{src="/articles/x/a.png" alt="…" dither}
 //                                                   a figure; with `dither` it resolves from
 //                                                   noise to signal as it scrolls into view
+//   ::figure[Caption]{src="/articles/x/a.png" dark="/articles/x/a-dark.png" alt="…"}
+//                                                   a figure with a dark-theme variant; CSS
+//                                                   shows the one matching the theme
 //   ::explainer                                     places the explainer video here instead
 //                                                   of above the body
 //
@@ -59,12 +62,17 @@ export function remarkStory() {
       if (node.type === "leafDirective" && node.name === "figure") {
         if (!attrs.src || !attrs.alt) throw new Error(`::figure needs src and alt (in ${file.path ?? "an article"})`);
         const dither = "dither" in attrs;
-        const img = { type: "image", url: attrs.src, alt: attrs.alt, data: { hProperties: { loading: "lazy" } } };
+        if (dither && attrs.dark) throw new Error(`::figure can't combine dither with a dark variant (in ${file.path ?? "an article"})`);
+        const image = (url, className) => ({ type: "image", url, alt: attrs.alt, data: { hProperties: { loading: "lazy", ...(className && { className }) } } });
+        const img = image(attrs.src, attrs.dark ? ["fig-light"] : undefined);
         const children = [
           dither
             ? { type: "paragraph", data: { hName: "div", hProperties: { className: ["fig-frame"] } }, children: [img] }
             : img,
         ];
+        // The dark variant repeats the alt text: only one of the two is ever displayed, and
+        // display:none takes the hidden one out of the accessibility tree.
+        if (attrs.dark) children.push(image(attrs.dark, ["fig-dark"]));
         if (node.children?.length) children.push({ type: "paragraph", data: { hName: "figcaption", hProperties: { className: ["label"] } }, children: node.children });
         replace({ type: "paragraph", data: { hName: "figure", hProperties: { className: ["story-figure"], ...(dither && { "data-resolve": "" }) } }, children });
         return;
