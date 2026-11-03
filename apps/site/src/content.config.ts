@@ -37,7 +37,7 @@ const articles = defineCollection({
 });
 
 // Reviews of films, games, books etc. A separate collection rather than articles with a tag,
-// so they stay out of /articles, the homepage and the /topics clusters.
+// so they stay out of /articles, the homepage and the topic filters.
 const reviews = defineCollection({
   loader: glob({ pattern: "*.md", base: "./content/reviews", generateId: byFilename }),
   schema: z.object({

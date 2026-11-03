@@ -70,7 +70,7 @@ canvas.dither { position: absolute; inset: 0; display: block; width: 100%; heigh
 html:not(.js) canvas.dither { display: none; }
 
 /* Chapters */
-.chapter { border-top: 1px solid var(--line); padding-block: clamp(3.5rem, 8vw, 7.5rem); display: flex; flex-direction: column; gap: clamp(2rem, 4vw, 3.5rem); }
+.chapter { padding-block: clamp(3.5rem, 8vw, 7.5rem); display: flex; flex-direction: column; gap: clamp(2rem, 4vw, 3.5rem); }
 .chapter-head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 1.5rem 3rem; align-items: end; }
 .chapter-head > .label { grid-column: 1 / -1; }
 .chapter-head h2 { font-size: var(--step-3); }
