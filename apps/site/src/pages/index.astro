@@ -78,9 +78,10 @@ const years = [...new Set(all.map((a) => a.data.date.getUTCFullYear()))];
   /* A vertical timeline beside the articles: a faint signal-green rule with a drop on each entry.
      Light paper takes the signal's text shade for the rule and an ink keyline round the drop (tokens.mjs). */
   .timeline { --tl-x: .3rem; position: relative; padding-left: 1.6rem; }
-  .timeline::before { content: ""; position: absolute; left: var(--tl-x); top: .55em; bottom: .55em; width: 1px; background: color-mix(in srgb, var(--signal-text) 40%, transparent); }
   .timeline li { position: relative; }
-  .timeline li::before { content: ""; position: absolute; left: calc(var(--tl-x) - 1.6rem - 3px); top: .55em; width: 7px; height: 7px; border-radius: 50%; background: var(--signal); box-shadow: 0 0 0 1.5px var(--signal-edge); }
+  /* Each entry draws the rule down to the next one's drop, so the oldest entry of a year has no tail. */
+  .timeline li:not(:last-child)::after { content: ""; position: absolute; left: calc(var(--tl-x) - 1.6rem); top: .55em; bottom: calc(-.55rem - .55em); width: 1px; background: color-mix(in srgb, var(--signal-text) 40%, transparent); }
+  .timeline li::before { content: ""; position: absolute; z-index: 1; left: calc(var(--tl-x) - 1.6rem - 3px); top: .55em; width: 7px; height: 7px; border-radius: 50%; background: var(--signal); box-shadow: 0 0 0 1.5px var(--signal-edge); }
   li { display: flex; justify-content: space-between; align-items: baseline; gap: .3rem 1.5rem; flex-wrap: wrap; }
   li a { color: var(--ink); text-decoration-color: var(--line); }
   li a:hover { color: var(--accent); text-decoration-color: currentColor; }

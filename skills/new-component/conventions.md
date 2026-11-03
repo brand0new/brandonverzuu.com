@@ -49,7 +49,7 @@ changes one of these conventions, update this file in the same PR.
   fails the build on an unknown name. Always decorative (`aria-hidden`), next to a text
   label.
 - **Sub-pages get a breadcrumb, not a section menu.** Pages below an index
-  (`/topics/<slug>`, `/expert/pricing`) pass `crumbs` to `PageHead` (Home / section /
+  (`/expert/pricing`) pass `crumbs` to `PageHead` (Home / section /
   page) and the same crumbs to `breadcrumbSchema()`. Links onward go at the end as a
   `.more` line ("Pricing →").
 - **Status labels are `.tag`s** (mono, uppercase, hairline box; `.tag.on` in the accent

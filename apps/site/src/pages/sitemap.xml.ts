@@ -3,7 +3,6 @@
 // scripts/check-urls.mjs compares it against the URLs the site has always had.
 import type { APIRoute } from "astro";
 import { publishedArticles, publishedReviews, SITE } from "../lib/content";
-import { topicClusters } from "../lib/topicClusters";
 
 export const GET: APIRoute = async () => {
   const articles = await publishedArticles();
@@ -12,8 +11,6 @@ export const GET: APIRoute = async () => {
     { path: "/" },
     { path: "/articles", lastmod: articles[0]?.data.date },
     ...articles.map((a) => ({ path: `/articles/${a.id}`, lastmod: a.data.date })),
-    { path: "/topics" },
-    ...topicClusters.map((c) => ({ path: `/topics/${c.slug}` })),
     { path: "/reviews", lastmod: reviews[0]?.data.date },
     ...reviews.map((r) => ({ path: `/reviews/${r.id}`, lastmod: r.data.date })),
     { path: "/projects" },

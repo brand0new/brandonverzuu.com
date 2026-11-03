@@ -1,17 +1,80 @@
 ---
+// All articles, newest first, with a filter on the topics from src/lib/topicClusters.ts.
+// A filter is a plain link (/articles?topic=<slug>), so it can be shared; the script applies it.
+// Without JS the filter bar stays hidden and every article is listed.
 import Base from "../../layouts/Base.astro";
 import PageHead from "../../components/PageHead.astro";
 import ArticleRows from "../../components/ArticleRows.astro";
-import { publishedArticles } from "../../lib/content";
+import { publishedArticles, clusterStats } from "../../lib/content";
 
 const description = "All of my long form content on software development, technology, and more, shown in chronological order.";
 const articles = await publishedArticles();
+const topics = await clusterStats();
 ---
 
 <Base title="Articles | Brandon Verzuu" description={description}>
   <PageHead title="Articles" kicker={`${articles.length} articles · newest first`} description={description} />
   <div class="wrap section">
+    <nav class="filter" id="topic-filter" aria-label="Filter by topic" hidden>
+      <span class="label">Topic</span>
+      <ul class="tags">
+        <li><a class="tag" href="/articles" data-topic="" aria-current="true">All <span class="n">{articles.length}</span></a></li>
+        {
+          topics.map((t) => (
+            <li>
+              <a class="tag" href={`/articles?topic=${t.slug}`} data-topic={t.slug}>
+                {t.title} <span class="n">{t.count}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <p class="label status" id="topic-status" role="status"></p>
+    </nav>
     <ArticleRows articles={articles} />
-    <p class="more"><a href="/topics">Browse by topic →</a></p>
   </div>
 </Base>
+
+<script>
+  const nav = document.getElementById("topic-filter")!;
+  const status = document.getElementById("topic-status")!;
+  const links = [...nav.querySelectorAll<HTMLAnchorElement>("a[data-topic]")];
+  const rows = [...document.querySelectorAll<HTMLElement>(".rows > li[data-topics]")];
+  const known = new Set(links.map((a) => a.dataset.topic));
+
+  function apply(topic: string, announce: boolean) {
+    if (!known.has(topic)) topic = "";
+    let shown = 0;
+    rows.forEach((li) => {
+      const on = !topic || li.dataset.topics!.split(" ").includes(topic);
+      li.hidden = !on;
+      if (on) shown++;
+    });
+    links.forEach((a) => (a.dataset.topic === topic ? a.setAttribute("aria-current", "true") : a.removeAttribute("aria-current")));
+    const name = links.find((a) => a.dataset.topic === topic)?.firstChild?.textContent?.trim();
+    if (announce) status.textContent = topic ? `${shown} ${shown === 1 ? "article" : "articles"} about ${name}` : `All ${shown} articles`;
+  }
+
+  links.forEach((a) =>
+    a.addEventListener("click", (e) => {
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      e.preventDefault();
+      history.pushState(null, "", a.href);
+      apply(a.dataset.topic!, true);
+    }),
+  );
+  const current = () => new URLSearchParams(location.search).get("topic") ?? "";
+  window.addEventListener("popstate", () => apply(current(), true));
+  nav.hidden = false;
+  apply(current(), false);
+</script>
+
+<style>
+  .filter { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem 1rem; margin-bottom: 1.5rem; }
+  .filter .tag { display: inline-flex; gap: .45em; align-items: baseline; padding: .35rem .6rem; text-decoration: none; color: var(--ink); }
+  .filter .tag:hover { border-color: var(--ink); }
+  .filter .tag[aria-current="true"] { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+  .filter .n { color: inherit; opacity: .7; font-variant-numeric: tabular-nums; }
+  .status { flex-basis: 100%; min-height: 1em; margin: 0; }
+  .status:empty { display: none; }
+</style>

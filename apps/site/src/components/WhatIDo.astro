@@ -1,5 +1,6 @@
 ---
-// Chapter 02, what I do. The /topics clusters as billboard rows. Counts and years are
+// Chapter 02, what I do. The topics (src/lib/topicClusters.ts) as billboard rows, each linking
+// to /articles filtered on that topic. Counts and years are
 // counted from content/articles at build time, so the numbers are never a claim.
 import { clusterStats } from "../lib/content";
 
@@ -9,13 +10,13 @@ const clusters = await clusterStats();
 <section class="chapter wrap" id="what-i-do" aria-labelledby="wid-title">
   <div class="chapter-head">
     <p class="label">02 · What I do</p>
-    <h2 id="wid-title">Three things<br />I keep writing about</h2>
+    <h2 id="wid-title">Things I keep<br />writing about</h2>
   </div>
   <ul class="disc">
     {
       clusters.map((c) => (
         <li>
-          <a href={`/topics/${c.slug}`}>
+          <a href={`/articles?topic=${c.slug}`}>
             <span class="t">{c.title}</span>
             <span class="c">
               {c.count} {c.count === 1 ? "article" : "articles"}

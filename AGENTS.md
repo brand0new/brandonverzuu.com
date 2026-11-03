@@ -71,7 +71,7 @@ These are facts the build and the pages rely on:
   `apps/site/public/reviews/<slug>/`. Brandon writes them by hand. Ratings, verdicts and
   opinions are his alone, and agents never supply them.
 - Tags form a small, reused vocabulary. `apps/site/src/lib/topicClusters.ts` maps them to the
-  `/topics` hubs.
+  topics used as filters on `/articles` (`/articles?topic=<slug>`).
 - Every URL the site has served is listed in `apps/site/scripts/url-baseline.txt`, and
   `npm run generate` fails if one stops existing.
 

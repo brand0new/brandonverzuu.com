@@ -57,7 +57,7 @@ function yearSpan(dates: Date[]): string {
   return lo === hi ? `${lo}` : `${lo}–${hi}`;
 }
 
-// The /topics clusters with live counts and year ranges, counted from the content at build
+// The topics with live counts and year ranges, counted from the content at build
 // time, so a number on the page is never a claim.
 export async function clusterStats() {
   const all = await publishedArticles();

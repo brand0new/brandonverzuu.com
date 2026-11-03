@@ -3,3 +3,9 @@
 /expert/pricing / 302
 /expert/terms / 302
 /expert/privacy / 302
+
+# Topic hubs became filters on /articles.
+/topics /articles 301
+/topics/api-governance-integration /articles?topic=apis 301
+/topics/ai-trust-and-ethics /articles?topic=ai 301
+/topics/blockchain-and-crypto /articles?topic=blockchain 301
