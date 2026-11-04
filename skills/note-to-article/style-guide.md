@@ -21,7 +21,7 @@ across both languages, which means deviation is noticeable.
 
 | Metric | Target | Notes |
 | --- | --- | --- |
-| Words per sentence | **17 mean, 17 median** | p90 is 28. Sentences over 35 words are essentially absent. |
+| Words per sentence | **17 mean, 17 median** | p90 is 28. About 6% run past 35 words in the five articles reviewed, and the longest reach about 50. Keep them occasional. |
 | Words per paragraph | **~29 mean, 27 median** | **Half of all paragraphs are a single sentence.** |
 | Short punch sentences (<8 words) | **~10%** of all sentences | Used for landing a point, never in runs. |
 | `##` sections per article | **5** (mode; range 3–8) | Five is the house shape. |
