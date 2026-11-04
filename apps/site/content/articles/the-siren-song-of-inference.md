@@ -32,7 +32,7 @@ Though, widespread is not the same as mindful.
 
 Most use I see is reflexive. A question pops up, a chat window opens, an answer comes back and the work moves on. Nobody stops to ask whether this was a question that needed a model, or a question that needed them.
 
-I use AI throughout every single day. I'd even go as far as stating it touches every single activity within my work. Whether that's triaging my email, scanning the web for interesting developments, transcribing my mails, documenting progress on my work or capturing evidence for my job performance.
+I use AI throughout every single day. I'd even go as far as stating it touches every single activity within my work. Whether that's triaging my email, scanning the web for interesting developments, transcribing my meetings, documenting progress on my work or capturing evidence for my job performance.
 
 Going forward, my work will never be the same again. But that doesn't seem to apply to the general audience nor every large enterprise and small business.
 
