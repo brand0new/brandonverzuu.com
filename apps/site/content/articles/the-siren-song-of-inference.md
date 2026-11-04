@@ -30,37 +30,29 @@ The use of AI technology is widespread, sitting in our browsers, our IDEs, our m
 
 Though, widespread is not the same as mindful.
 
-Most use I see is reflexive: a question pops up, a chat window opens, an answer comes back and the work moves on.
-
-Nobody stops to ask whether this was a question that needed a model, or a question that needed them.
+Most use I see is reflexive. A question pops up, a chat window opens, an answer comes back and the work moves on. Nobody stops to ask whether this was a question that needed a model, or a question that needed them.
 
 **My personal use of this technology has me convinced of significant changes to office work, with indicators that lag far behind the change itself.**
 
-What do I mean by lagging? The output looks fine today, as tickets get closed, documents get written and pull requests get merged.
+What do I mean by lagging? Tickets get closed, documents get written and pull requests get merged, so the output looks fine today.
 
-What erodes is underneath that output: the understanding, the judgement and the habit of working through something hard. You only notice it missing once you need it, and by then it's gone.
+What erodes sits underneath that output: the understanding, the judgement and the habit of working through something hard. You'll only notice it's missing once you need it.
 
-There's another thing worth saying early. AI doesn't care about the maturity of your team.
+There's another thing worth saying early: AI doesn't care about the maturity of your team. It's a lever that multiplies the productivity characteristics a team already has.
 
-It's a lever that multiplies the productivity characteristics a team already has.
-
-A team with strong habits, clear ownership and good review practices gets faster at doing good work. A team that cuts corners gets faster at cutting corners.
+A team with strong habits, clear ownership and good review practices gets faster at doing good work. Though the same goes for a team that cuts corners.
 
 Think of an amplifier on a guitar. Turning it up makes a good player sound great, but it also makes every wrong note louder.
 
 ## Querying is not prompting
 
-For a general audience, the difference between querying and prompting is hard to see, since both involve typing into a box and getting text back.
-
-They're not the same thing.
+For a general audience, the difference between querying and prompting is hard to see, since both involve typing into a box and getting text back. They're not the same thing though.
 
 **Querying** is what we learned from two decades of search engines: you ask for an answer, you get one and you move on. The tool knows and you don't.
 
-**Prompting** is directing work. You bring the context, the constraints, the intent and the judgement to evaluate what comes back.
+**Prompting** is directing work. You bring the context, the constraints, the intent and the judgement to evaluate what comes back. You know where you're going, and the tool helps you get there faster.
 
-You know where you're going, and the tool helps you get there faster.
-
-The interface makes no distinction. The outcome does.
+The interface treats both the same, which is exactly why the difference is so easy to miss.
 
 Someone querying a language model treats its output as a fact retrieved from somewhere. Someone prompting treats it as a draft produced by a very fast, very confident colleague who has never seen their organisation.
 
@@ -76,31 +68,21 @@ Now bring this to engineering.
 
 **Undisciplined and unmotivated engineers lean even more on the capabilities of their tooling, because it offers a path with ever decreasing resistance.**
 
-Every model release makes that path smoother. The code compiles and the tests pass, because the model wrote those too.
+Every model release makes that path smoother. The code compiles and the tests pass, because the model wrote those too. So why would you read it?
 
-Why would you read it?
-
-This is where the authority of frontier models becomes a problem. As capabilities grow, so does the feeling that the model probably knows better.
-
-And once you believe that, wanting to understand the code you produce starts to feel like a waste of time.
+This is where the authority of frontier models becomes a problem. As capabilities grow, so does the feeling that the model “probably knows better”. And once you believe that, wanting to understand the code you produce starts to feel like a waste of time.
 
 So what does the other side look like?
 
 **Disciplined and motivated engineers position the tooling where it creates a lever on their own capabilities, rather than relying on the capabilities of the tool.**
 
-They still write the hard parts and use the model to explore, to draft and to take away the tedium.
+They still write the hard parts and use the model to explore, to draft and to take away the tedium. Then they read the result as carefully as they'd read a pull request from a stranger.
 
-Then they read every line as if a stranger wrote it, because one did.
+Remember Odysseus and the sirens? He wanted to hear their song, so he had himself tied to the mast and had his crew plug their ears with wax. He didn't trust himself to resist, so he built the constraint in advance.
 
-Remember Odysseus and the sirens? He wanted to hear their song, so he had himself tied to the mast and had his crew plug their ears with wax.
-
-He didn't trust himself to resist, so he built the constraint in advance.
-
-That's what discipline looks like here: you still listen to the song, you just decide beforehand where you won't let it steer.
+That's what discipline looks like here: you can listen to the song, as long as you decide beforehand where you won't let it steer.
 
 Because once you cross into dependency on inference, I don't believe there's a way back.
-
-The skill you stopped practising doesn't wait for you.
 
 ## The soup is never eaten as hot as it's served
 
@@ -118,9 +100,7 @@ Where I expect the soup to be eaten hot is professional services.
 
 A large part of what a consultancy sells is knowledge applied to a problem: analysis, documentation, designs, reports, code. Frontier models can produce much of that, quickly and cheaply.
 
-What they can't do is the human side of the work.
-
-Change management, aligning a culture, getting a room of people with conflicting interests to agree on a direction and then actually walk it.
+What they can't do is the human side of the work: change management, aligning a culture, getting a room of people with conflicting interests to agree on a direction and then actually walk it.
 
 That's where I see “consultancy” being reimagined. The model produces the artefact, and the firm guides the people who have to live with it.
 
@@ -140,7 +120,7 @@ I picture it as three overlapping circles.
 
 Where all three overlap, the model is a lever. Step outside one of them and you're trusting instead of directing.
 
-Step outside all three and you're not doing knowledge work anymore, you're relaying it.
+Step outside all three and I'd argue you're relaying knowledge work rather than doing it.
 
 Used with discipline, I see the positives:
 
