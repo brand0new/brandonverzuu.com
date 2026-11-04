@@ -153,5 +153,13 @@ a.row:hover .row-title, a.row:focus-visible .row-title { color: var(--accent); }
 .prose .chapter-break { font-size: clamp(2.6rem, 1.2rem + 5vw, 5.6rem); line-height: .86; border-top: 2px solid var(--ink); padding-top: .9rem; margin-top: 2.6em; }
 .prose .story-figure { margin-inline: 0; display: flex; flex-direction: column; gap: .6rem; }
 .prose .fig-frame { position: relative; overflow: hidden; background: var(--paper); }
+/* ::figure with a dark variant: pick the image for the theme, from the same signals as the tokens. */
+.prose .story-figure .fig-dark { display: none; }
+:root[data-theme="dark"] .prose .story-figure .fig-light { display: none; }
+:root[data-theme="dark"] .prose .story-figure .fig-dark { display: block; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .prose .story-figure .fig-light { display: none; }
+  :root:not([data-theme="light"]) .prose .story-figure .fig-dark { display: block; }
+}
 .prose .fig-frame img { width: 100%; }
 .prose .fig-frame.live img { visibility: hidden; }
