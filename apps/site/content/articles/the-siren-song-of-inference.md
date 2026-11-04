@@ -32,6 +32,8 @@ Though, widespread is not the same as mindful.
 
 Most use I see is reflexive. A question pops up, a chat window opens, an answer comes back and the work moves on. Nobody stops to ask whether this was a question that needed a model, or a question that needed them.
 
+I'm not writing this from the sidelines. I use a model as my mail processor, and as a logger for the evidence behind my job KPIs.
+
 **My personal use of this technology has me convinced of significant changes to office work, with indicators that lag far behind the change itself.**
 
 What do I mean by lagging? Tickets get closed, documents get written and pull requests get merged, so the output looks fine today.
