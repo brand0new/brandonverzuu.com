@@ -8,6 +8,10 @@ tick boxes afterwards.
 Where a rule below cites a number, it was measured across the corpus. Where it quotes,
 the quote is verbatim from a published article.
 
+Reviewed in November 2026 against five articles read in full (2020 to 2025) and a
+count across all thirteen. Rules that turned out too absolute are now defaults, per-article
+ranges sit next to the means, and §11 covers how the voice shifts by genre and over time.
+
 ---
 
 ## 1. The measurable fingerprint
@@ -17,7 +21,7 @@ across both languages, which means deviation is noticeable.
 
 | Metric | Target | Notes |
 | --- | --- | --- |
-| Words per sentence | **17 mean, 17 median** | p90 is 28. Sentences over 35 words are essentially absent. |
+| Words per sentence | **17 mean, 17 median** | p90 is 28. About 6% run past 35 words in the five articles reviewed, and the longest reach about 50. Keep them occasional. |
 | Words per paragraph | **~29 mean, 27 median** | **Half of all paragraphs are a single sentence.** |
 | Short punch sentences (<8 words) | **~10%** of all sentences | Used for landing a point, never in runs. |
 | `##` sections per article | **5** (mode; range 3–8) | Five is the house shape. |
@@ -26,7 +30,11 @@ across both languages, which means deviation is noticeable.
 | Question marks | **~7 per 1,000 words** | High. Questions are structural, not decorative. |
 | Bold spans | **~10 per 1,000 words (EN)**, **~25 (NL)** | Dutch runs much heavier. See §7. |
 | Em-dashes | **~2 per 1,000 words** | Present but not a crutch. |
-| Emoji | **<1 per 1,000 words** | One or two per article at most, always at a beat of relief. |
+| Emoji | **<1 per 1,000 words** | Usually none or one per article. The most in any article is three. See §6. |
+
+The means hide real spread between articles. Across the five reviewed pieces, single-sentence
+paragraphs ran from about 30% (2020) to about 65% (2024–25), questions from 3 to 14 per
+1,000 words, and em-dashes from 0 to 7 per 1,000. Write to the genre (§11), not only the mean.
 
 **The paragraph rule is the single most important one.** He writes in short blocks with
 white space between them. A four-sentence paragraph is already long for him; a
@@ -67,6 +75,17 @@ happens "in the trenches of reality". Enthusiasm always pays a tax.
 **Fair to things he criticises.** OpenAPI "isn't perfect by any means but it offers
 many benefits". He never sets up a strawman.
 
+**Dry humour, often in the margins.** The jokes hide in small places, such as a code
+comment (`# created with the intend to aggrevate readers`, a real typo, don't copy it) or
+a pitch borrowed from a film line:
+
+> "Do you struggle with leveraging the full potential of APIs within your organisation?
+> 'I happen to be something of an API architect myself'."
+
+**Concedes before the reader can object.** He flags a weakness, then carries on: "Usually,
+I'm not too keen on using this example since it's hardly representative [...] we're fine
+using this." The same move works on tools, specs and his own earlier choices.
+
 **Warm, lightly informal.** Exclamations at moments of genuine delight ("Well no
 more! 🙏", "Conclusion? Pretty neat! 🎉", "That's it!"). Sparingly — roughly two per
 article.
@@ -75,8 +94,8 @@ article.
 
 ## 3. How an article opens
 
-**Every mature article does three things before the first `##`.** This is the most
-reliable structure in the corpus — 7 of 7 follow it.
+**Most mature articles do three things before the first `##`.** This is the most
+reliable structure in the corpus, though not a law.
 
 **(a) A hook, drawn from one of five moves he actually uses:**
 
@@ -101,8 +120,9 @@ the frontmatter, before or after the hook:
 > `_"A dive into how AI is reshaping the frontier of our social contract"_`
 > `_We explore how OpenAPI's Arazzo Specification attempts to redefine API documentation..._`
 
-**(c) An explicit roadmap sentence.** Non-negotiable — it appears in every single
-mature article, always as the last beat before the first heading:
+**(c) An explicit roadmap sentence.** The default, usually the last beat before the
+first heading. Most articles have one. `improving-dx-with-arazzo.md` goes straight from
+standfirst to heading, and the Azure Service Bus piece has no roadmap either:
 
 > "In this post, I'll dissect the use case for it, explain the components, create an
 > implementation I think is applicable to the real world and list my final thoughts!"
@@ -112,7 +132,8 @@ mature article, always as the last beat before the first heading:
 > "In deze blogpost sta ik stil bij de monetaire zijde van blockchains."
 
 Write it in first person, name the actual sections, and let it be slightly
-enumerative. If a draft has no roadmap sentence, it isn't finished.
+enumerative. Leaving it out should be a deliberate choice for a short or news-driven
+piece, not an oversight.
 
 ---
 
@@ -226,6 +247,9 @@ normal paragraph, the entire sentence standing alone:
 # overlay command for bump-cli with arguments
 ```
 
+**Emoji** mark a beat, usually relief or delight (🙏, 🎉), sometimes curiosity (👀), a
+sign-off (🚀) or a pointer to links (👇). Never decoration, and never more than three.
+
 **Numbered process lists** for pipelines and history, with bold on the pivot word.
 
 **Screenshots with italic captions underneath**, referenced as
@@ -292,7 +316,8 @@ absent from the corpus.
 - **"In today's fast-paced world"**, "It's important to note that", "Let's dive in!",
   "In conclusion, we've explored" — none of this exists in his writing.
 - **Tricolons and balanced triads** ("not just X, but Y", "it's not about A — it's
-  about B"). He doesn't write in this rhythm.
+  about B") as a rhythm. A plain "not only... but" appears twice in the corpus and is
+  fine once. Built-up parallel contrast is the tell.
 - **Section headings as labels** — "Introduction", "Understanding X", "Best Practices",
   "Key Takeaways".
 - **Uniform paragraph length.** Four tidy sentences per block, every block, is the
@@ -301,9 +326,11 @@ absent from the corpus.
 - **Hedge stacking** — "it's worth considering that it may potentially".
 - **Enthusiasm without cost.** He never praises a technology without naming what it
   will cost you in practice.
-- **Em-dash overuse.** Two per thousand words, not two per paragraph.
-- **Explaining the reader's feelings to them** ("You might be thinking..."). He asks
-  questions instead, and lets them stand.
+- **Em-dash overuse.** About two per thousand on average and up to seven in a single
+  article, but never two per paragraph.
+- **Explaining the reader's feelings to them** to steer them. He usually asks a question
+  instead and lets it stand. A self-aware aside is his, though: "You might be wondering why
+  I'm lecturing you on the history of design." It pokes fun at himself, not the reader.
 
 ---
 
@@ -349,3 +376,25 @@ article, because it will be published under his name.
 
 Where a gap is small enough to write around, write around it and mark the spot in the
 PR body rather than stalling the whole draft.
+
+---
+
+## 11. Register by genre and over time
+
+The core stays the same across genres, but the dials move. Pick the column first.
+
+| Dial | Reflective essay | Tutorial | Spec analysis |
+| --- | --- | --- | --- |
+| Example | `trust-in-ai.md` | `automate-api-governance.md` | `improving-dx-with-arazzo.md` |
+| Lead pronoun | I and we, then you | we | I for opinion, you for the reader |
+| Questions | Many, about 14 per 1,000 words | Some, about 6 | Fewer, about 3 |
+| Humour | Light | Rare, in asides | Dry, in code and closing |
+| Shape | Questions, analogy, thought experiment | Why, steps, closing advice | Gap, components, examples, verdict |
+
+**The voice has tightened.** The 2020 piece is looser and more personal, with long story
+sections and 65 uses of "I". The 2024–25 technical pieces are tighter, shorter per paragraph
+and more reader-facing. Write to the later register, and borrow the earlier self-mockery
+when a piece is personal.
+
+**LinkedIn isn't covered yet.** No posts have been analysed, so treat any rule here as a
+starting point for that format and don't claim a measured LinkedIn voice.
