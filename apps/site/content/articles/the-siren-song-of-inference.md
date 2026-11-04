@@ -42,7 +42,7 @@ What erodes sits underneath that output: the understanding, the judgement and th
 
 There's another thing worth saying early: AI doesn't care about the maturity of your team. It's a lever that multiplies the productivity characteristics a team already has.
 
-A team with strong habits, clear ownership and good review practices gets faster at doing good work. Though the same goes for a team that cuts corners.
+A team with strong habits, clear ownership and good review practices gets faster at doing good work. Though, a team that cuts corners just gets faster at cutting corners.
 
 Think of an amplifier on a guitar. Turning it up makes a good player sound great, but it also makes every wrong note louder.
 
@@ -64,7 +64,7 @@ Especially for people who never had to learn the difference, querying is the def
 
 Using these tools has a significant impact on concentration, on critical thinking and on discipline in general. Who keeps holding a hard problem in their head when an answer is one keystroke away?
 
-The impact of generative AI and large language model usage on our cognitive capabilities is still being researched, continuously. I don't think we'll have the full picture for years. Though, I don't think we should wait for that picture before we start paying attention.
+The impact of generative AI and large language models on our cognitive capabilities is the subject of ongoing research. I don't think we'll have the full picture for years. Though, I don't think we should wait for that picture before we start paying attention.
 
 Now bring this to engineering.
 
@@ -96,7 +96,7 @@ Organisations move slowly, and that won't be different for AI.
 
 But slow isn't the same as never. Understanding the impact of embracing this technology is something every organisation will have to do, whether they move early or late.
 
-Where I expect the soup to be eaten hot is professional services.
+Professional services is where I think the soup will be eaten hot.
 
 **I expect a significant shift in margin within the professional services industry.**
 
