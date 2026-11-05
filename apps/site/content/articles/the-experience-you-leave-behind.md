@@ -28,7 +28,7 @@ Those are exactly the parts that made me better at my job.
 
 I doubt I'm the exception here. Most people never track their own growth anywhere outside their employer's systems, and by the time they leave it's too late to extract it properly.
 
-In this article I'll explain where the idea came from, draw a line between what belongs to your employer and what belongs to you and look at why current tools don't cover it. Then I'll sketch what a portable memory could look like and show the half-built version I use myself.
+In this article I'll explain where the idea came from, draw a line between what belongs to your employer and what belongs to you and look at why current tools don't cover it. Then I'll sketch what a portable memory could look like, where it hits the corporate wall and show the half-built version I use myself.
 
 ## Day one, again
 
@@ -125,15 +125,25 @@ And yet it's precisely the kind of lesson I'd lose within a year.
 
 **A capture habit.** A big extraction on your last day doesn't work, as I've just proven to myself.
 
-Capturing has to be small and continuous, close to the moment the lesson happens.
+Capturing has to be small and continuous, close to the moment the lesson happens. In my own setup hooks take care of this, so it happens without me having to remember it.
 
-Then there's the hardest part: **the boundary**.
+That part turned out to be solvable.
 
-Every episode needs to be stripped of whatever belongs to the employer before it enters your layer. I don't have a solution for that yet.
+## The corporate wall
 
-Doing it by hand at the moment of capture works for one disciplined person, but I doubt it scales.
+The hard part is where the work happens.
 
-And it's exactly the part that has to be trustworthy before any employer would allow it.
+A personal layer is only useful if it's present while you work. That means on the company laptop, next to the company tools, reading along with whatever you're doing. Exactly the place where a personal product or service is least welcome.
+
+Look at it from the other side of the table. An employee wants to connect their own tool to company systems, and that tool sends what it captures to a vault the company doesn't control. Any security officer worth their salary says no, however good the intentions are.
+
+**And they'd be right to.** The lesson and the sensitive details arrive together. A tool that captures the first will see the second.
+
+So every episode needs to be stripped of whatever belongs to the employer before it leaves the corporate context. Not afterwards, in your personal vault, but on the way out.
+
+I don't have a solution for that yet.
+
+Maybe it's the company knowledge layer I started with, offering a private personal space with a sanctioned way out. Maybe it's a local model that does the sanitising before anything crosses the wall. Either way it's the part that has to be trustworthy before any employer would allow it.
 
 ## My own, half-built version
 
@@ -159,7 +169,7 @@ In an ideal setup I see:
 Though, in the trenches of reality I fear for:
 
 - **Sanitising** that's either too strict to keep the lesson or too loose to keep the secret
-- **Discipline**, since a capture habit is easy to start and even easier to drop
+- **Integration**, since a personal tool on a corporate machine looks like a data leak, whatever the boundary
 
 I'll keep building on my own version and share what holds up. Until then, try the test from the top of this article on yourself.
 
