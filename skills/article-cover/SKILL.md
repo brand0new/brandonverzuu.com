@@ -29,6 +29,11 @@ page you found it on. Don't use anything without a licence that allows reuse.
 
 ## 2. Generate
 
+The script never picks a crop itself. It scales the source to cover the output and
+trims any overflow equally from both sides (a centre crop). If the subject isn't
+centred, or the source isn't at the 1200:630 output ratio, crop it to that ratio
+yourself first so the cover shows exactly what you intend.
+
 ```
 # From a URL (most open-license images)
 npm run cover:generate -- --url <image-url> --slug <slug> \
