@@ -94,11 +94,12 @@
   .lede p + p { color: var(--muted); }
   .portrait { margin: 0; display: flex; flex-direction: column; gap: .8rem; }
   /* The motto: billboard type over the portrait, the signal word as the page's one drop of fluorescent. */
-  .motto { font-family: var(--display); font-weight: 800; text-transform: uppercase; font-size: var(--step-2); line-height: .9; letter-spacing: -.005em; text-wrap: balance; }
+  /* Right-aligned on desktop so it clears the name, which may run into the portrait column. Painted above it either way. */
+  .motto { position: relative; z-index: 1; font-family: var(--display); font-weight: 800; text-transform: uppercase; font-size: var(--step-2); line-height: .9; letter-spacing: -.005em; text-wrap: balance; text-align: right; }
   .motto mark { padding: 0 .1em; }
   .motto .noise { color: var(--accent); }
   .frame { position: relative; overflow: hidden; aspect-ratio: 1; width: 100%; background: var(--paper); }
   .frame img { width: 100%; height: 100%; object-fit: cover; display: block; }
   figcaption { align-self: flex-start; font-variant-numeric: tabular-nums; }
-  @media (max-width: 760px) { .hero { grid-template-columns: 1fr; min-height: 0; align-items: start; } .portrait { max-width: 420px; } }
+  @media (max-width: 760px) { .hero { grid-template-columns: 1fr; min-height: 0; align-items: start; } .portrait { max-width: 420px; } .motto { text-align: left; } }
 </style>
