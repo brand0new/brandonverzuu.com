@@ -36,7 +36,8 @@ everyday analogies, explicitly hypothetical scenarios, generic technical illustr
 
 **Never invent:** statistics, quotes, citations, links, anything he personally did
 (engagements, customers, what a tool did when he ran it), positions the note is silent
-on, or the verified behaviour of a specific tool version.
+on, or the verified behaviour of a specific tool version. That includes the state of
+his own tools: don't call a part of his setup solved or unsolved unless he said so.
 
 Where a needed fact is missing, ask. Where a gap is small enough to write around,
 write around it and flag the spot in the PR body rather than stalling the draft.
@@ -170,7 +171,9 @@ from drafting the same note.
      `linting`, `maturity-model`, `openapi`, `overlay`, `personal`, `social contract`,
      `technology`, `web-development`. Prefer an existing tag over a near-synonym.
    - `published: true` — the PR is the gate, not this flag. Nothing is live until
-     the PR merges.
+     the PR merges. A future `date` doesn't schedule anything either: the article is
+     live the moment the PR merges. If Brandon wants it out on a later day, leave the
+     PR open and merge it on that day.
 
 6. **Images.** If the issue has attached images, download them to
    `apps/site/public/articles/<slug>/` and reference them with root-relative paths.
