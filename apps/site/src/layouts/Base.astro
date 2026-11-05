@@ -78,6 +78,13 @@ const tokens = `:root{${cssVars("light")};color-scheme:light}` +
         } catch (e) {}
       })();
     </script>
+    <!-- Smooth navigation: hold the new page's first paint until <main> has parsed, so the page
+         transition (global.css) never fades in a half-built page, and fetch a same-site page as
+         soon as a link is hovered or pressed, so it is usually ready before the click lands. -->
+    <link rel="expect" href="#main" blocking="render" />
+    <script type="speculationrules" is:inline>
+      { "prefetch": [{ "where": { "href_matches": "/*" }, "eagerness": "moderate" }] }
+    </script>
     {telma && <Font cssVariable="--font-telma" preload />}
     {schema.map((s) => <script type="application/ld+json" set:html={JSON.stringify(s)} />)}
   </head>
