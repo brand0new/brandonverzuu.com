@@ -124,7 +124,10 @@ async function main() {
   const ditherHeight = Math.max(1, Math.round(height / pixelSize));
 
   const { data, info } = await sharp(sourceBuffer)
-    .resize(ditherWidth, ditherHeight, { fit: "cover", position: "attention" })
+    // A plain centre crop, never a content-aware one: the framing is decided by whoever
+    // supplies the source. An image already at the output ratio (1200:630 by default) is
+    // only scaled, so pre-crop it to control exactly what the cover shows.
+    .resize(ditherWidth, ditherHeight, { fit: "cover", position: "centre" })
     .removeAlpha()
     .raw()
     .toBuffer({ resolveWithObject: true });

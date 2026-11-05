@@ -27,7 +27,24 @@ Use one of these, in order:
 For an open-license image, record the author, the licence (SPDX id or name) and the
 page you found it on. Don't use anything without a licence that allows reuse.
 
+If none of those hosts is reachable (sandboxed agents are often blocked from them), ask
+Brandon for a photo instead of drawing a vector stand-in. Flat shapes have no tonal
+range, so they dither into a checkerboard with solid blobs.
+
 ## 2. Generate
+
+The script never picks a crop itself. It scales the source to cover the output and
+trims any overflow equally from both sides (a centre crop). If the subject isn't
+centred, or the source isn't at the 1200:630 output ratio, crop it to that ratio
+yourself first so the cover shows exactly what you intend.
+
+When you pre-process a source with sharp:
+
+- Read its real pixel size from `metadata()` before you compute a crop. A preview,
+  such as an image shown in chat, can be downscaled.
+- The dither works on linear luminance, so dark or low-contrast areas go solid. Lift
+  them first (for example `.grayscale().normalise().linear(1.5, 45)`) and look at the
+  output before committing it.
 
 ```
 # From a URL (most open-license images)
