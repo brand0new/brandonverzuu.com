@@ -7,12 +7,12 @@
 
 export const themes = {
   light: {
-    paper: "#eef4f6", // cool porcelain, never warm cream
-    panel: "#dce8ec",
+    paper: "#cfe3e7", // porcelain (192deg), tinted enough to read as a colour, never warm cream
+    panel: "#bcd6dc", // a step deeper in the same hue
     ink: "#0f1a1d",
-    muted: "#475c63",
-    line: "#b9ccd2",
-    accent: "#ac4019", // terracotta-heading, deepened from #b8451a so it stays AA on panels too
+    muted: "#415960",
+    line: "#97bbc4",
+    accent: "#9a3916", // terracotta-heading, deepened so it stays AA on the porcelain panel
     dot: "#d97a4d", // terracotta, the dither "on" pixel in both themes
     signal: "#beff33", // signal chartreuse (79deg): fills, highlights, drops; never text on light paper
     "on-signal": "#0f1a1d",
@@ -78,7 +78,7 @@ export function contrast(a, b) {
   return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05);
 }
 
-// `--paper: #eef4f6; …` for one theme, ready to drop into a CSS rule.
+// `--paper: #cfe3e7; …` for one theme, ready to drop into a CSS rule.
 export function cssVars(theme) {
   return Object.entries(themes[theme])
     .map(([k, v]) => `--${k}:${v}`)
