@@ -6,9 +6,6 @@ date: 2025/04/15
 slug: "maturity-models-and-tech"
 tags: ["maturity-model", "governance"]
 image: "/articles/maturity-models-and-tech/cover.png"
-imageAuthor: "Basile Morin"
-imageLicense: "CC BY-SA 4.0"
-imageSource: "https://commons.wikimedia.org/wiki/File:Wooden_staircase_steps_in_the_forest_of_Hallasan_Park_Eorimok_Trail_at_dusk_on_Jeju_Island_in_South_Korea.jpg"
 explainerVideo: "/articles/maturity-models-and-tech/explainer.mp4"
 explainerVideoWebm: "/articles/maturity-models-and-tech/explainer.webm"
 explainerPoster: "/articles/maturity-models-and-tech/explainer-poster.png"
