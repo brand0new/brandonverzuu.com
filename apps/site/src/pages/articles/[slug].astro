@@ -11,6 +11,7 @@ import ResolvingCover from "../../components/ResolvingCover.astro";
 import StoryEnhance from "../../components/StoryEnhance.astro";
 import { publishedArticles, covers, readingMinutes, formatDate, isoDate, language, SITE, type Article } from "../../lib/content";
 import { articleSchema, breadcrumbSchema, type Crumb } from "../../lib/schema";
+import { topicClusters } from "../../lib/topicClusters";
 import { explainerHtml } from "../../lib/explainer.mjs";
 import "../../styles/story.css";
 
@@ -28,6 +29,8 @@ const c = covers("articles", article.id);
 const min = readingMinutes(article);
 const lang = language(article);
 const url = `${SITE}/articles/${article.id}`;
+// Tags sit in the meta line; a tag that belongs to a topic links to that topic's filter.
+const tags = (d.tags ?? []).map((t) => ({ t, topic: topicClusters.find((tc) => tc.tags.includes(t)) }));
 const crumbs: Crumb[] = [{ label: "Home", href: "/" }, { label: "Articles", href: "/articles" }, { label: d.title }];
 const schema = [articleSchema({ title: d.title, description: d.description, url, date: d.date, image: d.image, tags: d.tags }), breadcrumbSchema(crumbs, url)];
 ---
@@ -39,38 +42,44 @@ const schema = [articleSchema({ title: d.title, description: d.description, url,
       <div class="a-hero">
         <ResolvingCover dock dark={c.dark} light={c.light} credit={{ author: d.imageAuthor, source: d.imageSource, license: d.imageLicense }} />
         <div class="a-title">
-          <p class="label">
-            <time datetime={isoDate(d.date)}>{formatDate(d.date)}</time> · {min} min read
-          </p>
+          <div class="label a-meta">
+            <span><time datetime={isoDate(d.date)}>{formatDate(d.date)}</time> · {min} min read</span>
+            {
+              tags.length > 0 && (
+                <ul class="a-tags" aria-label="Tags">
+                  {tags.map(({ t, topic }) => (
+                    <li>{topic ? <a href={`/articles?topic=${topic.slug}`}>{t}</a> : t}</li>
+                  ))}
+                </ul>
+              )
+            }
+          </div>
           <h1>{d.title}</h1>
           <p class="lede">{d.description}</p>
-          {
-            (d.tags ?? []).length > 0 && (
-              <ul class="tags" aria-label="Tags">
-                {(d.tags ?? []).map((t) => (
-                  <li class="tag">{t}</li>
-                ))}
-              </ul>
-            )
-          }
         </div>
       </div>
     </header>
 
     <div class="a-grid wrap">
-      <aside class="rail">
+      <aside class:list={["rail", chapters.length > 0 && "has-toc"]}>
         <div class="a-dock" data-cover-dock aria-hidden="true"></div>
         {
           chapters.length > 0 && (
             <nav aria-label="Chapters">
-              <p class="label">Chapters</p>
-              <ol>
+              <p class="label toc-head">Chapters</p>
+              <button class="toc-toggle" type="button" aria-expanded="false" aria-controls="toc-list" hidden>
+                <span class="label toc-count" />
+                <span class="toc-cur" />
+                <span class="toc-chev" aria-hidden="true" />
+              </button>
+              <ol id="toc-list">
                 {chapters.map((h) => (
                   <li>
                     <a href={`#${h.slug}`}>{h.text}</a>
                   </li>
                 ))}
               </ol>
+              <i class="toc-progress" aria-hidden="true" />
             </nav>
           )
         }
