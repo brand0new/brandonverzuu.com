@@ -5,9 +5,6 @@ published: true
 date: 2025/10/30
 slug: "azure-native-service-bus-publishing-with-api-management"
 image: "/articles/azure-native-service-bus-publishing-with-api-management/cover.png"
-imageAuthor: "André Karwath aka Aka"
-imageLicense: "CC BY-SA 2.5"
-imageSource: "https://commons.wikimedia.org/wiki/File:Lightning_cloud_to_cloud_(aka).jpg"
 tags: ["api", "cloud-integration"]
 explainerVideo: "/articles/azure-native-service-bus-publishing-with-api-management/explainer.mp4"
 explainerVideoWebm: "/articles/azure-native-service-bus-publishing-with-api-management/explainer.webm"
