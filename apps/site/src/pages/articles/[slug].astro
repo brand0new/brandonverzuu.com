@@ -1,7 +1,8 @@
 ---
 // The story template. Markdown and frontmatter stay exactly as they are; the template adds a
-// cover that resolves as the reader commits, a chapter rail from the article's own h2s, the
-// explainer as its own chapter, and billboard type for the title. Story blocks in the
+// cover beside the billboard title that docks above the chapter rail and resolves as the
+// reader reads, a chapter rail from the article's own h2s, and the explainer at the top of
+// the text. Story blocks in the
 // markdown (src/plugins/remark-story.mjs) add pull quotes, sidenotes and resolving figures.
 import { render } from "astro:content";
 import Base from "../../layouts/Base.astro";
@@ -35,43 +36,49 @@ const schema = [articleSchema({ title: d.title, description: d.description, url,
   <article class="story" lang={lang}>
     <header class="a-head wrap">
       <Breadcrumb crumbs={crumbs} />
-      <p class="label">
-        <time datetime={isoDate(d.date)}>{formatDate(d.date)}</time> · {min} min read
-      </p>
-      <h1>{d.title}</h1>
-      <p class="lede">{d.description}</p>
-      {
-        (d.tags ?? []).length > 0 && (
-          <ul class="tags" aria-label="Tags">
-            {(d.tags ?? []).map((t) => (
-              <li class="tag">{t}</li>
-            ))}
-          </ul>
-        )
-      }
+      <div class="a-hero">
+        <ResolvingCover dock dark={c.dark} light={c.light} credit={{ author: d.imageAuthor, source: d.imageSource, license: d.imageLicense }} />
+        <div class="a-title">
+          <p class="label">
+            <time datetime={isoDate(d.date)}>{formatDate(d.date)}</time> · {min} min read
+          </p>
+          <h1>{d.title}</h1>
+          <p class="lede">{d.description}</p>
+          {
+            (d.tags ?? []).length > 0 && (
+              <ul class="tags" aria-label="Tags">
+                {(d.tags ?? []).map((t) => (
+                  <li class="tag">{t}</li>
+                ))}
+              </ul>
+            )
+          }
+        </div>
+      </div>
     </header>
 
-    <ResolvingCover dark={c.dark} light={c.light} credit={{ author: d.imageAuthor, source: d.imageSource, license: d.imageLicense }} />
-
-    {explainerTop && <div class="wrap a-explainer" set:html={explainerHtml(d)} />}
-
-    <div class:list={["a-grid wrap", { "no-rail": chapters.length === 0 }]}>
-      {
-        chapters.length > 0 && (
-          <nav class="rail" aria-label="Chapters">
-            <p class="label">Chapters</p>
-            <ol>
-              {chapters.map((h) => (
-                <li>
-                  <a href={`#${h.slug}`}>{h.text}</a>
-                </li>
-              ))}
-            </ol>
-          </nav>
-        )
-      }
+    <div class="a-grid wrap">
+      <aside class="rail">
+        <div class="a-dock" data-cover-dock aria-hidden="true"></div>
+        <span class="label a-dock-out" data-cover-out="cols" aria-hidden="true">Noise</span>
+        {
+          chapters.length > 0 && (
+            <nav aria-label="Chapters">
+              <p class="label">Chapters</p>
+              <ol>
+                {chapters.map((h) => (
+                  <li>
+                    <a href={`#${h.slug}`}>{h.text}</a>
+                  </li>
+                ))}
+              </ol>
+            </nav>
+          )
+        }
+      </aside>
       <div class="a-body">
-        <div class="prose dropcap">
+        {explainerTop && <div class="a-explainer" set:html={explainerHtml(d)} />}
+        <div class="prose dropcap" data-cover-progress>
           <Content />
         </div>
         <nav class="a-next" aria-label="More articles">

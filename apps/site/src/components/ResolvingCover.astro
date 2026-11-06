@@ -1,26 +1,37 @@
 ---
-// A full-width dithered cover that resolves from the noise floor to signal as the reader
-// scrolls into the page. The real PNGs are in the HTML (cover.png for dark, cover-light.png for
-// light, by the content contract's paths) and stay as the picture without JS.
+// A dithered cover that resolves from the noise floor to signal. The real PNGs are in the HTML
+// (cover.png for dark, cover-light.png for light, by the content contract's paths) and stay as
+// the picture without JS.
+//
+// Two ways it resolves:
+// - Plain (reviews, and articles on small screens): full width under the title, signal by the
+//   time the reader is in the text.
+// - Docked (`dock`, articles from the medium breakpoint up): it starts beside the title, flies
+//   into the slot the page marks with [data-cover-dock] (above the chapter rail) as the reader
+//   scrolls into the text, and gains columns with reading progress through
+//   [data-cover-progress], reaching signal at the end of the article.
 interface Props {
   dark: string;
   light: string;
   /** Credit line, for covers made from someone else's image. */
   credit?: { author?: string; source?: string; license?: string; prefix?: string };
+  dock?: boolean;
 }
-const { dark, light, credit } = Astro.props;
+const { dark, light, credit, dock = false } = Astro.props;
 ---
 
-<figure class="a-cover">
-  <div class="a-cover-frame" data-dark={dark} data-light={light}>
-    <canvas class="dither" aria-hidden="true"></canvas>
-    <picture class="nojs-only">
-      <source srcset={dark} media="(prefers-color-scheme: dark)" />
-      <img src={light} alt="" width="1200" height="630" />
-    </picture>
+<figure class="a-cover" data-dock={dock ? "" : undefined}>
+  <div class="a-cover-slot">
+    <div class="a-cover-frame" data-dark={dark} data-light={light}>
+      <canvas class="dither" aria-hidden="true"></canvas>
+      <picture class="nojs-only">
+        <source srcset={dark} media="(prefers-color-scheme: dark)" />
+        <img src={light} alt="" width="1200" height="630" />
+      </picture>
+    </div>
   </div>
   <figcaption class="wrap">
-    <span class="label" id="cover-out" aria-hidden="true">Noise</span>
+    <span class="label cover-out" data-cover-out aria-hidden="true">Noise</span>
     {
       credit?.source && (
         <span class="label">
@@ -35,51 +46,116 @@ const { dark, light, credit } = Astro.props;
 <script>
   import { COVER_GRID, Source, resolve, centreFocus, sizeCanvas, loadImage, isDark, tok, coverTone, setReadout, reduce, onTheme } from "../scripts/signal.js";
 
-  // Resolves to signal once the cover's bottom edge has scrolled up to the top quarter of the
-  // screen, so the image is sharp by the time the reader is in the text, and sooner if its centre
-  // already sits in the middle of the screen.
-  const frame = document.querySelector<HTMLElement>(".a-cover-frame");
-  if (frame) {
+  const fig = document.querySelector<HTMLElement>(".a-cover");
+  const frame = fig?.querySelector<HTMLElement>(".a-cover-frame");
+  if (fig && frame) {
+    const slot = fig.querySelector<HTMLElement>(".a-cover-slot")!;
     const cv = frame.querySelector("canvas") as HTMLCanvasElement & { _native?: number };
-    const out = document.getElementById("cover-out")!;
+    const outs = [...document.querySelectorAll<HTMLElement>("[data-cover-out]")];
+    const dock = fig.hasAttribute("data-dock") ? document.querySelector<HTMLElement>("[data-cover-dock]") : null;
+    const reading = document.querySelector<HTMLElement>("[data-cover-progress]");
+    // Matches the two-column story grid in story.css. Reduced motion keeps the cover where it is.
+    const wide = window.matchMedia("(min-width: 768px)");
     const src: Record<string, ReturnType<typeof Source>> = {};
-    let distance = 1;
+    let flying = false;
+    let distance = 1; // plain: scroll at which the cover reaches signal
+    let flight = 1; // docked: scroll at which the cover lands in the dock
+
+    const clamp = (v: number) => Math.min(1, Math.max(0, v));
+    const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
+
     const measure = () => {
-      const r = frame.getBoundingClientRect();
-      distance = Math.max(window.innerHeight * 0.5, r.bottom + window.scrollY - window.innerHeight * 0.25);
+      flying = !!(dock && reading && wide.matches && !reduce);
+      fig.classList.toggle("fly", flying);
+      dock?.classList.toggle("on", flying);
+      if (!flying) {
+        frame.removeAttribute("style");
+        const r = slot.getBoundingClientRect();
+        distance = Math.max(window.innerHeight * 0.5, r.bottom + window.scrollY - window.innerHeight * 0.25);
+        return;
+      }
+      // The dock is the first thing in the sticky rail, so before it sticks it sits at the top of
+      // the grid's content box. The flight ends where the rail starts sticking.
+      const grid = dock!.closest<HTMLElement>(".a-grid")!;
+      const rail = dock!.closest<HTMLElement>(".rail")!;
+      const top = grid.getBoundingClientRect().top + window.scrollY + parseFloat(getComputedStyle(grid).paddingTop);
+      flight = Math.max(1, top - (parseFloat(getComputedStyle(rail).top) || 0));
     };
+
+    // Both ends are read live: the header slot scrolls away while the dock scrolls up and then
+    // sticks, so the frame is always somewhere on the line between two real boxes and lands
+    // exactly in the dock. Position eases in and out; size shrinks early, so the frame is already
+    // small by the time it passes the start of the text.
+    const place = () => {
+      const k = clamp(window.scrollY / flight);
+      const a = slot.getBoundingClientRect(), b = dock!.getBoundingClientRect();
+      const ep = k * k * (3 - 2 * k), es = 1 - (1 - k) * (1 - k);
+      const w = lerp(a.width, b.width, es);
+      const s = frame.style;
+      s.left = `${lerp(a.left, b.left, ep)}px`;
+      s.top = `${lerp(a.top, b.top, ep)}px`;
+      s.width = `${w}px`;
+      s.height = `${(w * a.height) / a.width}px`;
+    };
+
+    const progress = () => {
+      if (reduce) return 1;
+      if (!flying) return Math.max(centreFocus(frame), clamp(window.scrollY / distance));
+      // Reading progress: noise floor while the first paragraph is still below the 40% line,
+      // signal once the last one is in view (or the page can't scroll any further).
+      const r = reading!.getBoundingClientRect(), y = window.scrollY, vh = window.innerHeight;
+      const start = r.top + y - vh * 0.4;
+      const end = Math.min(r.bottom + y - vh * 0.8, document.documentElement.scrollHeight - vh);
+      return clamp((y - start) / Math.max(1, end - start));
+    };
+
     const draw = (force = false) => {
+      if (force) measure();
+      if (flying) place();
       const dark = isDark(), s = src[dark ? "dark" : "light"];
       if (!s) return;
       sizeCanvas(cv, frame);
-      if (force) measure();
-      const p = reduce ? 1 : Math.max(centreFocus(frame), Math.min(1, Math.max(0, window.scrollY / distance)));
-      const n = resolve(cv, s, p, { on: tok("--dot"), off: tok("--paper"), force, tone: coverTone(dark) });
+      const n = resolve(cv, s, progress(), { on: tok("--dot"), off: tok("--paper"), force, tone: coverTone(dark) });
       if (n > 0) {
         const sig = n >= cv._native!;
-        setReadout(out, `${sig ? "Signal" : "Noise"} · ${n} of ${cv._native} columns`, sig);
+        // The dock's readout has a rail's width, so it gets the short unit.
+        outs.forEach((o) => setReadout(o, `${sig ? "Signal" : "Noise"} · ${n} of ${cv._native} ${o.dataset.coverOut || "columns"}`, sig));
       }
     };
+
     (["dark", "light"] as const).forEach((k) =>
       loadImage(frame.dataset[k]!).then((im) => {
         src[k] = Source(im, COVER_GRID[0], COVER_GRID[1]);
         draw(true);
       }),
     );
-    window.addEventListener("scroll", () => draw(), { passive: true });
+    measure();
+    if (flying) place();
+    let queued = false;
+    window.addEventListener("scroll", () => {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(() => { queued = false; draw(); });
+    }, { passive: true });
     let rt = 0;
-    window.addEventListener("resize", () => {
-      clearTimeout(rt);
-      rt = window.setTimeout(() => draw(true), 120);
-    });
+    const later = () => { clearTimeout(rt); rt = window.setTimeout(() => draw(true), 120); };
+    window.addEventListener("resize", later);
+    // Webfonts change the title's height and with it where the text starts.
+    document.fonts?.ready.then(() => draw(true));
+    window.addEventListener("load", () => draw(true));
     onTheme(() => draw(true));
   }
 </script>
 
 <style>
   .a-cover { margin: 0; }
-  .a-cover-frame { position: relative; aspect-ratio: 1200 / 630; max-height: 78svh; width: 100%; background: var(--paper); overflow: hidden; }
+  .a-cover-slot { position: relative; aspect-ratio: 1200 / 630; max-height: 78svh; width: 100%; }
+  .a-cover-frame { position: absolute; inset: 0; background: var(--paper); overflow: hidden; }
   .a-cover-frame img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  /* Under the title bar (z-index 30), over the text it passes on its way to the dock. */
+  .fly .a-cover-frame { position: fixed; inset: auto; z-index: 5; }
   figcaption { display: flex; justify-content: space-between; gap: .5rem 1.5rem; flex-wrap: wrap; padding-block: .8rem; }
-  figcaption .label { font-variant-numeric: tabular-nums; }
+  .cover-out { font-variant-numeric: tabular-nums; }
+  /* Docked, the readout travels with the cover and is shown under the dock instead. */
+  .fly .cover-out { display: none; }
 </style>
