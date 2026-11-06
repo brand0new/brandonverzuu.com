@@ -30,28 +30,26 @@ const { dark, light, credit, dock = false } = Astro.props;
       </picture>
     </div>
   </div>
-  <figcaption class="wrap">
-    <span class="label cover-out" data-cover-out aria-hidden="true">Noise</span>
-    {
-      credit?.source && (
+  {
+    credit?.source && (
+      <figcaption class="wrap">
         <span class="label">
           {credit.prefix ?? "Cover after"} <a href={credit.source}>{credit.author ?? "the original"}</a>
           {credit.license && <> · {credit.license}</>}
         </span>
-      )
-    }
-  </figcaption>
+      </figcaption>
+    )
+  }
 </figure>
 
 <script>
-  import { COVER_GRID, Source, resolve, centreFocus, sizeCanvas, loadImage, isDark, tok, coverTone, setReadout, reduce, onTheme } from "../scripts/signal.js";
+  import { COVER_GRID, Source, resolve, centreFocus, sizeCanvas, loadImage, isDark, tok, coverTone, markSignal, reduce, onTheme } from "../scripts/signal.js";
 
   const fig = document.querySelector<HTMLElement>(".a-cover");
   const frame = fig?.querySelector<HTMLElement>(".a-cover-frame");
   if (fig && frame) {
     const slot = fig.querySelector<HTMLElement>(".a-cover-slot")!;
     const cv = frame.querySelector("canvas") as HTMLCanvasElement & { _native?: number };
-    const outs = [...document.querySelectorAll<HTMLElement>("[data-cover-out]")];
     const dock = fig.hasAttribute("data-dock") ? document.querySelector<HTMLElement>("[data-cover-dock]") : null;
     const reading = document.querySelector<HTMLElement>("[data-cover-progress]");
     // Matches the two-column story grid in story.css. Reduced motion keeps the cover where it is.
@@ -116,11 +114,7 @@ const { dark, light, credit, dock = false } = Astro.props;
       if (!s) return;
       sizeCanvas(cv, frame);
       const n = resolve(cv, s, progress(), { on: tok("--dot"), off: tok("--paper"), force, tone: coverTone(dark) });
-      if (n > 0) {
-        const sig = n >= cv._native!;
-        // The dock's readout has a rail's width, so it gets the short unit.
-        outs.forEach((o) => setReadout(o, `${sig ? "Signal" : "Noise"} · ${n} of ${cv._native} ${o.dataset.coverOut || "columns"}`, sig));
-      }
+      if (n > 0) markSignal(frame, n >= cv._native!);
     };
 
     (["dark", "light"] as const).forEach((k) =>
@@ -155,7 +149,4 @@ const { dark, light, credit, dock = false } = Astro.props;
   /* Under the title bar (z-index 30), over the text it passes on its way to the dock. */
   .fly .a-cover-frame { position: fixed; inset: auto; z-index: 5; }
   figcaption { display: flex; justify-content: space-between; gap: .5rem 1.5rem; flex-wrap: wrap; padding-block: .8rem; }
-  .cover-out { font-variant-numeric: tabular-nums; }
-  /* Docked, the readout travels with the cover and is shown under the dock instead. */
-  .fly .cover-out { display: none; }
 </style>

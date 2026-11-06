@@ -63,13 +63,12 @@ const pad = (n: number) => String(n).padStart(2, "0");
     </ol>
     <div class="fc-foot" aria-hidden="true">
       <div class="fc-bar"><i id="fc-fill"></i></div>
-      <span class="label fc-readout" id="fc-readout"></span>
     </div>
   </div>
 </div>
 
 <script>
-  import { RESOLVE, COVER_GRID, Source, resolve, sizeCanvas, loadImage, isDark, tok, coverTone, glitch, setReadout, reduce, onTheme } from "../scripts/signal.js";
+  import { RESOLVE, COVER_GRID, Source, resolve, sizeCanvas, loadImage, isDark, tok, coverTone, glitch, markSignal, reduce, onTheme } from "../scripts/signal.js";
 
   type Dither = HTMLCanvasElement & { _cols?: number; _native?: number };
   type Card = { el: HTMLAnchorElement; box: HTMLElement; cv: Dither; src: { dark?: ReturnType<typeof Source>; light?: ReturnType<typeof Source> }; focus: number };
@@ -79,7 +78,6 @@ const pad = (n: number) => String(n).padStart(2, "0");
   const track = document.getElementById("fc-track")!;
   const countEl = document.getElementById("fc-count")!;
   const fill = document.getElementById("fc-fill")!;
-  const readout = document.getElementById("fc-readout")!;
   const prevB = document.getElementById("fc-prev") as HTMLButtonElement;
   const nextB = document.getElementById("fc-next") as HTMLButtonElement;
   const pinned = !reduce;
@@ -170,11 +168,10 @@ const pad = (n: number) => String(n).padStart(2, "0");
       if (ad < 1.6) paint(c);
     });
     const idx = Math.round(f), fo = Math.max(0, 1 - Math.abs(idx - f));
-    const cv0 = cards[idx].cv;
     countEl.innerHTML = `${pad(idx + 1)} <span>/ ${pad(N)}</span>`;
     fill.style.transform = `scaleX(${(f / Math.max(1, N - 1)).toFixed(4)})`;
     const sig = fo >= RESOLVE.signalAt;
-    setReadout(readout, `${sig ? "Signal" : "Noise"} · ${cv0._cols || 0} of ${cv0._native || 0} columns`, sig);
+    cards.forEach((c, i) => markSignal(c.box, i === idx && sig));
     prevB.disabled = f < 0.05;
     nextB.disabled = f > N - 1.05;
   }
@@ -259,7 +256,6 @@ const pad = (n: number) => String(n).padStart(2, "0");
   .fc[data-narrow] .fc-desc { display: -webkit-box; -webkit-line-clamp: 3; line-clamp: 3; -webkit-box-orient: vertical; }
   .fc-bar { flex: 1 1 200px; height: 2px; background: var(--line); position: relative; min-width: 0; }
   .fc-bar i { position: absolute; inset: 0; background: var(--dot); transform-origin: left; transform: scaleX(0); }
-  .fc-readout { font-variant-numeric: tabular-nums; }
 
   /* Static: no pinning, a swipeable row, everything disclosed and fully resolved.
      The default markup, kept for reduced motion and for readers without JS. */
