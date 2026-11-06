@@ -3,6 +3,8 @@
 // fine as text.
 import Base from "../layouts/Base.astro";
 import PageHead from "../components/PageHead.astro";
+import { SITE } from "../lib/content";
+import { breadcrumbSchema, type Crumb } from "../lib/schema";
 
 const description = "Here's some interesting stuff I've found on the internet.";
 const bookmarks = [
@@ -20,10 +22,11 @@ const bookmarks = [
 ];
 const host = (u: string) => new URL(u).host.replace(/^www\./, "");
 const pad = (n: number) => String(n).padStart(2, "0");
+const crumbs: Crumb[] = [{ label: "Home", href: "/" }, { label: "Bookmarks" }];
 ---
 
-<Base title="Bookmarks | Brandon Verzuu" description={description}>
-  <PageHead title="Bookmarks" description={description} />
+<Base title="Bookmarks | Brandon Verzuu" description={description} schema={[breadcrumbSchema(crumbs, `${SITE}/bookmarks`)]}>
+  <PageHead title="Bookmarks" crumbs={crumbs} description={description} />
   <div class="wrap section">
     <ol class="rows">
       {

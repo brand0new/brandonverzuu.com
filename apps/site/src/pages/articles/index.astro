@@ -4,16 +4,18 @@
 // Without JS the filter bar stays hidden and every article is listed.
 import Base from "../../layouts/Base.astro";
 import PageHead from "../../components/PageHead.astro";
+import { breadcrumbSchema, type Crumb } from "../../lib/schema";
 import ArticleCards from "../../components/ArticleCards.astro";
-import { publishedArticles, clusterStats } from "../../lib/content";
+import { publishedArticles, clusterStats, SITE } from "../../lib/content";
 
 const description = "All of my long form content on software development, technology, and more, shown in chronological order.";
 const articles = await publishedArticles();
 const topics = await clusterStats();
+const crumbs: Crumb[] = [{ label: "Home", href: "/" }, { label: "Articles" }];
 ---
 
-<Base title="Articles | Brandon Verzuu" description={description}>
-  <PageHead title="Articles" kicker={`${articles.length} articles · newest first`} description={description} />
+<Base title="Articles | Brandon Verzuu" description={description} schema={[breadcrumbSchema(crumbs, `${SITE}/articles`)]}>
+  <PageHead title="Articles" crumbs={crumbs} description={description} />
   <div class="wrap section">
     <nav class="filter" id="topic-filter" aria-label="Filter by topic" hidden>
       <span class="label">Topic</span>

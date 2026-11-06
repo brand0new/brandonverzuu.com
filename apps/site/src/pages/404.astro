@@ -1,9 +1,11 @@
 ---
 import Base from "../layouts/Base.astro";
+import Breadcrumb from "../components/Breadcrumb.astro";
 ---
 
 <Base title="Not found | Brandon Verzuu" description="This page doesn't exist.">
   <header class="page-head wrap">
+    <Breadcrumb crumbs={[{ label: "Home", href: "/" }, { label: "Not found" }]} />
     <p class="label">404 · Noise</p>
     <h1>Lost the<br />signal<em>.</em></h1>
     <p class="lede">There's nothing at this address. It may have moved, or never existed.</p>
