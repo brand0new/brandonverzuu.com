@@ -54,6 +54,9 @@
   .a-grid { grid-template-columns: 11rem minmax(0, 1fr); }
 }
 @media (max-width: 767px) {
+  /* On phones step-1 would put the lede above body size and at half the title's; keep it a
+     step down so the billboard title carries the head. */
+  .a-head .lede { font-size: 1.2rem; }
   .a-grid { grid-template-columns: minmax(0, 1fr); }
   .rail { position: static; max-height: none; }
   .rail ol { flex-direction: row; overflow-x: auto; overflow-y: visible; gap: 1rem; scrollbar-width: none; }
