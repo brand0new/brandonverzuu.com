@@ -35,6 +35,11 @@
   .a-title > :not(h1) { margin-left: var(--over); }
   .a-title h1 { max-width: none; }
 }
+/* Phones in landscape still get the overlap layout, so they keep the paper outline that
+   knocks the title out of the dither (dark ink on terracotta alone is 2.6:1). */
+@media (min-width: 768px) and (orientation: landscape) and (max-height: 500px) {
+  .a-title h1 { -webkit-text-stroke: .1em var(--paper); paint-order: stroke fill; }
+}
 .a-next { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; border-top: 2px solid var(--ink); padding-top: 1rem; max-width: 65ch; }
 .a-next a { display: flex; flex-direction: column; gap: .4rem; color: var(--ink); text-decoration: none; }
 .a-next a + a { text-align: right; grid-column: 2; }
