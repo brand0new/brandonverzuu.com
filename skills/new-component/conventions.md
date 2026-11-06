@@ -18,7 +18,8 @@ changes one of these conventions, update this file in the same PR.
   `src/styles/global.css`: a 2px ink rule on top, hairlines between, a display-face title,
   mono metadata on the right. Panels (`--panel` background, 1px `--line` border, square
   corners) are for things that carry their own image or field, like projects and the
-  filmstrip. No rounded corners, shadows, gradients or blur.
+  filmstrip; `/articles` uses them too (`ArticleCards`), because every article has a cover.
+  No rounded corners, shadows, gradients or blur.
 - **Three typefaces with fixed jobs.** `--display` (Big Shoulders Display, uppercase) for
   titles, chapter heads, numerals and pull quotes. `--serif` (Newsreader) for reading.
   `--mono` (IBM Plex Mono, uppercase `.label`) for labels, metadata, tags and buttons.

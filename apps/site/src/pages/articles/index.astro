@@ -4,7 +4,7 @@
 // Without JS the filter bar stays hidden and every article is listed.
 import Base from "../../layouts/Base.astro";
 import PageHead from "../../components/PageHead.astro";
-import ArticleRows from "../../components/ArticleRows.astro";
+import ArticleCards from "../../components/ArticleCards.astro";
 import { publishedArticles, clusterStats } from "../../lib/content";
 
 const description = "All of my long form content on software development, technology, and more, shown in chronological order.";
@@ -31,7 +31,7 @@ const topics = await clusterStats();
       </ul>
       <p class="label status" id="topic-status" role="status"></p>
     </nav>
-    <ArticleRows articles={articles} />
+    <ArticleCards articles={articles} />
   </div>
 </Base>
 
@@ -39,7 +39,7 @@ const topics = await clusterStats();
   const nav = document.getElementById("topic-filter")!;
   const status = document.getElementById("topic-status")!;
   const links = [...nav.querySelectorAll<HTMLAnchorElement>("a[data-topic]")];
-  const rows = [...document.querySelectorAll<HTMLElement>(".rows > li[data-topics]")];
+  const rows = [...document.querySelectorAll<HTMLElement>(".cards > li[data-topics]")];
   const known = new Set(links.map((a) => a.dataset.topic));
 
   function apply(topic: string, announce: boolean) {
@@ -52,6 +52,7 @@ const topics = await clusterStats();
     });
     links.forEach((a) => (a.dataset.topic === topic ? a.setAttribute("aria-current", "true") : a.removeAttribute("aria-current")));
     const name = links.find((a) => a.dataset.topic === topic)?.firstChild?.textContent?.trim();
+    window.dispatchEvent(new Event("topicchange"));
     if (announce) status.textContent = topic ? `${shown} ${shown === 1 ? "article" : "articles"} about ${name}` : `All ${shown} articles`;
   }
 
