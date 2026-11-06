@@ -11,6 +11,6 @@ const { crumbs } = Astro.props;
 
 <nav class="crumbs" aria-label="Breadcrumb">
   <ol>
-    {crumbs.map((c) => <li>{c.href ? <a href={c.href}>{c.label}</a> : <span aria-current="page">{c.label}</span>}</li>)}
+    {crumbs.map((c) => <li>{c.href ? <a href={c.href}>{c.label}</a> : <span aria-current="page" title={c.label}>{c.label}</span>}</li>)}
   </ol>
 </nav>
