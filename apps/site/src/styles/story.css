@@ -19,6 +19,9 @@
 .a-dock { aspect-ratio: 1200 / 630; width: 100%; flex: none; }
 .a-dock-out { font-variant-numeric: tabular-nums; white-space: nowrap; font-size: .72rem; letter-spacing: .02em; align-self: start; margin-bottom: .8rem; }
 .a-dock:not(.on), .a-dock:not(.on) + .a-dock-out { display: none; }
+/* Short screens (phones in landscape): the rail has no room for the dock, so the chapters get it
+   all and the cover stays in the header. Keep in step with the media query in ResolvingCover. */
+@media (max-height: 500px) { .a-dock, .a-dock + .a-dock-out { display: none; } }
 
 /* Articles on small screens: title first, then the cover at full bleed. */
 .a-hero { display: flex; flex-direction: column; gap: 1.4rem; }

@@ -55,7 +55,7 @@ const { dark, light, credit, dock = false } = Astro.props;
     const dock = fig.hasAttribute("data-dock") ? document.querySelector<HTMLElement>("[data-cover-dock]") : null;
     const reading = document.querySelector<HTMLElement>("[data-cover-progress]");
     // Matches the two-column story grid in story.css. Reduced motion keeps the cover where it is.
-    const wide = window.matchMedia("(min-width: 768px)");
+    const wide = window.matchMedia("(min-width: 768px) and (min-height: 501px)");
     const src: Record<string, ReturnType<typeof Source>> = {};
     let flying = false;
     let distance = 1; // plain: scroll at which the cover reaches signal

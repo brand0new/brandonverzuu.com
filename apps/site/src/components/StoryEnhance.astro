@@ -17,6 +17,14 @@
       let current = targets[0];
       for (const t of targets) if (t.getBoundingClientRect().top < window.innerHeight * 0.35) current = t;
       links.forEach((a, id) => (id === current.id ? a.setAttribute("aria-current", "true") : a.removeAttribute("aria-current")));
+      // A short rail (landscape phones) scrolls: keep the current chapter in it. Scrolls the rail
+      // only, never the page.
+      const a = links.get(current.id)!, rail = a.closest<HTMLElement>(".rail");
+      if (rail && rail.scrollHeight > rail.clientHeight) {
+        const r = rail.getBoundingClientRect(), b = a.getBoundingClientRect();
+        if (b.top < r.top) rail.scrollTop -= r.top - b.top;
+        else if (b.bottom > r.bottom) rail.scrollTop += b.bottom - r.bottom;
+      }
     };
     window.addEventListener("scroll", () => { if (!queued) { queued = true; requestAnimationFrame(mark); } }, { passive: true });
     mark();
