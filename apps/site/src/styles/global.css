@@ -41,6 +41,10 @@ p { margin: 0; }
 /* Signal: fills are painted as a bar so the glitch can slice the fill while the text stays put. */
 mark, .chip-signal, .label.chip-signal { background: linear-gradient(var(--signal), var(--signal)) 0 0 / 100% 100% no-repeat; color: var(--on-signal); }
 mark { padding: 0 .12em; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+/* A dithered frame at signal: the bottom edge draws in, in the signal colour (markSignal). */
+.sig-edge::after { content: ""; position: absolute; inset: auto 0 0; height: 3px; z-index: 2; background: var(--signal); transform: scaleX(0); transform-origin: left; transition: transform 357ms steps(6, end); pointer-events: none; }
+.sig-edge[data-signal]::after { transform: scaleX(1); }
+@media (prefers-reduced-motion: reduce) { .sig-edge::after { transition: none; } }
 .chip-signal, .label.chip-signal { display: inline-flex; align-items: center; gap: .4em; padding: .12rem .45rem; }
 .drop { display: inline-block; width: .14em; height: .14em; margin-left: .06em; background: var(--signal); box-shadow: 0 0 0 1.5px var(--signal-edge); }
 

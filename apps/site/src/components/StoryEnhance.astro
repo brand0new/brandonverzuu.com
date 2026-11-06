@@ -5,29 +5,38 @@
 ---
 
 <script>
-  import { Source, resolve, centreFocus, sizeCanvas, loadImage, isDark, tok, photoTone, glitch, reduce, onTheme, observeLockOn } from "../scripts/signal.js";
+  import { Source, resolve, centreFocus, sizeCanvas, loadImage, isDark, tok, photoTone, glitch, markSignal, reduce, onTheme, observeLockOn } from "../scripts/signal.js";
 
   // Chapter rail.
   const links = new Map([...document.querySelectorAll<HTMLAnchorElement>(".rail a")].map((a) => [decodeURIComponent(a.hash.slice(1)), a]));
   const targets = [...links.keys()].map((id) => document.getElementById(id)).filter(Boolean) as HTMLElement[];
   if (targets.length) {
-    let queued = false;
-    const mark = () => {
+    const list = document.querySelector<HTMLElement>(".rail ol");
+    let queued = false, shown = "";
+    // When the chapter list is longer than the rail, it scrolls itself so the current chapter sits
+    // in its middle. It scrolls the list only, never the page.
+    const centre = (a: HTMLElement, smooth: boolean) => {
+      if (!list) return;
+      const v = list.scrollHeight > list.clientHeight + 1;
+      list.classList.toggle("scrolls", v);
+      if (!v) return;
+      const r = list.getBoundingClientRect(), b = a.getBoundingClientRect();
+      list.scrollBy({ top: b.top + b.height / 2 - (r.top + r.height / 2), behavior: smooth && !reduce ? "smooth" : "auto" });
+    };
+    const mark = (force = false) => {
       queued = false;
       let current = targets[0];
       for (const t of targets) if (t.getBoundingClientRect().top < window.innerHeight * 0.35) current = t;
       links.forEach((a, id) => (id === current.id ? a.setAttribute("aria-current", "true") : a.removeAttribute("aria-current")));
-      // A short rail (landscape phones) scrolls: keep the current chapter in it. Scrolls the rail
-      // only, never the page.
-      const a = links.get(current.id)!, rail = a.closest<HTMLElement>(".rail");
-      if (rail && rail.scrollHeight > rail.clientHeight) {
-        const r = rail.getBoundingClientRect(), b = a.getBoundingClientRect();
-        if (b.top < r.top) rail.scrollTop -= r.top - b.top;
-        else if (b.bottom > r.bottom) rail.scrollTop += b.bottom - r.bottom;
-      }
+      if (force || current.id !== shown) centre(links.get(current.id)!, !force);
+      shown = current.id;
     };
-    window.addEventListener("scroll", () => { if (!queued) { queued = true; requestAnimationFrame(mark); } }, { passive: true });
-    mark();
+    window.addEventListener("scroll", () => { if (!queued) { queued = true; requestAnimationFrame(() => mark()); } }, { passive: true });
+    let rt = 0;
+    window.addEventListener("resize", () => { clearTimeout(rt); rt = window.setTimeout(() => mark(true), 120); });
+    // The dock appears once the cover script has measured, which shrinks the list.
+    window.addEventListener("load", () => mark(true));
+    mark(true);
   }
 
   // Explainer: plays when it comes into view unless the reader prefers reduced motion. The
@@ -76,6 +85,7 @@
       if (n > 0) {
         const sig = n >= cv._native!;
         if (sig && !locked) glitch(frame.closest("figure")?.querySelector("figcaption") ?? null);
+        markSignal(frame, sig);
         locked = sig;
       }
     };

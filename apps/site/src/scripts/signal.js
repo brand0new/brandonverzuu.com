@@ -226,15 +226,12 @@ export function decode(el, text) {
   })();
 }
 
-// A readout that may lock to signal: plain updates while noisy, a glitch and decode the moment it locks.
-export function setReadout(el, text, sig) {
-  const was = !!el._sig;
-  el._sig = sig;
-  el.classList.toggle("chip-signal", sig);
-  if (sig && !was) {
-    glitch(el);
-    decode(el, text);
-  } else if (!el._decoding) el.textContent = text;
+// The signal edge: a frame that has resolved to its native grid gets a signal-colour bottom
+// border (.sig-edge in global.css). The frame must be positioned.
+export function markSignal(el, sig) {
+  if (!el) return;
+  el.classList.add("sig-edge");
+  el.toggleAttribute("data-signal", sig);
 }
 
 // Highlights and drops lock on when fully in view, and re-arm once they leave it.
