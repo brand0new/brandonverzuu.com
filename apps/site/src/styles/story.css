@@ -25,16 +25,15 @@
 .a-title { display: flex; flex-direction: column; gap: 1.4rem; }
 .a-hero .a-cover { order: 1; margin-inline: calc(50% - 50vw); }
 
-/* Medium and up: the cover sits left of the title and the billboard title runs onto it. The
-   title is knocked out of the dither with a paper outline, which keeps it AA in both themes
-   (dark ink on terracotta alone is 2.6:1). Lede, label and tags stay clear of the cover. */
+/* Medium and up: the cover sits left of the title and the billboard title runs onto it.
+   Lede, label and tags stay clear of the cover. */
 @media (min-width: 768px) {
   .a-hero { --over: clamp(3rem, 9vw, 10rem); display: grid; grid-template-columns: minmax(0, 10fr) minmax(0, 13fr); align-items: center; gap: 0 clamp(1.5rem, 3vw, 3rem); }
   .a-hero .a-cover { order: 0; margin-inline: 0; grid-area: 1 / 1; }
   .a-hero .a-cover figcaption { padding-inline: 0; }
   .a-title { grid-area: 1 / 2; position: relative; z-index: 6; margin-left: calc(-1 * var(--over)); }
   .a-title > :not(h1) { margin-left: var(--over); }
-  .a-title h1 { max-width: none; -webkit-text-stroke: .1em var(--paper); paint-order: stroke fill; }
+  .a-title h1 { max-width: none; }
 }
 .a-next { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; border-top: 2px solid var(--ink); padding-top: 1rem; max-width: 65ch; }
 .a-next a { display: flex; flex-direction: column; gap: .4rem; color: var(--ink); text-decoration: none; }
