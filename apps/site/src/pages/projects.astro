@@ -1,13 +1,16 @@
 ---
 import Base from "../layouts/Base.astro";
 import PageHead from "../components/PageHead.astro";
+import { SITE } from "../lib/content";
+import { breadcrumbSchema, type Crumb } from "../lib/schema";
 import ProjectPanels from "../components/ProjectPanels.astro";
 
 const description = "A collection of my projects, open source and otherwise. Some are in progress, some are finished, and some are just ideas. I hope you find something interesting here.";
+const crumbs: Crumb[] = [{ label: "Home", href: "/" }, { label: "Projects" }];
 ---
 
-<Base title="Projects | Brandon Verzuu" description={description} telma>
-  <PageHead title="Projects" description={description} />
+<Base title="Projects | Brandon Verzuu" description={description} schema={[breadcrumbSchema(crumbs, `${SITE}/projects`)]} telma>
+  <PageHead title="Projects" crumbs={crumbs} description={description} />
   <div class="wrap section">
     <ProjectPanels />
   </div>

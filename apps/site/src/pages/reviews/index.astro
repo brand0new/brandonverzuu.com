@@ -4,18 +4,20 @@
 // chips only appear once there are two media to choose between.
 import Base from "../../layouts/Base.astro";
 import PageHead from "../../components/PageHead.astro";
+import { breadcrumbSchema, type Crumb } from "../../lib/schema";
 import ReviewRating from "../../components/ReviewRating.astro";
-import { publishedReviews, formatDate, isoDate } from "../../lib/content";
+import { publishedReviews, formatDate, isoDate, SITE } from "../../lib/content";
 import { media, type ReviewMedium } from "../../lib/reviews";
 
 const description = "What I thought of the films, series, games and books I've spent time with lately, each scored out of ten.";
 const reviews = await publishedReviews();
 // In the order declared in src/lib/reviews.ts, so the chips don't reshuffle when a review is added.
 const available = (Object.keys(media) as ReviewMedium[]).filter((m) => reviews.some((r) => r.data.medium === m));
+const crumbs: Crumb[] = [{ label: "Home", href: "/" }, { label: "Reviews" }];
 ---
 
-<Base title="Reviews | Brandon Verzuu" description={description}>
-  <PageHead title="Reviews" description={description} />
+<Base title="Reviews | Brandon Verzuu" description={description} schema={[breadcrumbSchema(crumbs, `${SITE}/reviews`)]}>
+  <PageHead title="Reviews" crumbs={crumbs} description={description} />
   <div class="wrap section">
     {
       available.length > 1 && (
