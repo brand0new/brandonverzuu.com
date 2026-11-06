@@ -1,0 +1,133 @@
+---
+// Articles as cover panels: the dithered cover, date and reading time, title, description, tags.
+// Each card carries its topic slugs (data-topics) for the topic filter on /articles.
+// The real PNGs are in the HTML and stay as the picture without JS; the script swaps in a canvas
+// that resolves each cover from the noise floor as it scrolls into view, like the article page.
+import { covers, formatDate, isoDate, readingMinutes, inCluster, type Article } from "../lib/content";
+import { topicClusters } from "../lib/topicClusters";
+
+interface Props {
+  articles: Article[];
+}
+const { articles } = Astro.props;
+---
+
+<ul class="cards">
+  {
+    articles.map((a) => {
+      const c = covers("articles", a.id);
+      return (
+        <li data-topics={topicClusters.filter((t) => inCluster(a, t)).map((t) => t.slug).join(" ")}>
+          <a class="card" href={`/articles/${a.id}`}>
+            <span class="card-cover" data-dark={c.dark} data-light={c.light}>
+              <canvas class="dither" aria-hidden="true" />
+              <picture class="nojs-only">
+                <source srcset={c.dark} media="(prefers-color-scheme: dark)" />
+                <img src={c.light} alt="" loading="lazy" width="1200" height="630" />
+              </picture>
+            </span>
+            <span class="card-text">
+              <span class="label">
+                <time datetime={isoDate(a.data.date)}>{formatDate(a.data.date)}</time> · {readingMinutes(a)} min
+              </span>
+              <span class="card-title">{a.data.title}</span>
+              <span class="card-desc">{a.data.description}</span>
+              {((a.data.tags ?? []).length > 0 || a.data.explainerVideo) && (
+                <span class="tags">
+                  {(a.data.tags ?? []).map((t) => (
+                    <span class="tag">{t}</span>
+                  ))}
+                  {a.data.explainerVideo && <span class="tag on">▶ Explainer</span>}
+                </span>
+              )}
+            </span>
+          </a>
+        </li>
+      );
+    })
+  }
+</ul>
+
+<script>
+  import { COVER_GRID, Source, resolve, centreFocus, sizeCanvas, loadImage, isDark, tok, coverTone, reduce, onTheme } from "../scripts/signal.js";
+
+  type Cover = { box: HTMLElement; cv: HTMLCanvasElement; src: { dark?: ReturnType<typeof Source>; light?: ReturnType<typeof Source> }; loading?: boolean };
+
+  const items: Cover[] = [...document.querySelectorAll<HTMLElement>(".cards .card-cover")].map((box) => ({
+    box,
+    cv: box.querySelector("canvas") as HTMLCanvasElement,
+    src: {},
+  }));
+
+  function draw(c: Cover, force = false) {
+    const dark = isDark(), s = c.src[dark ? "dark" : "light"];
+    // A card hidden by the topic filter has no box to size; it redraws when it's shown and scrolled.
+    if (!s || !c.box.clientWidth) return;
+    sizeCanvas(c.cv, c.box);
+    resolve(c.cv, s, reduce ? 1 : centreFocus(c.box), { on: tok("--dot"), off: tok("--panel"), force, tone: coverTone(dark) });
+  }
+
+  // Covers load once a card comes near the screen, so a long list doesn't fetch every PNG up front.
+  function load(c: Cover) {
+    if (c.loading) return;
+    c.loading = true;
+    (["dark", "light"] as const).forEach((k) =>
+      loadImage(c.box.dataset[k]!).then((im) => {
+        c.src[k] = Source(im, COVER_GRID[0], COVER_GRID[1]);
+        draw(c, true);
+      }),
+    );
+  }
+  if ("IntersectionObserver" in window) {
+    const io = new IntersectionObserver(
+      (es) =>
+        es.forEach((e) => {
+          if (!e.isIntersecting) return;
+          const c = items.find((x) => x.box === e.target);
+          if (c) load(c);
+          io.unobserve(e.target);
+        }),
+      { rootMargin: "50% 0px" },
+    );
+    items.forEach((c) => io.observe(c.box));
+  } else items.forEach(load);
+
+  let queued = false;
+  window.addEventListener(
+    "scroll",
+    () => {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(() => {
+        queued = false;
+        items.forEach((c) => draw(c));
+      });
+    },
+    { passive: true },
+  );
+  let rt = 0;
+  const redrawAll = () => items.forEach((c) => draw(c, true));
+  window.addEventListener("resize", () => {
+    clearTimeout(rt);
+    rt = window.setTimeout(redrawAll, 120);
+  });
+  onTheme(redrawAll);
+  // The topic filter shows and hides cards; redraw so newly shown covers get sized and painted.
+  window.addEventListener("topicchange", redrawAll);
+</script>
+
+<style>
+  .cards { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 22rem), 1fr)); gap: clamp(1rem, 2.5vw, 1.75rem); }
+  .cards > li { display: flex; }
+  .cards > li[hidden] { display: none; }
+  .card { display: flex; flex-direction: column; width: 100%; background: var(--panel); border: 1px solid var(--line); color: var(--ink); text-decoration: none; transition: border-color .2s; }
+  .card:hover, .card:focus-visible { border-color: var(--ink); }
+  .card:hover .card-title, .card:focus-visible .card-title { color: var(--accent); }
+  .card-cover { position: relative; display: block; aspect-ratio: 1200 / 630; overflow: hidden; border-bottom: 1px solid var(--line); }
+  .card-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .card-text { display: flex; flex-direction: column; gap: .6rem; flex: 1; padding: clamp(1rem, 2vw, 1.4rem); }
+  .card-text .label { font-variant-numeric: tabular-nums; }
+  .card-title { font-family: var(--display); font-weight: 800; text-transform: uppercase; font-size: clamp(1.5rem, 1.2rem + 1vw, 2rem); line-height: .95; text-wrap: balance; transition: color .2s; }
+  .card-desc { color: var(--muted); }
+  .card .tags { margin-top: auto; padding-top: .4rem; }
+</style>
