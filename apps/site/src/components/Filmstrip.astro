@@ -50,7 +50,12 @@ const pad = (n: number) => String(n).padStart(2, "0");
                     <p class="fc-desc">{a.data.description}</p>
                     <div class="fc-meta">
                       <span class="label">{min} min read</span>
-                      {a.data.explainerVideo && <span class="label">▶ Explainer</span>}
+                      {a.data.explainerVideo && (
+                        <span class="fc-play" title="Includes an explainer video">
+                          <span aria-hidden="true">▶&#xFE0E;</span>
+                          <span class="sr-only">Includes an explainer video</span>
+                        </span>
+                      )}
                       <span class="fc-cta" aria-hidden="true">Read article →</span>
                     </div>
                   </div>
@@ -150,6 +155,23 @@ const pad = (n: number) => String(n).padStart(2, "0");
       sizeCanvas(c.cv, c.box);
       paint(c, true);
     });
+    fitDesc(narrow);
+  }
+
+  // On a phone every card shares one grid, so the space left for the description is the same on
+  // each: show as many whole lines as fit there, never a line cut in half, whatever the title.
+  function fitDesc(narrow: boolean) {
+    fc.style.removeProperty("--desc-lines");
+    fc.removeAttribute("data-nodesc");
+    if (!pinned || !narrow || !cards.length) return;
+    const text = cards[0].el.querySelector(".fc-text") as HTMLElement;
+    const desc = cards[0].el.querySelector(".fc-desc") as HTMLElement;
+    const row = parseFloat(getComputedStyle(text).gridTemplateRows.split(" ")[3] ?? "0");
+    const cs = getComputedStyle(desc);
+    const lh = parseFloat(cs.lineHeight) || parseFloat(cs.fontSize) * 1.4;
+    const lines = Math.max(0, Math.floor((row + 1) / lh));
+    fc.style.setProperty("--desc-lines", String(Math.max(1, lines)));
+    fc.toggleAttribute("data-nodesc", lines === 0);
   }
 
   function layout(f: number) {
@@ -253,7 +275,18 @@ const pad = (n: number) => String(n).padStart(2, "0");
   .fc-cta { font: 500 var(--step--1)/1 var(--mono); text-transform: uppercase; letter-spacing: .06em; background: var(--ink); color: var(--paper); padding: .65rem .9rem; margin-left: auto; }
   .fc[data-narrow] .fc-inner { grid-template-columns: minmax(0, 1fr); grid-template-rows: 38% minmax(0, 1fr); }
   .fc[data-narrow] .fc-num { font-size: 3rem; }
-  .fc[data-narrow] .fc-desc { display: -webkit-box; -webkit-line-clamp: 3; line-clamp: 3; -webkit-box-orient: vertical; }
+  /* Phone: one fixed grid per card (number, one-line tags, a three-line title box, description, meta),
+     so a long or short title never moves the rest of the card or pushes the meta out of it. */
+  .fc[data-narrow] .fc-inner { grid-template-rows: 34% minmax(0, 1fr); }
+  .fc[data-narrow] .fc-text { display: grid; grid-template-rows: auto auto auto minmax(0, 1fr) auto; gap: .5rem; padding: 1rem; }
+  .fc[data-narrow] .fc-num { font-size: 2.25rem; margin-bottom: 0; }
+  .fc[data-narrow] .s1 { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .fc[data-narrow] .fc-title { font-size: 1.6rem; height: 2.7em; display: -webkit-box; -webkit-line-clamp: 3; line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .fc[data-narrow] .fc-desc { align-self: start; font-size: .95rem; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: var(--desc-lines, 2); line-clamp: var(--desc-lines, 2); -webkit-box-orient: vertical; max-height: calc(var(--s2) * var(--desc-lines, 2) * 1.4em); }
+  .fc[data-narrow][data-nodesc] .fc-desc { display: none; }
+  .fc[data-narrow] .fc-meta { flex-wrap: nowrap; gap: .8rem; }
+  .fc[data-narrow] .fc-meta .label { white-space: nowrap; }
+  .fc-play { font: 500 var(--step--1)/1 var(--mono); color: var(--muted); }
   .fc-bar { flex: 1 1 200px; height: 2px; background: var(--line); position: relative; min-width: 0; }
   .fc-bar i { position: absolute; inset: 0; background: var(--dot); transform-origin: left; transform: scaleX(0); }
 
@@ -267,5 +300,9 @@ const pad = (n: number) => String(n).padStart(2, "0");
   .fc[data-variant="static"] .fc-inner { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto; }
   .fc[data-variant="static"] .fc-cover { aspect-ratio: 1200 / 630; }
   .fc[data-variant="static"] .fc-num { font-size: 3rem; margin-bottom: .4rem; }
+  /* Cards in a row stretch to the tallest; a fixed title box and the meta pinned to the bottom keep them aligned. */
+  .fc[data-variant="static"] .fc-text { display: flex; }
+  .fc[data-variant="static"] .fc-title { min-height: 2.7em; }
+  .fc[data-variant="static"] .fc-meta { margin-top: auto; }
   .fc[data-variant="static"] .fc-foot, .fc[data-variant="static"] .fc-nav, .fc[data-variant="static"] .fc-count { display: none; }
 </style>
