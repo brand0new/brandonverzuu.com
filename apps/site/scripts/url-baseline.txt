@@ -18,6 +18,7 @@
 /articles/the-siren-song-of-inference
 /articles/trust-in-ai
 /bookmarks
+/career
 /expert
 /expert/pricing
 /expert/privacy

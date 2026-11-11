@@ -126,4 +126,39 @@ const legalDocument = z.object({
 const expertTerms = defineCollection({ loader: glob({ pattern: "*.md", base: "./content/expert/terms" }), schema: legalDocument });
 const expertPrivacy = defineCollection({ loader: glob({ pattern: "*.md", base: "./content/expert/privacy" }), schema: legalDocument });
 
-export const collections = { articles, reviews, projects, expertPricing, expertTerms, expertPrivacy };
+// The /career page: one file, because the history is read and edited as a whole. Dates are
+// "YYYY-MM" rather than dates: LinkedIn only records months, and a full date would invent a
+// day. Durations and counts are derived from them (src/lib/career.ts), so nothing goes stale.
+const month = z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/, "use YYYY-MM");
+const career = defineCollection({
+  loader: file("./content/career.yml", { parser: (text) => [{ id: "career", ...yamlParse(text) }] }),
+  schema: z.object({
+    intro: z.array(z.string()).min(1),
+    location: z.string(),
+    // Slugs from src/lib/topicClusters.ts; the page fails the build on an unknown one.
+    topics: z.array(z.string()),
+    employers: z.array(
+      z.object({
+        name: z.string(),
+        // Small print after the name, e.g. a former company name.
+        note: z.string().optional(),
+        // Folded into the collapsed "Early career & studies" block.
+        early: z.boolean().optional(),
+        roles: z.array(
+          z.object({
+            title: z.string(),
+            start: month,
+            // Omitted while the role is current.
+            end: month.optional(),
+            location: z.string().optional(),
+            summary: z.array(z.string()),
+            highlights: z.array(z.object({ label: z.string(), text: z.string() })).optional(),
+            stack: z.array(z.string()).optional(),
+          }),
+        ).min(1),
+      }),
+    ),
+  }),
+});
+
+export const collections = { articles, reviews, projects, career, expertPricing, expertTerms, expertPrivacy };

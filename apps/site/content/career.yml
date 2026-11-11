@@ -1,0 +1,114 @@
+# Source for /career (the `career` collection in src/content.config.ts). Employers are
+# listed newest first, roles within an employer newest first. Dates are "YYYY-MM"; leave
+# `end` out for a current role. Durations and the counts in the page head are calculated
+# from these dates by the page, never written here. Brandon's words, from his LinkedIn
+# profile: agents don't add roles, dates or claims.
+intro:
+  - Bringing people and technology together toward a shared goal only works with a clear and inspiring vision.
+  - At many companies, tension grows between that vision and day-to-day practice. Somewhere along the way the original goal gets lost, and so does the drive that came with it.
+  - A vision that's carried well, backed by IT that's applied effectively, is the deciding factor. Whatever the size of the organisation.
+  - I combine creativity and an entrepreneurial streak with more than 10 years in IT to find that vision again, and to express it through successful products and services.
+
+location: Rosmalen, NL
+
+# Slugs from src/lib/topicClusters.ts, in the order the page lists them. Each links to
+# /articles?topic=<slug> with a live article count.
+topics:
+  - integration-architecture
+  - apis
+  - ai
+
+employers:
+  - name: AppyThings
+    roles:
+      - title: Head of Innovation & Product
+        start: "2026-01"
+        location: Veenendaal
+        summary:
+          - In this strategic role I shape the operational standards, processes and products within AppyThings, together with the management team. I act as the bridge between long-term vision and technical execution.
+        highlights:
+          - label: Strategic advisor
+            text: shaping company vision, strategy, propositions and go-to-market with the management team.
+          - label: Product & service development
+            text: translating developments in AI, agentic AI, cloud integration and enterprise integration into concrete use in what our consultants, engineers and architects deliver. I also steer the in-house development of Api-dex.
+      - title: Business Architect
+        start: "2023-06"
+        end: "2026-06"
+        location: Ede
+        summary:
+          - I was responsible for developing the "Integration Architecture Framework" and contributed to product and service development within AppyThings.
+        highlights:
+          - label: Integration architecture
+            text: writing guidelines, design principles and patterns for functional system integration. I implemented governance processes at clients and fed that experience back into the framework.
+          - label: Products and services
+            text: refining what we already offered, developing new offerings and translating mission and vision into goals we could actually execute.
+      - title: API Engineer
+        start: "2021-11"
+        end: "2023-06"
+        location: Ede
+        summary:
+          - I designed, built and delivered API Management solutions, mostly on Apigee.
+          - Around that, full-stack development made sure AppyThings' clients got a complete solution, ranging from managed cloud to on-premise.
+        stack:
+          - Git (Bitbucket, GitLab, GitHub)
+          - Git CI
+          - Jenkins
+          - JavaScript
+          - Vue.js
+          - Apigee (Edge, X and Hybrid)
+          - Gravitee
+
+  - name: Blueriq
+    note: formerly Everest
+    roles:
+      - title: Business Engineer
+        start: "2016-09"
+        end: "2021-11"
+        location: "'s-Hertogenbosch"
+        summary:
+          - I analysed and modelled the essential processes of organisations in central government and the financial sector, using Blueriq. We worked agile, project by project, across several teams. The first stretch was all about training and getting to grips with the tool.
+          - I designed and analysed processes at clients, whilst getting room to experiment with different roles and areas of knowledge within the project teams.
+        highlights:
+          - label: Process analysis and modelling
+            text: law-driven processes
+          - label: Blueriq
+            text: training and certification
+          - label: Onboarding
+            text: guiding and training new colleagues
+          - label: Knowledge sharing
+            text: organising an internal knowledge-sharing event
+          - label: Continuous Delivery
+            text: automated testing of Blueriq applications
+
+  - name: de ToetsPraktijk
+    early: true
+    roles:
+      - title: Graduation intern
+        start: "2016-02"
+        end: "2016-08"
+        summary:
+          - My graduation project. It was a literature study into requirements engineering best practices, plus a process design for RE at de ToetsPraktijk. The design was based on an as-is/to-be study with structured interviews, and the project ended in an advisory report.
+          - On the side I built an Access database for fraud analysis, integrations with Salesforce, SharePoint and Outlook Online, and a Power BI setup with dashboards and reports.
+
+  - name: Sogeti Nederland
+    early: true
+    roles:
+      - title: Student unit member
+        start: "2015-02"
+        end: "2016-08"
+        summary:
+          - As a member of Sogeti's student unit I had a direct line to part of their staff and access to the same courses they had. That gave me learning and work experience in both IT and management.
+
+  - name: OfficeGrip
+    early: true
+    roles:
+      - title: Junior SharePoint Consultant
+        start: "2015-02"
+        end: "2016-01"
+        summary:
+          - After my internship, OfficeGrip offered me a role as Junior SharePoint Consultant. I was responsible for parts of SharePoint projects, on a zero-hours contract I could combine with my studies.
+      - title: Intern
+        start: "2014-09"
+        end: "2015-02"
+        summary:
+          - "My first internship: analysing OfficeGrip's primary business process and looking for optimisations in its data flow. Most of it was in Roosendaal, with visits to clients across central and southern Netherlands and the IT department in Heemskerk."

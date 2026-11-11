@@ -1,0 +1,76 @@
+---
+// One employer on /career, in the site's row grammar: the employer is the row (display-face
+// name, mono span on the right), its roles sit under it split by hairlines, title and dates in
+// one column and the story in the other. Several roles at one company stay grouped, the way
+// LinkedIn shows them. Presentational: the page passes `now`, so open-ended durations are
+// counted once, at build time.
+import { employerSpan, formatDuration, formatRange, type CareerEmployer } from "../lib/career";
+
+interface Props {
+  employer: CareerEmployer;
+  /** "YYYY-MM" used as the end of a current role. */
+  now: string;
+}
+const { employer, now } = Astro.props;
+const span = employerSpan(employer);
+---
+
+<article class="emp">
+  <header class="row">
+    <h3 class="row-title">
+      {employer.name}
+      {employer.note && <span class="note label">{employer.note}</span>}
+    </h3>
+    {/* With one role the role carries the dates; repeating them here only adds noise. */}
+    {employer.roles.length > 1 && <p class="row-meta">{formatRange(span.start, span.end)} · {formatDuration(span.start, span.end ?? now)}</p>}
+  </header>
+  <ol class="roles">
+    {
+      employer.roles.map((r) => (
+        <li class="role">
+          <div class="role-head">
+            <h4>{r.title}</h4>
+            <p class="label">
+              {formatRange(r.start, r.end)} · {formatDuration(r.start, r.end ?? now)}
+              {r.location && <> · {r.location}</>}
+            </p>
+            {!r.end && <span class="tag on">Current</span>}
+          </div>
+          <div class="role-body">
+            {r.summary.map((p) => <p>{p}</p>)}
+            {r.highlights && (
+              <ul class="hl">
+                {r.highlights.map((h) => (
+                  <li>
+                    <strong>{h.label}</strong>: {h.text}
+                  </li>
+                ))}
+              </ul>
+            )}
+            {r.stack && (
+              <ul class="tags" aria-label="Stack">
+                {r.stack.map((t) => (
+                  <li class="tag">{t}</li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </li>
+      ))
+    }
+  </ol>
+</article>
+
+<style>
+  .emp .row { padding-bottom: .6rem; }
+  .note { display: block; margin-top: .45rem; text-transform: uppercase; }
+  .roles { list-style: none; margin: 0 0 1.4rem; padding: 0; }
+  .role { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr); gap: .9rem 3rem; padding-block: 1.2rem; border-top: 1px solid var(--line); }
+  .role-head { display: flex; flex-direction: column; align-items: flex-start; gap: .5rem; }
+  h4 { margin: 0; font-family: var(--display); font-weight: 800; text-transform: uppercase; font-size: var(--step-1); line-height: .95; text-wrap: balance; }
+  .role-body { display: flex; flex-direction: column; gap: .8rem; max-width: 62ch; }
+  .hl { margin: 0; padding-left: 1.2em; display: flex; flex-direction: column; gap: .4rem; }
+  .hl li::marker { color: var(--accent); }
+  .hl strong { font-weight: 600; }
+  @media (max-width: 860px) { .role { grid-template-columns: minmax(0, 1fr); gap: .7rem; } }
+</style>
