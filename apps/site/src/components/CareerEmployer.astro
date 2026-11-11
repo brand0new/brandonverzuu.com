@@ -62,12 +62,15 @@ const span = employerSpan(employer);
 </article>
 
 <style>
-  .emp .row { padding-bottom: .6rem; }
+  .emp .row { padding-bottom: .9rem; }
+  .emp .row-title { padding-left: .8rem; border-left: .35rem solid var(--accent); }
   .note { display: block; margin-top: .45rem; text-transform: uppercase; }
   .roles { list-style: none; margin: 0 0 1.4rem; padding: 0; }
   .role { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr); gap: .9rem 3rem; padding-block: 1.2rem; border-top: 1px solid var(--line); }
   .role-head { display: flex; flex-direction: column; align-items: flex-start; gap: .5rem; }
-  h4 { margin: 0; font-family: var(--display); font-weight: 800; text-transform: uppercase; font-size: var(--step-1); line-height: .95; text-wrap: balance; }
+  /* Employer and role read as two levels: the employer is the billboard (display face,
+     uppercase, with an accent bar), the role title is the serif text face in sentence case. */
+  h4 { margin: 0; font-family: var(--serif); font-weight: 600; font-size: var(--step-1); line-height: 1.15; text-wrap: balance; color: var(--ink); }
   .role-body { display: flex; flex-direction: column; gap: .8rem; max-width: 62ch; }
   .hl { margin: 0; padding-left: 1.2em; display: flex; flex-direction: column; gap: .4rem; }
   .hl li::marker { color: var(--accent); }
