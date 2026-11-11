@@ -1,14 +1,13 @@
 ---
 // /career: Brandon's working history from content/career.yml. PageHead, an In numbers block,
-// then the chapters: why, the timeline, projects, certifications, skills, and the topics the
-// work turns into writing. Every number is counted from the data or the articles at build
-// time, never typed in.
+// then the chapters: why, the timeline, projects, certifications and skills. Every number is
+// counted from the data at build time, never typed in.
 import { existsSync } from "node:fs";
 import { getEntry } from "astro:content";
 import Base from "../layouts/Base.astro";
 import PageHead from "../components/PageHead.astro";
 import CareerEmployer from "../components/CareerEmployer.astro";
-import { SITE, clusterStats, plural } from "../lib/content";
+import { SITE, plural } from "../lib/content";
 import { breadcrumbSchema, type Crumb } from "../lib/schema";
 import { currentMonth, employerSpan, formatMonth, formatRange, monthsBetween } from "../lib/career";
 
@@ -47,13 +46,6 @@ const issuers = [...new Set(career.certifications.map((c) => c.issuer))].map((is
   return { issuer, certs, badge, monogram };
 });
 const skillCount = career.skills.reduce((n, g) => n + g.items.length, 0);
-
-const stats = await clusterStats();
-const topics = career.topics.map((slug) => {
-  const t = stats.find((c) => c.slug === slug);
-  if (!t) throw new Error(`content/career.yml: unknown topic "${slug}" (see src/lib/topicClusters.ts)`);
-  return t;
-});
 
 const description = "My path from SharePoint intern to Head of Innovation & Product: integration, APIs and turning a vision into products and services.";
 const crumbs: Crumb[] = [{ label: "Home", href: "/" }, { label: "Career" }];
@@ -198,26 +190,6 @@ const crumbs: Crumb[] = [{ label: "Home", href: "/" }, { label: "Career" }];
     </ul>
   </section>
 
-  <section class="chapter wrap" aria-labelledby="writing-title">
-    <div class="chapter-head">
-      <p class="label">06 · Writing</p>
-      <h2 id="writing-title">Writing from<br />the work</h2>
-      <p class="measure">The topics I write about, each with the articles filed under it.</p>
-    </div>
-    <ul class="rows">
-      {
-        topics.map((t) => (
-          <li>
-            <a class="row" href={`/articles?topic=${t.slug}`}>
-              <span class="row-title">{t.title}</span>
-              <span class="row-meta">{plural(t.count, "article")}{t.years && ` · ${t.years}`} →</span>
-              <span class="row-desc">{t.summary}</span>
-            </a>
-          </li>
-        ))
-      }
-    </ul>
-  </section>
 </Base>
 
 <script>

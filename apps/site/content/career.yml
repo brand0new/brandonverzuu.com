@@ -11,13 +11,6 @@ intro:
 
 location: Rosmalen, NL
 
-# Slugs from src/lib/topicClusters.ts, in the order the page lists them. Each links to
-# /articles?topic=<slug> with a live article count.
-topics:
-  - integration-architecture
-  - apis
-  - ai
-
 employers:
   - name: AppyThings
     roles:

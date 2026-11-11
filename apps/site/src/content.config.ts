@@ -135,8 +135,6 @@ const career = defineCollection({
   schema: z.object({
     intro: z.array(z.string()).min(1),
     location: z.string(),
-    // Slugs from src/lib/topicClusters.ts; the page fails the build on an unknown one.
-    topics: z.array(z.string()),
     employers: z.array(
       z.object({
         name: z.string(),
