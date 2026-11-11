@@ -16,6 +16,7 @@ const cards = {
   articles: { title: "Articles", kicker: "APIs, platforms & technology" },
   reviews: { title: "Reviews", kicker: "Films, games & books" },
   projects: { title: "Projects", kicker: "Brandon Verzuu" },
+  career: { title: "Career", kicker: "Head of Innovation & Product" },
   bookmarks: { title: "Bookmarks", kicker: "Brandon Verzuu" },
 } as const;
 

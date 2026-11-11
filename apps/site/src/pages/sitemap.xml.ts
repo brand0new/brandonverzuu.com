@@ -14,6 +14,7 @@ export const GET: APIRoute = async () => {
     { path: "/reviews", lastmod: reviews[0]?.data.date },
     ...reviews.map((r) => ({ path: `/reviews/${r.id}`, lastmod: r.data.date })),
     { path: "/projects" },
+    { path: "/career" },
     { path: "/bookmarks" },
   ];
   const body =

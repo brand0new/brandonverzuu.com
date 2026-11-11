@@ -1,0 +1,147 @@
+---
+// /career: Brandon's working history from content/career.yml. PageHead, an In numbers block,
+// then three chapters: why, the timeline, and the topics the work turns into writing. Every
+// number is counted from the data or the articles at build time, never typed in.
+import { getEntry } from "astro:content";
+import Base from "../layouts/Base.astro";
+import PageHead from "../components/PageHead.astro";
+import CareerEmployer from "../components/CareerEmployer.astro";
+import { SITE, clusterStats, plural } from "../lib/content";
+import { breadcrumbSchema, type Crumb } from "../lib/schema";
+import { currentMonth, employerSpan, monthsBetween } from "../lib/career";
+
+const entry = await getEntry("career", "career");
+if (!entry) throw new Error("content/career.yml is missing");
+const career = entry.data;
+
+// Build-time "now": the site is rebuilt on every merge, so a current role's duration is at
+// most one deploy stale, and the prerendered page never disagrees with itself.
+const now = currentMonth();
+const recent = career.employers.filter((e) => !e.early);
+const early = career.employers.filter((e) => e.early);
+
+const firstStart = career.employers.flatMap((e) => e.roles.map((r) => r.start)).sort()[0]!;
+const years = Math.floor(monthsBetween(firstStart, now) / 12);
+const current = recent.flatMap((e) => e.roles.filter((r) => !r.end).map((r) => ({ employer: e.name, role: r })))[0];
+const earlySpans = early.map(employerSpan);
+const earlyYears = `${earlySpans.map((s) => s.start).sort()[0]?.slice(0, 4)}–${earlySpans.map((s) => s.end ?? now).sort().at(-1)?.slice(0, 4)}`;
+
+const facts = [
+  { value: years, label: `Years since my first internship, ${firstStart.slice(0, 4)}`, drop: true },
+  { value: career.employers.length, label: "Employers" },
+  { value: recent[0]!.roles.length, label: `Roles at ${recent[0]!.name}` },
+];
+
+const stats = await clusterStats();
+const topics = career.topics.map((slug) => {
+  const t = stats.find((c) => c.slug === slug);
+  if (!t) throw new Error(`content/career.yml: unknown topic "${slug}" (see src/lib/topicClusters.ts)`);
+  return t;
+});
+
+const description = "My path from SharePoint intern to Head of Innovation & Product: integration, APIs and turning a vision into products and services.";
+const crumbs: Crumb[] = [{ label: "Home", href: "/" }, { label: "Career" }];
+---
+
+<Base image="/og/career.png" title="Career | Brandon Verzuu" description={description} schema={[breadcrumbSchema(crumbs, `${SITE}/career`)]}>
+  <PageHead title="Career" crumbs={crumbs} kicker={current ? `${current.role.title} · ${current.employer} · ${career.location}` : career.location} description={career.intro[0]} />
+
+  <section class="wrap section" aria-label="In numbers">
+    <ul class="numbers">
+      {
+        facts.map((f) => (
+          <li>
+            <span class="num">
+              {f.value}
+              {f.drop && <span class="drop" aria-hidden="true" />}
+            </span>
+            <span class="label">{f.label}</span>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <section class="chapter wrap" aria-labelledby="why-title">
+    <div class="chapter-head">
+      <p class="label">01 · Why</p>
+      <h2 id="why-title">Find the vision<br />again</h2>
+      <div class="measure stack">{career.intro.slice(1).map((p) => <p>{p}</p>)}</div>
+    </div>
+  </section>
+
+  <section class="chapter wrap" aria-labelledby="timeline-title">
+    <div class="chapter-head">
+      <p class="label">02 · Timeline</p>
+      <h2 id="timeline-title">From SharePoint<br />to strategy</h2>
+      <p class="measure">Newest first. Roles at one company sit together under its name.</p>
+    </div>
+    <ol class="rows">
+      {
+        recent.map((e) => (
+          <li>
+            <CareerEmployer employer={e} now={now} />
+          </li>
+        ))
+      }
+    </ol>
+    {
+      early.length > 0 && (
+        <details class="early">
+          {/* Native <details>: collapsible without a script, keyboard and screen-reader
+              support for free, and the text is still in the prerendered HTML. */}
+          <summary class="more">Early career &amp; studies · {earlyYears}</summary>
+          <ol class="rows">
+            {early.map((e) => (
+              <li>
+                <CareerEmployer employer={e} now={now} />
+              </li>
+            ))}
+          </ol>
+        </details>
+      )
+    }
+  </section>
+
+  <section class="chapter wrap" aria-labelledby="writing-title">
+    <div class="chapter-head">
+      <p class="label">03 · Writing</p>
+      <h2 id="writing-title">Writing from<br />the work</h2>
+      <p class="measure">The topics I write about, each with the articles filed under it.</p>
+    </div>
+    <ul class="rows">
+      {
+        topics.map((t) => (
+          <li>
+            <a class="row" href={`/articles?topic=${t.slug}`}>
+              <span class="row-title">{t.title}</span>
+              <span class="row-meta">{plural(t.count, "article")}{t.years && ` · ${t.years}`} →</span>
+              <span class="row-desc">{t.summary}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+</Base>
+
+<script>
+  import { observeLockOn } from "../scripts/signal.js";
+  observeLockOn([...document.querySelectorAll<HTMLElement>(".numbers .drop")]);
+</script>
+
+<style>
+  /* In numbers (design system: InNumbers): a 2px ink rule, columns split by hairlines,
+     stacked on phones. One signal drop, after the figure that matters most. */
+  .numbers { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 2px solid var(--ink); }
+  .numbers li { display: flex; flex-direction: column; gap: .6rem; padding: 1.4rem 1.4rem 1.4rem 0; }
+  .numbers li + li { border-left: 1px solid var(--line); padding-left: 1.4rem; }
+  .num { font-family: var(--display); font-weight: 900; font-size: clamp(4rem, 3rem + 5vw, 7rem); line-height: .8; color: var(--accent); font-variant-numeric: tabular-nums; }
+  @media (max-width: 640px) {
+    .numbers { grid-template-columns: minmax(0, 1fr); }
+    .numbers li + li { border-left: 0; padding-left: 0; border-top: 1px solid var(--line); }
+  }
+  .early { margin-top: 1rem; }
+  .early summary { cursor: pointer; color: var(--accent); padding-block: .6rem; width: fit-content; }
+  .early[open] summary { margin-bottom: 1.5rem; }
+</style>
