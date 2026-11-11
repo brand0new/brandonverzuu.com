@@ -11,13 +11,6 @@ intro:
 
 location: Rosmalen, NL
 
-# Slugs from src/lib/topicClusters.ts, in the order the page lists them. Each links to
-# /articles?topic=<slug> with a live article count.
-topics:
-  - integration-architecture
-  - apis
-  - ai
-
 employers:
   - name: AppyThings
     roles:
@@ -86,9 +79,15 @@ employers:
       - title: Graduation intern
         start: "2016-02"
         end: "2016-08"
+        location: Eindhoven area
         summary:
-          - My graduation project. It was a literature study into requirements engineering best practices, plus a process design for RE at de ToetsPraktijk. The design was based on an as-is/to-be study with structured interviews, and the project ended in an advisory report.
+          - My graduation project. It was a literature study into requirements engineering best practices, plus a process design for RE at de ToetsPraktijk. The design was based on an as-is/to-be study with structured interviews into what employees needed, and the project ended in an advisory report.
           - On the side I built an Access database for fraud analysis, integrations with Salesforce, SharePoint and Outlook Online, and a Power BI setup with dashboards and reports.
+        highlights:
+          - label: Deliverables
+            text: literature study, as-is/to-be gap analysis, process design and advisory report.
+          - label: Topics
+            text: requirements engineering with Scrum, SharePoint, Office 365 (InfoPath, Groups, Power BI) and Salesforce.
 
   - name: Sogeti Nederland
     early: true
@@ -96,6 +95,7 @@ employers:
       - title: Student unit member
         start: "2015-02"
         end: "2016-08"
+        location: Vianen
         summary:
           - As a member of Sogeti's student unit I had a direct line to part of their staff and access to the same courses they had. That gave me learning and work experience in both IT and management.
 
@@ -105,10 +105,242 @@ employers:
       - title: Junior SharePoint Consultant
         start: "2015-02"
         end: "2016-01"
+        location: Roosendaal area
         summary:
-          - After my internship, OfficeGrip offered me a role as Junior SharePoint Consultant. I was responsible for parts of SharePoint projects, on a zero-hours contract I could combine with my studies.
+          - After my internship, OfficeGrip offered me a role as Junior SharePoint Consultant. I was responsible for parts of SharePoint projects, on a zero-hours contract I could combine with my studies, and got to dig deeper into the Microsoft software and hardware businesses run on.
+        highlights:
+          - label: Skills
+            text: project-based work, SharePoint development, Office applications, business architecture and workflow management.
       - title: Intern
         start: "2014-09"
         end: "2015-02"
+        location: Roosendaal / Heemskerk
         summary:
           - "My first internship: analysing OfficeGrip's primary business process and looking for optimisations in its data flow. Most of it was in Roosendaal, with visits to clients across central and southern Netherlands and the IT department in Heemskerk."
+
+  - name: Studentaanhuis.nl
+    early: true
+    roles:
+      - title: ICT Student
+        start: "2014-05"
+        end: "2014-12"
+        location: Tilburg
+        summary:
+          - Working for Student aan Huis turned my hobby into my job. The assignments they brought in widened my reach to clients across Tilburg and the surrounding area, where I did the same work as before, mostly solving people's IT problems.
+
+  - name: Freelance
+    early: true
+    roles:
+      - title: Freelance IT support
+        start: "2011-03"
+        end: "2014-05"
+        location: Tilburg area
+        summary:
+          - In my spare time I helped people with their IT problems. It started with family and friends and grew into a wider circle, which let me spend time on my hobby and earn something next to my side job.
+        highlights:
+          - label: Skills
+            text: entrepreneurship, hardware repair and consulting, tuning, building and troubleshooting computers, and basic programming.
+
+  - name: Restaria Lucullus
+    early: true
+    roles:
+      - title: Sales assistant
+        start: "2008-05"
+        end: "2014-03"
+        summary:
+          - I prepared and sold Restaria Lucullus' products, and learned to serve customers in a way that fitted the company's policy. I owe much of my customer focus to this job.
+
+  - name: Netwerk VSP
+    early: true
+    roles:
+      - title: Newspaper delivery
+        start: "2006-02"
+        end: "2008-05"
+        location: Tilburg
+        summary:
+          - My first job, and where my work ethic started. It taught me what it's like to work for a monthly wage, and the basics of working.
+
+# Side projects and programmes from LinkedIn, newest first. `end` is left out for one that
+# is still running; `url` only where LinkedIn lists one.
+projects:
+  - title: API Conventions
+    start: "2024-11"
+    summary: Turning AppyThings' documentation on API development guidelines and Apigee proxy design into a contemporary solution. Open-source tools validate the specifications common in cloud integration projects, starting with AppyThings rulesets for the OpenAPI Specification and Apigee proxy design. The aim is one place for rule definitions, documentation and governance that any organisation can use, whatever its operating model for API development.
+  - title: Integration Architecture Framework
+    start: "2022-09"
+    summary: A framework I created within AppyThings, offered both as a product and as a professional service for organisations that need help executing their integration strategy. It combines our expertise with ideas from thought leaders on integration into a guide for identifying integration challenges and finding a matching pattern. Applying it at clients, development teams and management introduce a small change to how they work that greatly improves knowledge handover and decision logging.
+  - title: brandonverzuu.com
+    start: "2022-01"
+    url: https://brandonverzuu.com
+    summary: My own domain, with every application and all the infrastructure behind it, maintained for personal development and branding. It lets me build and keep skills I can't apply directly in my daily work, and it's where I write about subjects I find interesting.
+  - title: Integration and delivery automation
+    start: "2018-02"
+    summary: Finding a viable way to apply continuous integration and delivery to the Blueriq Modeling Platform, whose models are executed by a runtime and so call for their own approach to engineering and delivery. The goal was to prove the added value and shorter lead times, with evidence that application quality doesn't deteriorate over time.
+    tags:
+      - Jenkins
+      - Apache Maven
+      - SonarQube
+      - Product risk management
+      - Test automation
+      - ReadyAPI
+  - title: Blueriq Academy
+    start: "2016-09"
+    end: "2016-11"
+    url: https://www.blueriq.com/academy/
+    summary: An intensive training programme, run by Blueriq with CGI, in which 14 selected professionals trained for the Blueriq Associate certificate. It honed my Blueriq skills alongside knowledge- and decision-driven process development.
+    tags:
+      - Blueriq Modeling Foundation
+      - Robust modelling
+      - Decision Management
+      - Dynamic Case Management
+  - title: ICT Honours Programme 2013/2014
+    start: "2013-10"
+    summary: An extra semester added to the second year at Avans Hogeschool, in which a select group of students took extra lectures and extracurricular activities.
+  - title: Application development with DSDM
+    start: "2013-11"
+    end: "2014-01"
+    summary: A student team project building an administrative application for a fictional sports organisation with Visual Studio LightSwitch and SQL Server, through all five phases of the Dynamic System Development Method, from feasibility study to implementation.
+  - title: NewFlys
+    start: "2012-09"
+    end: "2013-01"
+    url: http://www.newflys.nl/html
+    summary: A webshop built in PHP, HTML and CSS during the first year of Business Informatics & Management, where I also led the team.
+
+# Newest first. `url` is the issuer's verification or certificate page; `badge` is an
+# optional image in public/career/badges/ for issuers that hand one out.
+certifications:
+  - name: "Claude Academy: Model Context Protocol: Advanced topics"
+    issuer: Anthropic
+    date: "2026-11"
+    url: https://academy.claude.com/verify/ac265f1ace4e76836056cecb32f61842
+  - name: "Claude Academy: Deploying Claude Enterprise with confidence"
+    issuer: Anthropic
+    date: "2026-11"
+    url: https://academy.claude.com/verify/6b46741f771cee88485de0d953323df1
+  - name: "Claude Academy: Claude Code 101"
+    issuer: Anthropic
+    date: "2026-11"
+    url: https://academy.claude.com/verify/13459e207a5c84e2440b28e1c6fa4d53
+  - name: "Claude Academy: Building with the Claude API"
+    issuer: Anthropic
+    date: "2026-11"
+    url: https://academy.claude.com/verify/6613cd47ce5092802f2acd506011faa6
+  - name: "Claude Academy: Claude 101"
+    issuer: Anthropic
+    date: "2026-11"
+    url: https://academy.claude.com/verify/4b2efb71aa50645159b2da860bf77f4c
+  - name: "Claude Academy: AI Fluency for small businesses"
+    issuer: Anthropic
+    date: "2026-11"
+    url: https://academy.claude.com/verify/6cdac0815b836df813f49931332201d4
+  - name: "Claude Academy: Claude on Google Cloud"
+    issuer: Anthropic
+    date: "2026-11"
+    url: https://academy.claude.com/verify/52d9a95ff9b06ff2edfe47ab0b22f6c8
+  - name: "Claude Academy: AI capabilities and limitations"
+    issuer: Anthropic
+    date: "2026-11"
+    url: https://academy.claude.com/verify/df76e6d63818a401ebea343400baed9b
+  - name: "Claude Academy: Building effective human-agent teams"
+    issuer: Anthropic
+    date: "2026-10"
+    url: https://academy.claude.com/verify/417fb78675717b060d34c527a2af51b7
+  - name: "Claude Academy: Introduction to Model Context Protocol"
+    issuer: Anthropic
+    date: "2026-10"
+    url: https://academy.claude.com/verify/3a0d836165543b9f34d04f6dd2e2b9c5
+  - name: OpenAPI Fundamentals (LFEL1011)
+    issuer: The Linux Foundation
+    date: "2024-07"
+    url: https://ti-user-certificates.s3.amazonaws.com/e0df7fbf-a057-42af-8a1f-590912be5460/e83af899-5532-4885-bddf-f49287f29295-brandon-verzuu-afaad989-b39e-499e-a9b2-866fec456521-certificate.pdf
+  - name: Developing APIs with Google Cloud's Apigee API Platform Specialization
+    issuer: Coursera
+    date: "2021-11"
+    url: https://www.coursera.org/account/accomplishments/specialization/certificate/JHYXYVDS9YDL
+  - name: Ethereum 101
+    issuer: Ivan on Tech Blockchain Academy
+    date: "2021-02"
+  - name: Blockchain & Bitcoin 101
+    issuer: Ivan on Tech Blockchain Academy
+    date: "2021-01"
+  - name: Blueriq Business Professional
+    issuer: Blueriq
+    date: "2018-10"
+  - name: Blueriq Business Associate
+    issuer: Blueriq
+    date: "2016-10"
+  - name: Proof of Exchange Program
+    issuer: Kyungpook National University
+    date: "2016-01"
+  - name: ICT Honours Programme
+    issuer: Avans Hogeschool
+    date: "2014-10"
+  - name: Propaedeutic diploma
+    issuer: Avans Hogeschool
+    date: "2013-11"
+
+# Every skill on LinkedIn, grouped for reading.
+skills:
+  - group: AI & agents
+    items:
+      - Model Context Protocol (MCP)
+      - Agentic Engineering
+      - Artificial Intelligence (AI)
+      - Large Language Models (LLM)
+  - group: Integration & APIs
+    items:
+      - Integration Architecture
+      - Enterprise Integration
+      - Integration Development
+      - API Management
+      - API Governance
+      - API Development
+      - OpenAPI Specification (OAS)
+      - Apigee
+  - group: Architecture & strategy
+    items:
+      - IT Strategy
+      - Strategic Vision
+      - Business Architecture
+      - Solution Architecture
+      - Business Analysis
+      - Business Consulting
+      - Research and Development (R&D)
+      - Product Development
+      - Service Development
+      - Engineering Change Management
+      - Project Management
+  - group: Engineering
+    items:
+      - Software Development
+      - Software Design
+      - Application Development
+      - Platform Development
+      - TypeScript
+      - JavaScript
+      - Vue.js
+      - Git
+      - Cloudflare
+      - SaaS
+      - PaaS
+      - Low-code Platforms
+      - Blueriq
+      - Open-Source Software
+  - group: Delivery & quality
+    items:
+      - Continuous Delivery
+      - DevOps
+      - Jenkins
+      - Test Automation Frameworks
+      - Agile Testing
+      - Regression Testing
+  - group: People & communication
+    items:
+      - Inspirational Speaking
+      - Presentation Skills
+      - Business Communication
+      - Client Engagement
+      - Analytical Thinking
+      - Creativity
+      - Teamwork
+      - English

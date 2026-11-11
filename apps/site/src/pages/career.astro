@@ -1,14 +1,15 @@
 ---
 // /career: Brandon's working history from content/career.yml. PageHead, an In numbers block,
-// then three chapters: why, the timeline, and the topics the work turns into writing. Every
-// number is counted from the data or the articles at build time, never typed in.
+// then the chapters: why, the timeline, projects, certifications and skills. Every number is
+// counted from the data at build time, never typed in.
+import { existsSync } from "node:fs";
 import { getEntry } from "astro:content";
 import Base from "../layouts/Base.astro";
 import PageHead from "../components/PageHead.astro";
 import CareerEmployer from "../components/CareerEmployer.astro";
-import { SITE, clusterStats, plural } from "../lib/content";
+import { SITE, plural } from "../lib/content";
 import { breadcrumbSchema, type Crumb } from "../lib/schema";
-import { currentMonth, employerSpan, monthsBetween } from "../lib/career";
+import { currentMonth, employerSpan, formatMonth, formatRange, monthsBetween } from "../lib/career";
 
 const entry = await getEntry("career", "career");
 if (!entry) throw new Error("content/career.yml is missing");
@@ -27,17 +28,24 @@ const earlySpans = early.map(employerSpan);
 const earlyYears = `${earlySpans.map((s) => s.start).sort()[0]?.slice(0, 4)}–${earlySpans.map((s) => s.end ?? now).sort().at(-1)?.slice(0, 4)}`;
 
 const facts = [
-  { value: years, label: `Years since my first internship, ${firstStart.slice(0, 4)}`, drop: true },
+  { value: years, label: `Years since my first job, ${firstStart.slice(0, 4)}`, drop: true },
   { value: career.employers.length, label: "Employers" },
   { value: recent[0]!.roles.length, label: `Roles at ${recent[0]!.name}` },
 ];
 
-const stats = await clusterStats();
-const topics = career.topics.map((slug) => {
-  const t = stats.find((c) => c.slug === slug);
-  if (!t) throw new Error(`content/career.yml: unknown topic "${slug}" (see src/lib/topicClusters.ts)`);
-  return t;
+// Certifications sit under their issuer, like roles under an employer, in the order the data
+// lists them. An issuer without a badge image gets a monogram: the initials of its
+// capitalised words, "The" left out ("The Linux Foundation" is LF).
+const issuers = [...new Set(career.certifications.map((c) => c.issuer))].map((issuer) => {
+  const certs = career.certifications.filter((c) => c.issuer === issuer);
+  const badge = certs.find((c) => c.badge)?.badge;
+  if (badge && !existsSync(new URL(`../../public${badge}`, import.meta.url))) {
+    throw new Error(`content/career.yml: badge ${badge} is not in public/`);
+  }
+  const monogram = issuer.split(/\s+/).filter((w) => /^[A-Z]/.test(w) && w !== "The").map((w) => w[0]).join("").slice(0, 2);
+  return { issuer, certs, badge, monogram };
 });
+const skillCount = career.skills.reduce((n, g) => n + g.items.length, 0);
 
 const description = "My path from SharePoint intern to Head of Innovation & Product: integration, APIs and turning a vision into products and services.";
 const crumbs: Crumb[] = [{ label: "Home", href: "/" }, { label: "Career" }];
@@ -103,26 +111,85 @@ const crumbs: Crumb[] = [{ label: "Home", href: "/" }, { label: "Career" }];
     }
   </section>
 
-  <section class="chapter wrap" aria-labelledby="writing-title">
+  <section class="chapter wrap" aria-labelledby="projects-title">
     <div class="chapter-head">
-      <p class="label">03 · Writing</p>
-      <h2 id="writing-title">Writing from<br />the work</h2>
-      <p class="measure">The topics I write about, each with the articles filed under it.</p>
+      <p class="label">03 · Projects</p>
+      <h2 id="projects-title">Built on<br />the side</h2>
+      <p class="measure">Frameworks, programmes and side projects, newest first.</p>
     </div>
     <ul class="rows">
       {
-        topics.map((t) => (
-          <li>
-            <a class="row" href={`/articles?topic=${t.slug}`}>
-              <span class="row-title">{t.title}</span>
-              <span class="row-meta">{plural(t.count, "article")}{t.years && ` · ${t.years}`} →</span>
-              <span class="row-desc">{t.summary}</span>
-            </a>
+        career.projects.map((p) => {
+          const meta = p.end ? formatRange(p.start, p.end) : `Since ${formatMonth(p.start)}`;
+          return (
+            <li class="row">
+              <h3 class="row-title">{p.url ? <a href={p.url}>{p.title}</a> : p.title}</h3>
+              <span class="row-meta">{meta}</span>
+              <p class="row-desc">{p.summary}</p>
+              {p.tags && (
+                <ul class="tags row-tags" aria-label="Subjects">
+                  {p.tags.map((t) => <li class="tag">{t}</li>)}
+                </ul>
+              )}
+            </li>
+          );
+        })
+      }
+    </ul>
+  </section>
+
+  <section class="chapter wrap" aria-labelledby="certs-title">
+    <div class="chapter-head">
+      <p class="label">04 · Certifications</p>
+      <h2 id="certs-title">Proof of<br />learning</h2>
+      <p class="measure">{plural(career.certifications.length, "certification")} from {plural(issuers.length, "issuer")}, grouped by who issued them. Where an issuer offers one, the name links to its verification.</p>
+    </div>
+    <ol class="rows">
+      {
+        issuers.map((i) => (
+          <li class="issuer">
+            {i.badge ? (
+              <img class="badge" src={i.badge} alt="" width="64" height="64" loading="lazy" />
+            ) : (
+              <span class="badge mono" aria-hidden="true">{i.monogram}</span>
+            )}
+            <div>
+              <h3 class="issuer-name">{i.issuer}</h3>
+              <ul class="certs">
+                {i.certs.map((c) => (
+                  <li>
+                    {c.url ? <a href={c.url}>{c.name}</a> : <span>{c.name}</span>}
+                    <span class="label">{formatMonth(c.date)}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+  </section>
+
+  <section class="chapter wrap" aria-labelledby="skills-title">
+    <div class="chapter-head">
+      <p class="label">05 · Skills</p>
+      <h2 id="skills-title">What I<br />bring</h2>
+      <p class="measure">{plural(skillCount, "skill")}, grouped by where I use them.</p>
+    </div>
+    <ul class="rows">
+      {
+        career.skills.map((g) => (
+          <li class="skill-group">
+            <h3 class="label">{g.group}</h3>
+            <ul class="tags">
+              {g.items.map((s) => <li class="tag">{s}</li>)}
+            </ul>
           </li>
         ))
       }
     </ul>
   </section>
+
 </Base>
 
 <script>
@@ -141,6 +208,21 @@ const crumbs: Crumb[] = [{ label: "Home", href: "/" }, { label: "Career" }];
     .numbers { grid-template-columns: minmax(0, 1fr); }
     .numbers li + li { border-left: 0; padding-left: 0; border-top: 1px solid var(--line); }
   }
+  /* Projects: plain rows, the title links out when there's a URL. */
+  .row-title a { color: inherit; text-decoration: none; }
+  .row-title a:hover, .row-title a:focus-visible { color: var(--accent); }
+  /* Certifications: one row per issuer, its badge in a square on the left. The monogram is
+     the badge's rest state: display face, accent hairline, square corners. */
+  .issuer { display: grid; grid-template-columns: 4rem minmax(0, 1fr); gap: 1.4rem; padding-block: 1.2rem; }
+  .badge { width: 4rem; height: 4rem; object-fit: contain; }
+  .badge.mono { display: grid; place-items: center; border: 2px solid var(--accent); color: var(--accent); font-family: var(--display); font-weight: 900; font-size: 1.7rem; line-height: 1; text-transform: uppercase; }
+  .issuer-name { margin: 0 0 .6rem; font-family: var(--display); font-weight: 800; text-transform: uppercase; font-size: var(--step-1); line-height: .95; }
+  .certs { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: .45rem; max-width: 62ch; }
+  .certs li { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: .2rem 1rem; }
+  /* Skills: a mono group label over its tags. */
+  .skill-group { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2.4fr); gap: .7rem 3rem; padding-block: 1.1rem; }
+  .skill-group h3 { margin: 0; }
+  @media (max-width: 860px) { .skill-group { grid-template-columns: minmax(0, 1fr); } }
   .early { margin-top: 1rem; }
   .early summary { cursor: pointer; color: var(--accent); padding-block: .6rem; width: fit-content; }
   .early[open] summary { margin-bottom: 1.5rem; }
