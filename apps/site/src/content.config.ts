@@ -156,16 +156,6 @@ const career = defineCollection({
         ).min(1),
       }),
     ),
-    projects: z.array(
-      z.object({
-        title: z.string(),
-        start: month,
-        end: month.optional(),
-        url: z.string().url().optional(),
-        summary: z.string(),
-        tags: z.array(z.string()).optional(),
-      }),
-    ),
     certifications: z.array(
       z.object({
         name: z.string(),
