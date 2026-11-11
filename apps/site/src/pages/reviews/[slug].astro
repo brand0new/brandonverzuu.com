@@ -24,10 +24,16 @@ const c = covers("reviews", review.id);
 const url = `${SITE}/reviews/${review.id}`;
 const crumbs: Crumb[] = [{ label: "Home", href: "/" }, { label: "Reviews", href: "/reviews" }, { label: d.title }];
 const subjectLine = [media[d.medium].label, d.subject.year, d.subject.creator].filter(Boolean).join(" · ");
-const schema = [reviewSchema({ title: d.title, description: d.description, url, date: d.date, image: d.image, medium: d.medium, subject: d.subject, rating: d.rating }), breadcrumbSchema(crumbs, url)];
+const schema = [reviewSchema({ title: d.title, description: d.description, url, date: d.date, image: c.dark, medium: d.medium, subject: d.subject, rating: d.rating }), breadcrumbSchema(crumbs, url)];
 ---
 
-<Base title={`${d.title} | Brandon Verzuu`} description={d.description} image={d.image} schema={schema} type="article">
+<Base
+  title={`${d.title} | Brandon Verzuu`}
+  description={d.description}
+  image={`/og/reviews/${review.id}.png`}
+  article={{ published: d.date, section: "Reviews" }}
+  schema={schema}
+>
   <article class="story">
     <header class="a-head wrap">
       <Breadcrumb crumbs={crumbs} />

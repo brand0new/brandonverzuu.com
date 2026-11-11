@@ -50,7 +50,7 @@ details: what runs where, why the build runs twice, configuration and secrets.
 - **The dithered visual language** is *Noise to Signal*: terracotta dither on cool
   porcelain, one fluorescent signal colour used as a drop, billboard type. Images resolve
   from a coarse noise floor to their own native grid as the reader commits to them. It's
-  shared by covers, the site and explainer videos. The algorithms and the palette
+  shared by covers, social cards, the site and explainer videos. The algorithms and the palette
   (`tokens.mjs`) live once in `apps/site/scripts/lib/` and are ported, with attribution,
   where the browser needs them (`apps/site/src/scripts/signal.js`). Component conventions
   are in `skills/new-component/conventions.md`.
@@ -67,6 +67,10 @@ These are facts the build and the pages rely on:
 - Every article has a cover at `apps/site/public/articles/<slug>/cover.png` with a
   `cover-light.png` sibling. The page background and the article cards find them by
   that path, not through frontmatter.
+- Social cards (`og:image`, 1200×630) are rendered at build time by
+  `apps/site/src/pages/og/` with `apps/site/scripts/lib/og-card.mjs`: each article and review
+  gets `/og/<collection>/<slug>.png` from its cover and title, other pages a fixed card in
+  `/og/`. Nothing is committed for them; a missing cover fails the build there too.
 - Reviews follow the same pattern in `apps/site/content/reviews/` (the `reviews` schema) and
   `apps/site/public/reviews/<slug>/`. Brandon writes them by hand. Ratings, verdicts and
   opinions are his alone, and agents never supply them.

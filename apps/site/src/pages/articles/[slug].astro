@@ -32,10 +32,17 @@ const url = `${SITE}/articles/${article.id}`;
 // Tags sit in the meta line; a tag that belongs to a topic links to that topic's filter.
 const tags = (d.tags ?? []).map((t) => ({ t, topic: topicClusters.find((tc) => tc.tags.includes(t)) }));
 const crumbs: Crumb[] = [{ label: "Home", href: "/" }, { label: "Articles", href: "/articles" }, { label: d.title }];
-const schema = [articleSchema({ title: d.title, description: d.description, url, date: d.date, image: d.image, tags: d.tags }), breadcrumbSchema(crumbs, url)];
+const schema = [articleSchema({ title: d.title, description: d.description, url, date: d.date, image: c.dark, tags: d.tags }), breadcrumbSchema(crumbs, url)];
 ---
 
-<Base title={`${d.title} | Brandon Verzuu`} description={d.description} image={d.image} schema={schema} type="article">
+<Base
+  title={`${d.title} | Brandon Verzuu`}
+  description={d.description}
+  image={`/og/articles/${article.id}.png`}
+  article={{ published: d.date, section: "Articles", tags: d.tags }}
+  locale={lang}
+  schema={schema}
+>
   <article class="story" lang={lang}>
     <header class="a-head wrap">
       <Breadcrumb crumbs={crumbs} />

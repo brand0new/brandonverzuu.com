@@ -9,7 +9,7 @@ const description = "A collection of my projects, open source and otherwise. Som
 const crumbs: Crumb[] = [{ label: "Home", href: "/" }, { label: "Projects" }];
 ---
 
-<Base title="Projects | Brandon Verzuu" description={description} schema={[breadcrumbSchema(crumbs, `${SITE}/projects`)]} telma>
+<Base image="/og/projects.png" title="Projects | Brandon Verzuu" description={description} schema={[breadcrumbSchema(crumbs, `${SITE}/projects`)]} telma>
   <PageHead title="Projects" crumbs={crumbs} description={description} />
   <div class="wrap section">
     <ProjectPanels />
