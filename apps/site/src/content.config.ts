@@ -158,6 +158,30 @@ const career = defineCollection({
         ).min(1),
       }),
     ),
+    projects: z.array(
+      z.object({
+        title: z.string(),
+        start: month,
+        end: month.optional(),
+        url: z.string().url().optional(),
+        summary: z.string(),
+        tags: z.array(z.string()).optional(),
+      }),
+    ),
+    certifications: z.array(
+      z.object({
+        name: z.string(),
+        issuer: z.string(),
+        // Month issued.
+        date: month,
+        // The issuer's verification or certificate page.
+        url: z.string().url().optional(),
+        // An image under public/, e.g. "/career/badges/x.png". The page fails the build when
+        // the file is missing; without one it draws a monogram badge for the issuer.
+        badge: z.string().startsWith("/").optional(),
+      }),
+    ),
+    skills: z.array(z.object({ group: z.string(), items: z.array(z.string()).min(1) })),
   }),
 });
 
