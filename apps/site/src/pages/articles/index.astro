@@ -14,7 +14,7 @@ const topics = await clusterStats();
 const crumbs: Crumb[] = [{ label: "Home", href: "/" }, { label: "Articles" }];
 ---
 
-<Base title="Articles | Brandon Verzuu" description={description} schema={[breadcrumbSchema(crumbs, `${SITE}/articles`)]}>
+<Base image="/og/articles.png" title="Articles | Brandon Verzuu" description={description} schema={[breadcrumbSchema(crumbs, `${SITE}/articles`)]}>
   <PageHead title="Articles" crumbs={crumbs} description={description} />
   <div class="wrap section">
     <nav class="filter" id="topic-filter" aria-label="Filter by topic" hidden>

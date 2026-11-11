@@ -39,13 +39,13 @@ export function breadcrumbSchema(crumbs: Crumb[], currentUrl: string): JsonLd {
   };
 }
 
-export function articleSchema(a: { title: string; description: string; url: string; date: Date; image?: string; tags?: string[] }): JsonLd {
+export function articleSchema(a: { title: string; description: string; url: string; date: Date; image: string; tags?: string[] }): JsonLd {
   return {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
     headline: a.title,
     description: a.description,
-    image: SITE + (a.image ?? "/avatar.jpg"),
+    image: SITE + a.image,
     datePublished: a.date.toISOString(),
     dateModified: a.date.toISOString(),
     url: a.url,

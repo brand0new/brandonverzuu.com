@@ -83,3 +83,7 @@ into the article.
 Run `npm run dev`, then open the article and `/articles` in both themes. The cover
 should read as a shape, not as noise, and the credit line should show where one is
 needed.
+
+The social card is built from the same cover: open `/og/articles/<slug>.png` (or
+`/og/reviews/<slug>.png`). The title sits on the left panel and the cover shows on the
+right, so a cover whose subject is on its left edge loses it on the card.

@@ -16,7 +16,7 @@ const available = (Object.keys(media) as ReviewMedium[]).filter((m) => reviews.s
 const crumbs: Crumb[] = [{ label: "Home", href: "/" }, { label: "Reviews" }];
 ---
 
-<Base title="Reviews | Brandon Verzuu" description={description} schema={[breadcrumbSchema(crumbs, `${SITE}/reviews`)]}>
+<Base image="/og/reviews.png" title="Reviews | Brandon Verzuu" description={description} schema={[breadcrumbSchema(crumbs, `${SITE}/reviews`)]}>
   <PageHead title="Reviews" crumbs={crumbs} description={description} />
   <div class="wrap section">
     {
