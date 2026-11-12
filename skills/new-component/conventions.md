@@ -53,6 +53,10 @@ changes one of these conventions, update this file in the same PR.
   (`/expert/pricing`) pass `crumbs` to `PageHead` (Home / section /
   page) and the same crumbs to `breadcrumbSchema()`. Links onward go at the end as a
   `.more` line ("Pricing →").
+- **Nothing between the breadcrumb and the page title.** The `<h1>` directly follows the
+  breadcrumb: no kicker, label, date line or subtitle in between. Context such as a
+  role, a version or a date goes after the title, in the lede or below it. `PageHead`
+  has no prop for it on purpose.
 - **Status labels are `.tag`s** (mono, uppercase, hairline box; `.tag.on` in the accent
   colour), not custom callout boxes.
 - **External links open in the same tab.** Name the destination in the link text (the

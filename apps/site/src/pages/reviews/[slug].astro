@@ -37,8 +37,8 @@ const schema = [reviewSchema({ title: d.title, description: d.description, url, 
   <article class="story">
     <header class="a-head wrap">
       <Breadcrumb crumbs={crumbs} />
-      <p class="label"><time datetime={isoDate(d.date)}>{formatDate(d.date)}</time> · {subjectLine}</p>
       <h1>{d.title}</h1>
+      <p class="label"><time datetime={isoDate(d.date)}>{formatDate(d.date)}</time> · {subjectLine}</p>
       <div class="verdict">
         <ReviewRating rating={d.rating} size="l" />
         <div class="stack">
