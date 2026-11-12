@@ -44,10 +44,7 @@ const short = COMMIT.slice(0, 7);
               <li>
                 <button type="button" class="node" commandfor={id(si, ji)} command="show-modal" aria-haspopup="dialog" data-node>
                   <span class="mark" aria-hidden="true" data-mark />
-                  <span class="node-text">
-                    <span class="node-num">{si + 1}.{ji + 1}</span>
-                    <span class="node-name">{step.name}</span>
-                  </span>
+                  <span class="node-name">{step.name}</span>
                 </button>
               </li>
             ))}
@@ -147,8 +144,6 @@ const short = COMMIT.slice(0, 7);
   }
   .node:hover .mark, .node:focus-visible .mark { background: var(--ink); }
   .node[data-lit] .mark { background: var(--signal); border-color: var(--signal-edge); }
-  .node-text { display: flex; flex-direction: column; gap: .2rem; }
-  .node-num { font: 500 var(--step--1)/1 var(--mono); letter-spacing: .06em; color: var(--muted); }
   .node-name { font: 800 clamp(1.1rem, .7rem + .8vw, 1.45rem)/.95 var(--display); text-transform: uppercase; }
   .node:hover .node-name, .node:focus-visible .node-name { color: var(--accent); }
 
@@ -182,8 +177,6 @@ const short = COMMIT.slice(0, 7);
     .steps { flex-direction: column; gap: 1.25rem; }
     .steps > li { justify-content: flex-start; }
     .node { flex-direction: row; gap: 1rem; padding: 0; text-align: left; max-width: none; }
-    /* Number and name on one line, so the mark centres on the name rather than between them. */
-    .node-text { flex-direction: row; align-items: baseline; gap: .6rem; }
     .node-name { font-size: var(--step-1); }
   }
 
