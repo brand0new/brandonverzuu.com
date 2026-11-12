@@ -1,13 +1,10 @@
 ---
-// The /setup diagram: the lifecycle as one line of steps with a dashed way back to the start,
-// stages bracketed over their steps, each step a node that opens a dialog with its write-up,
-// tools and sources (content/setup.yml).
+// The /setup diagram: the lifecycle as one line of steps, stages bracketed over their steps,
+// each step a node that opens a dialog with its write-up, tools and sources (content/setup.yml).
 //
-// The track is a plain rectangle and every node's mark sits on one edge of it. From the desktop
-// breakpoint up, that edge is the top one: the steps run left to right along a solid line and
-// the other three edges, dashed, are the way back to the first step. Below it, the steps run
-// down the solid left edge and the way back goes round the right. One shape at both sizes, so
-// the drop's maths doesn't care which it is. Square corners, like every other surface here.
+// Every node's mark sits on one solid line: left to right from the desktop breakpoint up, top
+// to bottom below it. There is no drawn way back; the signal drop shows the loop by jumping
+// from the last step to the first.
 //
 // Rest state first: the track, the nodes and every dialog are in the HTML. The
 // buttons open their dialogs with invoker commands (commandfor / command="show-modal"), which
@@ -29,8 +26,6 @@ const short = COMMIT.slice(0, 7);
 
 <div class="loop" data-loop>
   <span class="track" aria-hidden="true" data-track></span>
-  <span class="head" aria-hidden="true"></span>
-  <span class="next label" aria-hidden="true">Next note</span>
   <span class="drop" aria-hidden="true" data-drop></span>
   <ol class="stages">
     {
@@ -97,25 +92,13 @@ const short = COMMIT.slice(0, 7);
   .loop {
     --m: 14px;      /* node mark */
     --head: 3.5rem; /* stage label and bracket, above the line */
-    --foot: 2.25rem; /* room under the way back for its label */
     position: relative;
-    padding-bottom: calc(var(--foot) + 2.25rem);
   }
-  /* The solid edge carries the steps; the dashed ones are the way back. */
+  /* The line the steps sit on. */
   .track {
-    position: absolute;
-    left: 0; right: 0; top: calc(var(--head) + var(--m) / 2 - .5px); bottom: var(--foot);
-    border: 1.5px dashed var(--muted);
-    border-top: 1px solid var(--ink);
-    pointer-events: none;
+    position: absolute; left: 0; right: 0; top: calc(var(--head) + var(--m) / 2 - .5px); height: 1px;
+    background: var(--ink); pointer-events: none;
   }
-  /* Where the way back rejoins the line: up the left edge, into the first step. */
-  .head {
-    position: absolute; width: 0; height: 0;
-    left: -4.25px; top: calc(var(--head) + var(--m) / 2 + 4px);
-    border-inline: 5px solid transparent; border-bottom: 7px solid var(--muted);
-  }
-  .next { position: absolute; left: 50%; bottom: calc(var(--foot) - 1.75rem); transform: translateX(-50%); }
 
   .stages { list-style: none; margin: 0; padding: 0 1.5rem; display: flex; gap: clamp(1rem, 2.5vw, 2rem); }
   .stage { flex: var(--n) 1 0; min-width: 0; display: flex; flex-direction: column; }
@@ -155,21 +138,10 @@ const short = COMMIT.slice(0, 7);
   }
   .loop[data-running] .drop { display: block; }
 
-  /* Below the breakpoint the line turns down the left edge and the way back goes round the
-     right; its label stands up along that edge, out of the step names' way. */
+  /* Below the breakpoint the line turns down the left edge. */
   @media (max-width: 1099px) {
-    .loop { padding: 0; }
-    .track {
-      inset: 0 0 0 calc(var(--m) / 2 - .5px);
-      border: 1.5px dashed var(--muted);
-      border-left: 1px solid var(--ink);
-    }
-    .head {
-      left: calc(var(--m) / 2 + 4px); top: -4.25px;
-      border: 0; border-block: 5px solid transparent; border-right: 7px solid var(--muted);
-    }
-    .next { left: auto; right: .55rem; bottom: auto; top: 50%; transform: translateY(-50%) rotate(180deg); writing-mode: vertical-rl; }
-    .stages { flex-direction: column; gap: 2rem; padding: 1.75rem 2.75rem 1.75rem 0; }
+    .track { left: calc(var(--m) / 2 - .5px); right: auto; top: 0; bottom: 0; width: 1px; height: auto; }
+    .stages { flex-direction: column; gap: 2rem; padding: .5rem 0; }
     .stage { flex: none; gap: 1rem; }
     .stage-name { height: auto; padding: 0 0 0 calc(var(--m) + 1rem); display: flex; align-items: center; gap: .6rem; white-space: normal; }
     .stage-num { font: 900 1.75rem/1 var(--display); }
@@ -228,59 +200,38 @@ const short = COMMIT.slice(0, 7);
     d.addEventListener("click", (e) => e.target === d && d.close()),
   );
 
-  // The signal drop: one dot running round the track, pausing on each node it reaches and
-  // lighting it. Positions are distances along the track's perimeter, measured clockwise from
-  // its top-left corner; on phones the nodes run the other way round, so the direction comes
-  // from the first two nodes rather than the breakpoint.
-  //
-  // The way back is never travelled at step speed, or the drop would spend much of each loop on
-  // nothing. On desktop it jumps from the last step straight to the first. On phones, where the
-  // way back is three edges of a tall box, it runs RETURN times faster instead: about a second
-  // home, so the reader still sees where it goes.
+  // The signal drop: one dot running along the line, pausing on each node it reaches and
+  // lighting it, then jumping from the last node back to the first. Positions are distances
+  // along the line: x on desktop, y on phones, whichever way the line runs.
   const FRAME = 71;      // the shared 14 fps clock (src/scripts/signal.js, GLITCH.frameMs)
-  const SPEED = 120;     // px per second along the steps
-  const RETURN = 10;     // speed-up on the way back, phones only
+  const SPEED = 120;     // px per second along the line
   const DWELL = 6;       // frames held on a node, ~430 ms
   const LIT = 700;       // ms a node stays lit
-  const phone = window.matchMedia("(max-width: 1099px)");
 
   const loop = document.querySelector<HTMLElement>("[data-loop]");
   if (loop && !reduce) {
     const track = loop.querySelector<HTMLElement>("[data-track]")!;
     const drop = loop.querySelector<HTMLElement>("[data-drop]")!;
     const nodes = [...loop.querySelectorAll<HTMLElement>("[data-node]")];
-    let w = 0, h = 0, P = 0, ox = 0, oy = 0, dir = 1;
+    let ox = 0, oy = 0, down = false, ready = false;
     let at: number[] = [];
-    let t = 0, hold = 0, timer = 0, back = false;
+    let t = 0, hold = 0, timer = 0;
 
-    const along = (x: number, y: number) => {
-      const d = [Math.abs(y), Math.abs(x - w), Math.abs(y - h), Math.abs(x)];
-      const e = d.indexOf(Math.min(...d));
-      return [x, w + y, w + h + (w - x), 2 * w + h + (h - y)][e];
-    };
-    const point = (s: number): [number, number] => {
-      s = ((s % P) + P) % P;
-      if (s < w) return [s, 0];
-      if (s < w + h) return [w, s - w];
-      if (s < 2 * w + h) return [w - (s - w - h), h];
-      return [0, h - (s - 2 * w - h)];
-    };
     const measure = () => {
       const r = track.getBoundingClientRect(), l = loop.getBoundingClientRect();
-      w = r.width; h = r.height; P = 2 * (w + h);
-      ox = r.left - l.left; oy = r.top - l.top;
+      down = r.height > r.width;
+      ox = r.left - l.left + r.width / 2; oy = r.top - l.top + r.height / 2;
       at = nodes.map((n) => {
         const b = n.querySelector("[data-mark]")!.getBoundingClientRect();
-        return along(b.left + b.width / 2 - r.left, b.top + b.height / 2 - r.top);
+        return down ? b.top + b.height / 2 - r.top - r.height / 2 : b.left + b.width / 2 - r.left - r.width / 2;
       });
-      dir = ((at[1] - at[0] + P) % P) < P / 2 ? 1 : -1;
-      t = at[0]; hold = DWELL; back = false;
+      ready = at.length > 1;
+      t = at[0]; hold = DWELL;
       light(0);
       draw();
     };
     const draw = () => {
-      const [x, y] = point(t);
-      drop.style.transform = `translate(${ox + x}px, ${oy + y}px)`;
+      drop.style.transform = down ? `translate(${ox}px, ${oy + t}px)` : `translate(${ox + t}px, ${oy}px)`;
     };
     const light = (i: number) => {
       const n = nodes[i];
@@ -289,24 +240,18 @@ const short = COMMIT.slice(0, 7);
       (n as any)._lit = setTimeout(() => delete n.dataset.lit, LIT);
     };
     const tick = () => {
-      if (!P) return;
+      if (!ready) return;
       if (hold > 0) { hold--; return; }
-      if (back && !phone.matches) {
-        t = at[0]; hold = DWELL; back = false; light(0); draw();
-        return;
-      }
-      const step = (SPEED * (back && phone.matches ? RETURN : 1) * FRAME) / 1000;
-      // The next node ahead in the direction of travel, and how far away it is.
-      let next = -1, gap = Infinity;
-      at.forEach((s, i) => {
-        const g = ((dir * (s - t)) % P + P) % P;
-        if (g > 0.5 && g < gap) { gap = g; next = i; }
-      });
-      if (next >= 0 && gap <= step) {
-        t = at[next]; hold = DWELL; light(next);
-        back = next === nodes.length - 1;
+      // The next node ahead; after the last one, that's the first, and the drop jumps there.
+      const next = at.findIndex((s) => s > t + 0.5);
+      if (next < 0) {
+        t = at[0];
+        hold = DWELL; light(0);
+      } else if (at[next] - t <= (SPEED * FRAME) / 1000) {
+        t = at[next];
+        hold = DWELL; light(next);
       } else {
-        t = (t + dir * step + P) % P;
+        t += (SPEED * FRAME) / 1000;
       }
       draw();
     };
