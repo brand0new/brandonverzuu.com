@@ -50,9 +50,9 @@ changes one of these conventions, update this file in the same PR.
   fails the build on an unknown name. Always decorative (`aria-hidden`), next to a text
   label.
 - **Sub-pages get a breadcrumb, not a section menu.** Pages below an index
-  (`/expert/pricing`) pass `crumbs` to `PageHead` (Home / section /
+  (`/articles/<slug>`) pass `crumbs` to `PageHead` (Home / section /
   page) and the same crumbs to `breadcrumbSchema()`. Links onward go at the end as a
-  `.more` line ("Pricing →").
+  `.more` line ("All articles →").
 - **Nothing between the breadcrumb and the page title.** The `<h1>` directly follows the
   breadcrumb: no kicker, label, date line or subtitle in between. Context such as a
   role, a version or a date goes after the title, in the lede or below it. `PageHead`

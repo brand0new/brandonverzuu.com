@@ -55,39 +55,6 @@ const projects = defineCollection({
   }),
 });
 
-// The expertise service (/expert, docs/specs/expert-mcp/). Prices live in content so Brandon
-// can set them without touching code (spec 07, decision D6). An amount is a number or the
-// literal "TBD", printed as-is so no placeholder can be mistaken for a real price.
-const expertPricing = defineCollection({
-  loader: file("./content/expert/pricing.yml", { parser: (text) => [{ id: "pricing", ...yamlParse(text) }] }),
-  schema: z.object({
-    currency: z.literal("EUR"),
-    checks: z.array(
-      z.object({
-        kind: z.enum(["api-governance", "skill-design", "process-review"]),
-        name: z.string(),
-        // A mage:* icon name, drawn from src/lib/icons.ts.
-        icon: z.string().startsWith("mage:"),
-        price: z.union([z.number().positive(), z.literal("TBD")]),
-        note: z.string().optional(),
-      }),
-    ),
-  }),
-});
-
-// Terms and privacy statement, one file per version (expert/terms/<version>.md). These are
-// Brandon's words: agents scaffold structure only. The pages render the newest
-// `published` version and show a "being drafted" notice while only drafts exist.
-const legalDocument = z.object({
-  title: z.string(),
-  // The version id buyers accept, e.g. "2026-11-01". Matches the filename.
-  version: z.string(),
-  date: z.coerce.date(),
-  status: z.enum(["draft", "published"]),
-});
-const expertTerms = defineCollection({ loader: glob({ pattern: "*.md", base: "./content/expert/terms" }), schema: legalDocument });
-const expertPrivacy = defineCollection({ loader: glob({ pattern: "*.md", base: "./content/expert/privacy" }), schema: legalDocument });
-
 // The /career page: one file, because the history is read and edited as a whole. Dates are
 // "YYYY-MM" rather than dates: LinkedIn only records months, and a full date would invent a
 // day. Durations and counts are derived from them (src/lib/career.ts), so nothing goes stale.
@@ -166,4 +133,4 @@ const setup = defineCollection({
   }),
 });
 
-export const collections = { articles, projects, setup, career, expertPricing, expertTerms, expertPrivacy };
+export const collections = { articles, projects, setup, career };

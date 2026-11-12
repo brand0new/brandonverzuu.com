@@ -1,4 +1,0 @@
-# Purchase order
-
-Supplier:
-Items:
