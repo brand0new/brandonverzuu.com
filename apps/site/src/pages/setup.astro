@@ -11,11 +11,11 @@ import { breadcrumbSchema, type Crumb } from "../lib/schema";
 
 const setup = (await getEntry("setup", "setup"))!.data;
 const pad = (n: number) => String(n).padStart(2, "0");
-const crumbs: Crumb[] = [{ label: "Home", href: "/" }, { label: "Setup" }];
+const crumbs: Crumb[] = [{ label: "Home", href: "/" }, { label: "Setups" }];
 ---
 
-<Base image="/og/setup.png" title="Setup | Brandon Verzuu" description={setup.intro} schema={[breadcrumbSchema(crumbs, `${SITE}/setup`)]}>
-  <PageHead title="Setup" crumbs={crumbs} description={setup.intro} />
+<Base image="/og/setup.png" title="Setups | Brandon Verzuu" description={setup.intro} schema={[breadcrumbSchema(crumbs, `${SITE}/setup`)]}>
+  <PageHead title="Setups" crumbs={crumbs} description={setup.intro} />
   {
     setup.flows.map((flow, fi) => (
       <section id={flow.id} class="chapter wrap flow" aria-labelledby={`${flow.id}-title`}>
