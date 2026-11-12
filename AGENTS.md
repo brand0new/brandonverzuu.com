@@ -21,9 +21,8 @@ The repo is an npm-workspaces monorepo with one lockfile at the root:
 - `apps/site/`: the site (`src/` with its pages, components and content schemas,
   `content/`, `public/`, `scripts/`, `astro.config.mjs`). Everything this file says about
   the site lives here.
-- `apps/`, `packages/`, `products/`: the paid expertise service, planned in
-  `docs/specs/expert-mcp/` and built spec by spec. Until a workspace has a
-  `package.json`, it's only a placeholder.
+- `docs/archive/expert-mcp/`: specs for a paid expertise service (an MCP server with
+  payments) that was retired. Kept for reference only; nothing builds from them.
 - `skills/`, `docs/`, `.github/` and `wrangler.toml` stay at the root and cover the
   whole repo.
 

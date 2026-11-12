@@ -4,9 +4,7 @@ My personal site: articles on APIs, platforms and technology, plus projects,
 bookmarks and the tools I use. Built with Astro as a static build tool: plain HTML, CSS
 and a few small scripts, served by Cloudflare Pages.
 
-The repo is an npm-workspaces monorepo. The site lives in `apps/site/`; `apps/`,
-`packages/` and `products/` also hold the paid expertise service as it's built
-(see [`docs/specs/expert-mcp/`](docs/specs/expert-mcp/README.md)).
+The repo is an npm-workspaces monorepo. The site lives in `apps/site/`.
 
 ```
 npm ci             # from the repo root, installs every workspace

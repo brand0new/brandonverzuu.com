@@ -1,5 +1,8 @@
 # Expert MCP: specification
 
+> **Archived (2026-11).** The service was retired and its code removed from the repo.
+> These specs are kept for reference only; paths they mention no longer exist.
+
 Status: **draft.** Specs 00–04 and 07–10 are unblocked; payments go live and
 spec 06 deploys once the "Later" decisions below are made.
 Nothing here is implemented yet. Once the decisions are made, each sub-spec in this

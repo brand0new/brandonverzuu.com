@@ -1,11 +1,10 @@
 {
   "name": "brandonverzuu-monorepo",
   "version": "1.4.1",
-  "description": "brandonverzuu.com and the expertise service, as npm workspaces",
+  "description": "brandonverzuu.com, as npm workspaces",
   "private": true,
   "workspaces": [
-    "apps/*",
-    "packages/*"
+    "apps/*"
   ],
   "scripts": {
     "dev": "npm run dev -w apps/site --",

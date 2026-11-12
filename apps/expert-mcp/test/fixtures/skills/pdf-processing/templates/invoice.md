@@ -1,4 +1,0 @@
-# Invoice
-
-Customer:
-Amount:

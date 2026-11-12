@@ -1,8 +1,8 @@
-# Expertise service paused; temporary until /expert returns.
-/expert / 302
-/expert/pricing / 302
-/expert/terms / 302
-/expert/privacy / 302
+# The expertise service was retired; its old URLs point home.
+/expert / 301
+/expert/pricing / 301
+/expert/terms / 301
+/expert/privacy / 301
 
 # Topic hubs became filters on /articles.
 /topics /articles 301
