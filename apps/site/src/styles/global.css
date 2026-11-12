@@ -173,16 +173,59 @@ a.row:hover .row-title, a.row:focus-visible .row-title { color: var(--accent); }
 .prose .fig-frame img { width: 100%; }
 .prose .fig-frame.live img { visibility: hidden; }
 
-/* Page transitions: cross-document View Transitions, no router and no JS. The browser snapshots
-   the old page, renders the new one, and crossfades the two on the compositor, animating only
-   opacity and transform so it holds 60 fps. The top bar is its own group, so it stays put while
-   the page under it changes. Browsers without support simply navigate as before. */
+/* Page transitions: a dithered wipe, top of the viewport to the bottom. A band of Bayer dots
+   (src/lib/ditherWipe.ts, written into --wipe-* by Base.astro) sweeps down. Above it is the new
+   page, below it the old one, and inside it the old page breaks up dot by dot with the new page
+   showing through the gaps.
+
+   Where cross-document View Transitions exist (Chrome, Edge, Safari 18.2+) it's native, with no
+   router: the old page stays as a snapshot underneath, and the band is a mask on the new page's
+   snapshot. Elsewhere (Firefox, older Safari) the browser can't keep the old page on screen, so
+   Base.astro sets .vt-reveal and the same band lifts a paper-coloured veil off the new page. It's
+   the same motion and the same dots, with an empty sheet in place of the old page. The top bar is
+   outside both, so it stays put while the page under it changes.
+
+   The band's position snaps to the dot grid, so dots flip on and off in place instead of sliding
+   down with the band. It moves through 100lvh, not 100%, so the mask's two layers (the band, and
+   the solid area beside it) can be placed with lengths alone. */
+@property --wipe-y { syntax: "<length>"; inherits: false; initial-value: 0px; }
+@keyframes wipe { from { --wipe-y: calc(-1 * var(--wipe-band)); } to { --wipe-y: 100lvh; } }
+:root { --wipe-ease: cubic-bezier(.5, 0, .3, 1); --wipe-ms: 640ms; }
+
 @view-transition { navigation: auto; }
 @media (prefers-reduced-motion: reduce) { @view-transition { navigation: none; } }
 .bar { view-transition-name: site-bar; }
-@keyframes vt-out { to { opacity: 0; transform: translateY(-6px); } }
-@keyframes vt-in { from { opacity: 0; transform: translateY(10px); } }
-::view-transition-old(root) { animation: vt-out 140ms cubic-bezier(.4, 0, 1, 1) both; }
-::view-transition-new(root) { animation: vt-in 260ms cubic-bezier(0, 0, .2, 1) 60ms both; }
+::view-transition-old(root) { animation: none; mix-blend-mode: normal; }
+::view-transition-new(root) {
+  --at: var(--wipe-y);
+  mix-blend-mode: normal;
+  animation: wipe var(--wipe-ms) var(--wipe-ease) both;
+  -webkit-mask-image: var(--wipe-in), linear-gradient(#000 0 0);
+  mask-image: var(--wipe-in), linear-gradient(#000 0 0);
+  -webkit-mask-repeat: repeat-x, no-repeat;
+  mask-repeat: repeat-x, no-repeat;
+  -webkit-mask-size: var(--wipe-w) var(--wipe-band), 100% 100lvh;
+  mask-size: var(--wipe-w) var(--wipe-band), 100% 100lvh;
+  -webkit-mask-position: 0 var(--at), 0 calc(var(--at) - 100lvh);
+  mask-position: 0 var(--at), 0 calc(var(--at) - 100lvh);
+}
 /* The bar changes only its current-page underline: a quick crossfade in place, never a slide. */
 ::view-transition-group(site-bar) { animation-duration: 160ms; }
+
+html.vt-reveal body::after {
+  --at: var(--wipe-y);
+  content: ""; position: fixed; inset: 0; z-index: 29; pointer-events: none; background: var(--paper);
+  animation: wipe var(--wipe-ms) var(--wipe-ease) both;
+  -webkit-mask-image: var(--wipe-out), linear-gradient(#000 0 0);
+  mask-image: var(--wipe-out), linear-gradient(#000 0 0);
+  -webkit-mask-repeat: repeat-x, no-repeat;
+  mask-repeat: repeat-x, no-repeat;
+  -webkit-mask-size: var(--wipe-w) var(--wipe-band), 100% 100lvh;
+  mask-size: var(--wipe-w) var(--wipe-band), 100% 100lvh;
+  -webkit-mask-position: 0 var(--at), 0 calc(var(--at) + var(--wipe-band));
+  mask-position: 0 var(--at), 0 calc(var(--at) + var(--wipe-band));
+}
+@supports (top: round(down, 1px, 1px)) {
+  ::view-transition-new(root), html.vt-reveal body::after { --at: round(down, var(--wipe-y), var(--wipe-cell)); }
+}
+@media (prefers-reduced-motion: reduce) { html.vt-reveal body::after { content: none; } }

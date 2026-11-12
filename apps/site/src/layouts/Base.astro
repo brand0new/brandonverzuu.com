@@ -12,6 +12,7 @@ import "../styles/global.css";
 import { Font } from "astro:assets";
 import { cssVars } from "../../scripts/lib/tokens.mjs";
 import { SITE } from "../lib/content";
+import { wipeVars } from "../lib/ditherWipe";
 import type { JsonLd } from "../lib/schema";
 
 interface Props {
@@ -54,7 +55,7 @@ const nav = [
 ];
 const current = (href: string) => path === href || path.startsWith(href + "/");
 
-const tokens = `:root{${cssVars("light")};color-scheme:light}` +
+const tokens = `:root{${cssVars("light")};${wipeVars};color-scheme:light}` +
   `@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){${cssVars("dark")};color-scheme:dark}}` +
   `:root[data-theme="dark"]{${cssVars("dark")};color-scheme:dark}`;
 ---
@@ -106,10 +107,28 @@ const tokens = `:root{${cssVars("light")};color-scheme:light}` +
           var m = localStorage.getItem("theme") || localStorage.getItem("nuxt-color-mode");
           if (m === "light" || m === "dark") d.setAttribute("data-theme", m);
         } catch (e) {}
+        // Page transition fallback (global.css). Browsers with cross-document view transitions
+        // wipe from the old page to this one natively. The rest (Firefox, older Safari) can't
+        // keep the old page on screen, so they lift a dithered paper veil off this page instead:
+        // same wipe, same direction, only on a same-site navigation that isn't a reload.
+        try {
+          if (!window.CSSViewTransitionRule && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+            var nav = performance.getEntriesByType("navigation")[0];
+            var ref = document.referrer;
+            if (nav && nav.type !== "reload" && ref && new URL(ref).origin === location.origin) {
+              d.classList.add("vt-reveal");
+              d.addEventListener("animationend", function done(e) {
+                if (e.animationName !== "wipe") return;
+                d.classList.remove("vt-reveal");
+                d.removeEventListener("animationend", done);
+              });
+            }
+          }
+        } catch (e) {}
       })();
     </script>
     <!-- Smooth navigation: hold the new page's first paint until <main> has parsed, so the page
-         transition (global.css) never fades in a half-built page, and fetch a same-site page as
+         transition (global.css) never wipes to a half-built page, and fetch a same-site page as
          soon as a link is hovered or pressed, so it is usually ready before the click lands. -->
     <link rel="expect" href="#main" blocking="render" />
     <script type="speculationrules" is:inline>
