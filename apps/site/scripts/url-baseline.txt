@@ -25,6 +25,7 @@
 /expert/terms
 /projects
 /setup
+/setups
 /topics
 /topics/ai-trust-and-ethics
 /topics/api-governance-integration

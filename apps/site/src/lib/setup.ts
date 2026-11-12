@@ -1,4 +1,4 @@
-// Build-time helpers for the /setup diagram (content/setup.yml). They run only while the site is
+// Build-time helpers for the /setups diagram (content/setup.yml). They run only while the site is
 // prerendered, so they may read the repo and ask git; nothing here reaches the browser.
 import { execSync } from "node:child_process";
 import { existsSync, statSync } from "node:fs";

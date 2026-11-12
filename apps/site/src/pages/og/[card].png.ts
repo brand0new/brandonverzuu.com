@@ -14,7 +14,7 @@ const cards = {
     panelTo: 700,
   },
   articles: { title: "Articles", kicker: "APIs, platforms & technology" },
-  setup: { title: "Setup", kicker: "From idea to production" },
+  setups: { title: "Setups", kicker: "From idea to production" },
   projects: { title: "Projects", kicker: "Brandon Verzuu" },
   career: { title: "Career", kicker: "Head of Innovation & Product" },
   bookmarks: { title: "Bookmarks", kicker: "Brandon Verzuu" },

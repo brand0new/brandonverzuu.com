@@ -1,6 +1,7 @@
 ---
-// The /setup diagram: the lifecycle as one line of steps, stages bracketed over their steps,
+// One /setups flow: its lifecycle as one line of steps, stages bracketed over their steps,
 // each step a node that opens a dialog with its write-up, tools and sources (content/setup.yml).
+// The page draws one per flow, so every id here is prefixed with the flow's id.
 //
 // Every node's mark sits on one solid line: left to right from the desktop breakpoint up, top
 // to bottom below it. There is no drawn way back; the signal drop shows the loop by jumping
@@ -15,12 +16,13 @@ import { sourceUrl, COMMIT, REPO } from "../lib/setup";
 
 type Step = { name: string; tools: string[]; body: string[]; sources: { label: string; path: string }[] };
 interface Props {
+  id: string;
   stages: { name: string; steps: Step[] }[];
 }
-const { stages } = Astro.props;
+const { id: flow, stages } = Astro.props;
 
 const pad = (n: number) => String(n).padStart(2, "0");
-const id = (si: number, ji: number) => `step-${si + 1}-${ji + 1}`;
+const id = (si: number, ji: number) => `${flow}-step-${si + 1}-${ji + 1}`;
 const short = COMMIT.slice(0, 7);
 ---
 
@@ -31,9 +33,9 @@ const short = COMMIT.slice(0, 7);
     {
       stages.map((stage, si) => (
         <li class="stage" style={`--n: ${stage.steps.length}`}>
-          <h2 class="stage-name label">
+          <h3 class="stage-name label">
             <span class="stage-num">{pad(si + 1)}</span> {stage.name}
-          </h2>
+          </h3>
           <ol class="steps">
             {stage.steps.map((step, ji) => (
               <li>
@@ -208,8 +210,8 @@ const short = COMMIT.slice(0, 7);
   const DWELL = 6;       // frames held on a node, ~430 ms
   const LIT = 700;       // ms a node stays lit
 
-  const loop = document.querySelector<HTMLElement>("[data-loop]");
-  if (loop && !reduce) {
+  // One drop per flow, each on its own line.
+  if (!reduce) document.querySelectorAll<HTMLElement>("[data-loop]").forEach((loop) => {
     const track = loop.querySelector<HTMLElement>("[data-track]")!;
     const drop = loop.querySelector<HTMLElement>("[data-drop]")!;
     const nodes = [...loop.querySelectorAll<HTMLElement>("[data-node]")];
@@ -265,5 +267,5 @@ const short = COMMIT.slice(0, 7);
     let visible = false;
     new IntersectionObserver(([e]) => { visible = e.isIntersecting; run(visible && !document.hidden); }).observe(loop);
     document.addEventListener("visibilitychange", () => run(visible && !document.hidden));
-  }
+  });
 </script>

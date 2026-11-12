@@ -102,34 +102,38 @@ const career = defineCollection({
   }),
 });
 
-// The /setup diagram: one file, read as a whole, like career. Stages are drawn in order around
-// the loop (clockwise), so their order is the lifecycle. Source paths are checked against the repo at
-// build time in src/lib/setup.ts, which the schema can't do on its own.
+// The /setups page: one file, read as a whole, like career. It holds one or more flows, each a
+// workflow drawn as its own diagram under its own heading, in file order. A flow's stages are
+// drawn in order along the line, so their order is the lifecycle. Source paths are checked
+// against the repo at build time in src/lib/setup.ts, which the schema can't do on its own.
+const setupStep = z.object({
+  name: z.string(),
+  tools: z.array(z.string()).min(1),
+  body: z.array(z.string()).min(1),
+  sources: z.array(
+    z.object({
+      label: z.string(),
+      // Repo-relative, no leading slash: "skills/ship-change/SKILL.md".
+      path: z.string().regex(/^[^/]/, "relative to the repo root, no leading slash"),
+    }),
+  ).min(1),
+});
+const setupFlow = z.object({
+  // Anchors the flow's section (/setups#<id>) and prefixes its dialog ids, so it must be a
+  // unique slug.
+  id: z.string().regex(/^[a-z0-9]+(-[a-z0-9]+)*$/, "a kebab-case slug"),
+  name: z.string(),
+  description: z.string(),
+  stages: z.array(z.object({ name: z.string(), steps: z.array(setupStep).min(1) })).min(1),
+});
 const setup = defineCollection({
   loader: file("./content/setup.yml", { parser: (text) => [{ id: "setup", ...yamlParse(text) }] }),
   schema: z.object({
     intro: z.string(),
-    stages: z.array(
-      z.object({
-        name: z.string(),
-        steps: z.array(
-          z.object({
-            name: z.string(),
-            tools: z.array(z.string()).min(1),
-            body: z.array(z.string()).min(1),
-            sources: z.array(
-              z.object({
-                label: z.string(),
-                // Repo-relative, no leading slash: "skills/ship-change/SKILL.md".
-                path: z.string().regex(/^[^/]/, "relative to the repo root, no leading slash"),
-              }),
-            ).min(1),
-          }),
-        ).min(1),
-      }),
-    // Exactly four: the diagram puts one stage on each half of the loop's top and bottom
-    // edges (src/components/SetupLoop.astro).
-    ).length(4),
+    flows: z.array(setupFlow).min(1).refine(
+      (flows) => new Set(flows.map((f) => f.id)).size === flows.length,
+      "every flow needs a unique id",
+    ),
   }),
 });
 

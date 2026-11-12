@@ -1,0 +1,35 @@
+---
+// The workflows I use, each as its own diagram (src/components/SetupLoop.astro) under its own
+// heading. The flows, stages, steps and copy live in content/setup.yml, so the page itself only
+// frames them.
+import { getEntry } from "astro:content";
+import Base from "../layouts/Base.astro";
+import PageHead from "../components/PageHead.astro";
+import SetupLoop from "../components/SetupLoop.astro";
+import { SITE } from "../lib/content";
+import { breadcrumbSchema, type Crumb } from "../lib/schema";
+
+const setup = (await getEntry("setup", "setup"))!.data;
+const pad = (n: number) => String(n).padStart(2, "0");
+const crumbs: Crumb[] = [{ label: "Home", href: "/" }, { label: "Setups" }];
+---
+
+<Base image="/og/setups.png" title="Setups | Brandon Verzuu" description={setup.intro} schema={[breadcrumbSchema(crumbs, `${SITE}/setups`)]}>
+  <PageHead title="Setups" crumbs={crumbs} description={setup.intro} />
+  {
+    setup.flows.map((flow, fi) => (
+      <section id={flow.id} class="chapter wrap flow" aria-labelledby={`${flow.id}-title`}>
+        <div class="chapter-head">
+          <p class="label">{pad(fi + 1)} · Flow</p>
+          <h2 id={`${flow.id}-title`}>{flow.name}</h2>
+          <p class="measure">{flow.description}</p>
+        </div>
+        <SetupLoop id={flow.id} stages={flow.stages} />
+      </section>
+    ))
+  }
+</Base>
+
+<style>
+  .flow { display: flex; flex-direction: column; gap: clamp(2rem, 4vw, 3rem); }
+</style>

@@ -9,3 +9,6 @@
 /topics/api-governance-integration /articles?topic=apis 301
 /topics/ai-trust-and-ethics /articles?topic=ai 301
 /topics/blockchain-and-crypto /articles?topic=blockchain 301
+
+# The setup page became Setups once it held more than one workflow.
+/setup /setups 301
