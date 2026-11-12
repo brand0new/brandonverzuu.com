@@ -102,7 +102,7 @@ const career = defineCollection({
   }),
 });
 
-// The /setup page: one file, read as a whole, like career. It holds one or more flows, each a
+// The /setups page: one file, read as a whole, like career. It holds one or more flows, each a
 // workflow drawn as its own diagram under its own heading, in file order. A flow's stages are
 // drawn in order along the line, so their order is the lifecycle. Source paths are checked
 // against the repo at build time in src/lib/setup.ts, which the schema can't do on its own.
@@ -119,7 +119,7 @@ const setupStep = z.object({
   ).min(1),
 });
 const setupFlow = z.object({
-  // Anchors the flow's section (/setup#<id>) and prefixes its dialog ids, so it must be a
+  // Anchors the flow's section (/setups#<id>) and prefixes its dialog ids, so it must be a
   // unique slug.
   id: z.string().regex(/^[a-z0-9]+(-[a-z0-9]+)*$/, "a kebab-case slug"),
   name: z.string(),

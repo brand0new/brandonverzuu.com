@@ -10,7 +10,7 @@ export const GET: APIRoute = async () => {
     { path: "/" },
     { path: "/articles", lastmod: articles[0]?.data.date },
     ...articles.map((a) => ({ path: `/articles/${a.id}`, lastmod: a.data.date })),
-    { path: "/setup" },
+    { path: "/setups" },
     { path: "/projects" },
     { path: "/career" },
     { path: "/bookmarks" },

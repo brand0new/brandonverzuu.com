@@ -1,7 +1,7 @@
-# The /setup page: the workflows I use, each drawn as its own diagram under its own heading,
+# The /setups page: the workflows I use, each drawn as its own diagram under its own heading,
 # in the order listed under `flows`. In a flow, stages are the generic phases and steps are
-# how that workflow does them. Read by src/pages/setup.astro through the `setup` schema in
-# src/content.config.ts. A flow's `id` is its anchor (/setup#<id>) and must be unique.
+# how that workflow does them. Read by src/pages/setups.astro through the `setup` schema in
+# src/content.config.ts. A flow's `id` is its anchor (/setups#<id>) and must be unique.
 #
 # Every `path` under `sources` is relative to the repo root and must exist, or the build
 # fails (src/lib/setup.ts). The page links each one to GitHub at the commit being built.

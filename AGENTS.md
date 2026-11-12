@@ -7,7 +7,7 @@ no step-by-step procedures. Those live in `skills/`.
 ## What this is
 
 `brandonverzuu.com` is Brandon Verzuu's personal site: articles on APIs, platforms
-and technology, plus a setup page (how the site itself gets built and shipped), projects,
+and technology, plus a setups page (the workflows behind how things get built and shipped, this site first), projects,
 career and bookmarks. It's built with Astro, used purely as a build tool: **statically generated**, with
 no UI framework in the browser. `npm run generate` prerenders every route, and the result
 is served as plain files by Cloudflare Pages. There's no server
@@ -70,7 +70,7 @@ These are facts the build and the pages rely on:
   `apps/site/src/pages/og/` with `apps/site/scripts/lib/og-card.mjs`: each article
   gets `/og/<collection>/<slug>.png` from its cover and title, other pages a fixed card in
   `/og/`. Nothing is committed for them; a missing cover fails the build there too.
-- The `/setup` diagram reads `apps/site/content/setup.yml` (the `setup` schema). Every
+- The `/setups` page reads `apps/site/content/setup.yml` (the `setup` schema). Every
   `source` path in it must exist in the repo, or the build fails; the page links each one
   to GitHub at the commit being built.
 - Tags form a small, reused vocabulary. `apps/site/src/lib/topicClusters.ts` maps them to the
