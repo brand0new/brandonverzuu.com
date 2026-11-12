@@ -22,7 +22,7 @@ interface Props {
   image?: string;
   /** What the card shows, for og:image:alt and twitter:image:alt. */
   imageAlt?: string;
-  /** Set on articles and reviews: og:type "article" plus its article:* properties. */
+  /** Set on articles: og:type "article" plus its article:* properties. */
   article?: { published: Date; section: string; tags?: string[] };
   /** JSON-LD objects for <head>. */
   schema?: JsonLd[];
@@ -48,7 +48,7 @@ const canonical = SITE + path;
 
 const nav = [
   { label: "Articles", href: "/articles" },
-  { label: "Reviews", href: "/reviews" },
+  { label: "Setup", href: "/setup" },
   { label: "Projects", href: "/projects" },
   { label: "Career", href: "/career" },
   { label: "Bookmarks", href: "/bookmarks" },

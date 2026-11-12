@@ -36,44 +36,6 @@ const articles = defineCollection({
   }),
 });
 
-// Reviews of films, games, books etc. A separate collection rather than articles with a tag,
-// so they stay out of /articles, the homepage and the topic filters.
-const reviews = defineCollection({
-  loader: glob({ pattern: "*.md", base: "./content/reviews", generateId: byFilename }),
-  schema: z.object({
-    title: z.string(),
-    description: z.string(),
-    published: z.boolean(),
-    date: z.coerce.date(),
-    slug: z.string().optional(),
-    tags: z.array(z.string()).optional(),
-    // Drives the label and the schema.org type of itemReviewed (src/lib/reviews.ts). An enum
-    // so a typo fails the build instead of producing an unlabelled review.
-    medium: z.enum(["film", "series", "video-game", "board-game", "book", "other"]),
-    // The thing being reviewed, as opposed to `title`, the review's own headline.
-    subject: z.object({
-      name: z.string(),
-      year: z.number().int().optional(),
-      // Director, studio, designer or author, whichever fits the medium.
-      creator: z.string().optional(),
-    }),
-    // Whole numbers only: the rating is drawn as its 4-bit binary encoding, which has no
-    // half steps.
-    rating: z.number().int().min(0).max(10),
-    // One-line takeaway shown on the /reviews list.
-    verdict: z.string(),
-    // Medium-specific facts (platform, hours played, player count…) as label/value pairs.
-    details: z.array(z.object({ label: z.string(), value: z.string() })).optional(),
-    // Cover and credit are required. The page finds the cover by path
-    // (public/reviews/<slug>/cover.png); covers are official art, so every review credits
-    // imageAuthor and links imageSource.
-    image: z.string(),
-    imageAuthor: z.string(),
-    imageSource: z.string(),
-    imageLicense: z.string().optional(),
-  }),
-});
-
 const projects = defineCollection({
   // content/projects/<n>.<name>.json: the number orders the list.
   loader: glob({ pattern: "*.json", base: "./content/projects", generateId: ({ entry }) => entry.replace(/\.json$/, "") }),
@@ -114,7 +76,7 @@ const expertPricing = defineCollection({
 });
 
 // Terms and privacy statement, one file per version (expert/terms/<version>.md). These are
-// Brandon's words, like reviews: agents scaffold structure only. The pages render the newest
+// Brandon's words: agents scaffold structure only. The pages render the newest
 // `published` version and show a "being drafted" notice while only drafts exist.
 const legalDocument = z.object({
   title: z.string(),
@@ -173,4 +135,35 @@ const career = defineCollection({
   }),
 });
 
-export const collections = { articles, reviews, projects, career, expertPricing, expertTerms, expertPrivacy };
+// The /setup diagram: one file, read as a whole, like career. Stages are drawn in order around
+// the loop (clockwise), so their order is the lifecycle. Source paths are checked against the repo at
+// build time in src/lib/setup.ts, which the schema can't do on its own.
+const setup = defineCollection({
+  loader: file("./content/setup.yml", { parser: (text) => [{ id: "setup", ...yamlParse(text) }] }),
+  schema: z.object({
+    intro: z.string(),
+    stages: z.array(
+      z.object({
+        name: z.string(),
+        steps: z.array(
+          z.object({
+            name: z.string(),
+            tools: z.array(z.string()).min(1),
+            body: z.array(z.string()).min(1),
+            sources: z.array(
+              z.object({
+                label: z.string(),
+                // Repo-relative, no leading slash: "skills/ship-change/SKILL.md".
+                path: z.string().regex(/^[^/]/, "relative to the repo root, no leading slash"),
+              }),
+            ).min(1),
+          }),
+        ).min(1),
+      }),
+    // Exactly four: the diagram puts one stage on each half of the loop's top and bottom
+    // edges (src/components/SetupLoop.astro).
+    ).length(4),
+  }),
+});
+
+export const collections = { articles, projects, setup, career, expertPricing, expertTerms, expertPrivacy };

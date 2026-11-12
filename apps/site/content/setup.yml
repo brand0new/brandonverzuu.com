@@ -1,0 +1,134 @@
+# The /setup diagram: the lifecycle this site goes through, from a note on my phone to a
+# page in production. Stages are the generic phases; steps are how this repo does them.
+# Read by src/pages/setup.astro through the `setup` schema in src/content.config.ts.
+#
+# Every `path` under `sources` is relative to the repo root and must exist, or the build
+# fails (src/lib/setup.ts). The page links each one to GitHub at the commit being built.
+
+intro: How this site goes from a note on my phone to a page in production. Mostly agents, two checks, and no deploy button. Pick a step to see how it works and where it lives in the repo.
+
+stages:
+  - name: Plan & capture
+    steps:
+      - name: Capture a note
+        tools: [Apple Notes, Shortcuts, GitHub Issues]
+        body:
+          - Most articles start as a few lines typed with my thumb. A Shortcut on my iPhone sends the note to GitHub as an issue labelled draft-article.
+          - The Shortcut's token can file issues on this one repo and nothing else. It can never touch code, which is what I want from a credential that syncs through iCloud.
+        sources:
+          - label: Shortcut and token setup
+            path: docs/note-to-article.md
+
+      - name: Claim the issue
+        tools: [GitHub Issues, gh CLI]
+        body:
+          - An agent only picks up an issue that I opened and that carries the draft-article label. A label alone isn't enough, because anyone with triage access can add one.
+          - Before writing anything, the agent adds article-in-progress as a lock. Two agents never draft the same note.
+          - When a note is missing facts, the questions go on the issue. That's the only place I'm asked anything.
+        sources:
+          - label: Inbox protocol
+            path: skills/note-to-article/SKILL.md
+          - label: Trust boundary
+            path: AGENTS.md
+
+  - name: Build & draft
+    steps:
+      - name: Shared context
+        tools: [AGENTS.md, Skills]
+        body:
+          - Every agent starts from the same two places. AGENTS.md says what the repo is and what it cares about. The skills folder holds the procedures.
+          - The skills are written so that any coding agent can follow them. When one is wrong, the fix goes into the skill, not into one agent's memory.
+        sources:
+          - label: AGENTS.md
+            path: AGENTS.md
+          - label: Skills
+            path: skills
+
+      - name: One worktree per task
+        tools: [Git worktrees, Claude Code]
+        body:
+          - Each task gets its own branch in its own git worktree. Parallel agents never share a checkout, so they can't step on each other's files.
+          - Branch and commit names follow one pattern, which keeps the history readable when most of it is written by agents.
+        sources:
+          - label: Branch and commit rules
+            path: skills/ship-change/SKILL.md
+
+      - name: Draft and cover
+        tools: [Style guide, sharp, Bayer dither]
+        body:
+          - The agent ghostwrites the full article from the note, measured against a style guide derived from everything I've published. Structure and analogies it may invent. Facts, numbers and anything I did, never.
+          - The cover is dithered from a source image by a script, in the same terracotta palette the site uses.
+        sources:
+          - label: Style guide
+            path: skills/note-to-article/style-guide.md
+          - label: Note to article
+            path: skills/note-to-article/SKILL.md
+          - label: Cover script
+            path: apps/site/scripts/generate-cover.mjs
+
+  - name: Test & quality
+    steps:
+      - name: Fingerprint scrub
+        tools: [Node.js]
+        body:
+          - A deterministic pass over every model-written draft. It measures sentence rhythm, punctuation and filler phrases against my own articles and reports what drifts.
+          - It works the same whichever model wrote the draft, which is the point.
+        sources:
+          - label: Scrub script
+            path: apps/site/scripts/scrub-fingerprint.mjs
+          - label: Scrub skill
+            path: skills/fingerprint-scrub/SKILL.md
+
+      - name: Build-time checks
+        tools: [Astro, Zod, WCAG AA]
+        body:
+          - The build is the test suite. Content must match its schema, every colour pair must pass WCAG AA in both themes, and every URL the site has served must still exist.
+          - Any of those failing fails npm run generate, so it never gets as far as a deploy.
+        sources:
+          - label: Content schemas
+            path: apps/site/src/content.config.ts
+          - label: Contrast check
+            path: apps/site/scripts/check-contrast.mjs
+          - label: URL check
+            path: apps/site/scripts/check-urls.mjs
+
+      - name: Required check
+        tools: [GitHub Actions]
+        body:
+          - Every pull request runs the same build on a clean Linux runner. Master requires it to pass, so a red build can't be merged.
+          - There's no human review gate. This check is the gate.
+        sources:
+          - label: Build workflow
+            path: .github/workflows/build.yml
+
+  - name: Release & operate
+    steps:
+      - name: Preview
+        tools: [Cloudflare Pages]
+        body:
+          - Cloudflare builds every pushed branch and posts a preview link on the pull request. Anything visual gets looked at there before it merges.
+        sources:
+          - label: Deployment
+            path: docs/deployment.md
+          - label: Pages config
+            path: wrangler.toml
+
+      - name: Merge is publish
+        tools: [GitHub, Cloudflare Pages]
+        body:
+          - Master is production. Squash-merging a pull request is the only publish step, and Cloudflare deploys it within a minute or two.
+          - The site is fully static. No server runs at request time, so there's nothing else to deploy.
+        sources:
+          - label: Ship a change
+            path: skills/ship-change/SKILL.md
+          - label: Deployment
+            path: docs/deployment.md
+
+      - name: Clean up
+        tools: [Git]
+        body:
+          - After a merge the agent removes its worktree, its local branch and the build output. An idle clone holds the source and nothing else.
+          - Then the next note comes in, and the loop starts again.
+        sources:
+          - label: Workspace cleanup
+            path: skills/workspace-cleanup/SKILL.md

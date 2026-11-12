@@ -3,17 +3,11 @@ import { getCollection, type CollectionEntry } from "astro:content";
 import { topicClusters, type TopicCluster } from "./topicClusters";
 
 export type Article = CollectionEntry<"articles">;
-export type Review = CollectionEntry<"reviews">;
 
 export const SITE = "https://brandonverzuu.com";
 
 export async function publishedArticles(): Promise<Article[]> {
   const all = await getCollection("articles", (a) => a.data.published);
-  return all.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
-}
-
-export async function publishedReviews(): Promise<Review[]> {
-  const all = await getCollection("reviews", (r) => r.data.published);
   return all.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 }
 
@@ -27,9 +21,9 @@ export async function featuredArticles(): Promise<Article[]> {
   return flagged.length ? flagged : all.slice(0, 5);
 }
 
-// The content contract: every article and review has public/<collection>/<slug>/cover.png
+// The content contract: every article has public/<collection>/<slug>/cover.png
 // and cover-light.png. Found by path, never through frontmatter.
-export function covers(collection: "articles" | "reviews", id: string) {
+export function covers(collection: "articles", id: string) {
   return { dark: `/${collection}/${id}/cover.png`, light: `/${collection}/${id}/cover-light.png` };
 }
 
