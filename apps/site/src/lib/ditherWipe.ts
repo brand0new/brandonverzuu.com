@@ -42,3 +42,9 @@ const bits = band();
 export const wipeVars =
   `--wipe-cell:${CELL}px;--wipe-w:${COLS * CELL}px;--wipe-band:${ROWS * CELL}px;` +
   `--wipe-in:${svg(bits, 1)};--wipe-out:${svg(bits, 0)}`;
+
+/** The sweep: the band's top edge travels from just above the viewport to just below it. The
+ * values are written out, not `var(--wipe-band)`: Firefox stops interpolating a registered custom
+ * property when a keyframe contains var() and jumps from start to end at the halfway point
+ * instead, so the band was never seen there (measured in Firefox 159). */
+export const wipeKeyframes = `@keyframes wipe{from{--wipe-y:${-ROWS * CELL}px}to{--wipe-y:100lvh}}`;

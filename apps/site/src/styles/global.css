@@ -189,7 +189,7 @@ a.row:hover .row-title, a.row:focus-visible .row-title { color: var(--accent); }
    down with the band. It moves through 100lvh, not 100%, so the mask's two layers (the band, and
    the solid area beside it) can be placed with lengths alone. */
 @property --wipe-y { syntax: "<length>"; inherits: false; initial-value: 0px; }
-@keyframes wipe { from { --wipe-y: calc(-1 * var(--wipe-band)); } to { --wipe-y: 100lvh; } }
+/* @keyframes wipe is written by Base.astro from src/lib/ditherWipe.ts, next to the band it moves. */
 :root { --wipe-ease: cubic-bezier(.5, 0, .3, 1); --wipe-ms: 640ms; }
 
 @view-transition { navigation: auto; }
@@ -224,7 +224,11 @@ html.vt-reveal body::after {
   mask-size: var(--wipe-w) var(--wipe-band), 100% 100lvh;
   -webkit-mask-position: 0 var(--at), 0 calc(var(--at) + var(--wipe-band));
   mask-position: 0 var(--at), 0 calc(var(--at) + var(--wipe-band));
+  /* Held fully opaque until the page has parsed (Base.astro adds .vt-go). These browsers ignore
+     the render-blocking hint, so otherwise part of the sweep runs before the first paint. */
+  animation-play-state: paused;
 }
+html.vt-reveal.vt-go body::after { animation-play-state: running; }
 @supports (top: round(down, 1px, 1px)) {
   ::view-transition-new(root), html.vt-reveal body::after { --at: round(down, var(--wipe-y), var(--wipe-cell)); }
 }

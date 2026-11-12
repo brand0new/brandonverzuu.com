@@ -12,7 +12,7 @@ import "../styles/global.css";
 import { Font } from "astro:assets";
 import { cssVars } from "../../scripts/lib/tokens.mjs";
 import { SITE } from "../lib/content";
-import { wipeVars } from "../lib/ditherWipe";
+import { wipeKeyframes, wipeVars } from "../lib/ditherWipe";
 import type { JsonLd } from "../lib/schema";
 
 interface Props {
@@ -57,7 +57,8 @@ const current = (href: string) => path === href || path.startsWith(href + "/");
 
 const tokens = `:root{${cssVars("light")};${wipeVars};color-scheme:light}` +
   `@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){${cssVars("dark")};color-scheme:dark}}` +
-  `:root[data-theme="dark"]{${cssVars("dark")};color-scheme:dark}`;
+  `:root[data-theme="dark"]{${cssVars("dark")};color-scheme:dark}` +
+  wipeKeyframes;
 ---
 
 <!doctype html>
@@ -117,9 +118,13 @@ const tokens = `:root{${cssVars("light")};${wipeVars};color-scheme:light}` +
             var ref = document.referrer;
             if (nav && nav.type !== "reload" && ref && new URL(ref).origin === location.origin) {
               d.classList.add("vt-reveal");
+              // Start the sweep on the first frame after the page has parsed, not while it loads.
+              document.addEventListener("DOMContentLoaded", function () {
+                requestAnimationFrame(function () { d.classList.add("vt-go"); });
+              });
               d.addEventListener("animationend", function done(e) {
                 if (e.animationName !== "wipe") return;
-                d.classList.remove("vt-reveal");
+                d.classList.remove("vt-reveal", "vt-go");
                 d.removeEventListener("animationend", done);
               });
             }
