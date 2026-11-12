@@ -9,7 +9,7 @@
 // down the solid left edge and the way back goes round the right. One shape at both sizes, so
 // the drop's maths doesn't care which it is. Square corners, like every other surface here.
 //
-// Rest state first: the track, the numbered nodes and every dialog are in the HTML. The
+// Rest state first: the track, the nodes and every dialog are in the HTML. The
 // buttons open their dialogs with invoker commands (commandfor / command="show-modal"), which
 // need no script; the script only polyfills them and adds the signal drop. The drop moves on
 // the shared 14 fps clock, so it steps rather than glides, and it doesn't exist at all with
@@ -144,8 +144,9 @@ const short = COMMIT.slice(0, 7);
   }
   .node:hover .mark, .node:focus-visible .mark { background: var(--ink); }
   .node[data-lit] .mark { background: var(--signal); border-color: var(--signal-edge); }
-  .node-name { font: 800 clamp(1.1rem, .7rem + .8vw, 1.45rem)/.95 var(--display); text-transform: uppercase; }
-  .node:hover .node-name, .node:focus-visible .node-name { color: var(--accent); }
+  .node-name { font: 800 clamp(.95rem, .55rem + .6vw, 1.15rem)/.95 var(--display); text-transform: uppercase; transition: color .2s; }
+  /* The step the drop is on takes the terracotta accent, the same as hover and focus. */
+  .node:hover .node-name, .node:focus-visible .node-name, .node[data-lit] .node-name { color: var(--accent); }
 
   .drop {
     position: absolute; left: 0; top: 0; width: 8px; height: 8px; margin: -4px 0 0 -4px;
@@ -203,7 +204,7 @@ const short = COMMIT.slice(0, 7);
   :global(html:has(dialog.step[open])) { overflow: hidden; }
 
   @media (prefers-reduced-motion: reduce) {
-    .mark { transition: none; }
+    .mark, .node-name { transition: none; }
   }
 </style>
 
@@ -232,9 +233,10 @@ const short = COMMIT.slice(0, 7);
   // its top-left corner; on phones the nodes run the other way round, so the direction comes
   // from the first two nodes rather than the breakpoint.
   //
-  // On phones the way back is three dashed edges of a tall box, longer than the steps
-  // themselves; at step speed the drop would spend most of each loop on nothing. So from the
-  // last step to the first it runs RETURN times faster there: about a second to get home.
+  // The way back is never travelled at step speed, or the drop would spend much of each loop on
+  // nothing. On desktop it jumps from the last step straight to the first. On phones, where the
+  // way back is three edges of a tall box, it runs RETURN times faster instead: about a second
+  // home, so the reader still sees where it goes.
   const FRAME = 71;      // the shared 14 fps clock (src/scripts/signal.js, GLITCH.frameMs)
   const SPEED = 120;     // px per second along the steps
   const RETURN = 10;     // speed-up on the way back, phones only
@@ -289,6 +291,10 @@ const short = COMMIT.slice(0, 7);
     const tick = () => {
       if (!P) return;
       if (hold > 0) { hold--; return; }
+      if (back && !phone.matches) {
+        t = at[0]; hold = DWELL; back = false; light(0); draw();
+        return;
+      }
       const step = (SPEED * (back && phone.matches ? RETURN : 1) * FRAME) / 1000;
       // The next node ahead in the direction of travel, and how far away it is.
       let next = -1, gap = Infinity;
