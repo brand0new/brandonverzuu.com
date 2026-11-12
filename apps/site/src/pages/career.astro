@@ -23,7 +23,6 @@ const early = career.employers.filter((e) => e.early);
 
 const firstStart = career.employers.flatMap((e) => e.roles.map((r) => r.start)).sort()[0]!;
 const years = Math.floor(monthsBetween(firstStart, now) / 12);
-const current = recent.flatMap((e) => e.roles.filter((r) => !r.end).map((r) => ({ employer: e.name, role: r })))[0];
 const earlySpans = early.map(employerSpan);
 const earlyYears = `${earlySpans.map((s) => s.start).sort()[0]?.slice(0, 4)}–${earlySpans.map((s) => s.end ?? now).sort().at(-1)?.slice(0, 4)}`;
 
@@ -52,7 +51,7 @@ const crumbs: Crumb[] = [{ label: "Home", href: "/" }, { label: "Career" }];
 ---
 
 <Base image="/og/career.png" title="Career | Brandon Verzuu" description={description} schema={[breadcrumbSchema(crumbs, `${SITE}/career`)]}>
-  <PageHead title="Career" crumbs={crumbs} kicker={current ? `${current.role.title} · ${current.employer} · ${career.location}` : career.location} description={career.intro[0]} />
+  <PageHead title="Career" crumbs={crumbs} description={career.intro[0]} />
 
   <section class="wrap section" aria-label="In numbers">
     <ul class="numbers">
