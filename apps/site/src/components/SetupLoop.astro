@@ -1,12 +1,13 @@
 ---
-// The /setup diagram: the lifecycle as one closed track, stages in order around it, each step a
-// node that opens a dialog with its write-up, tools and sources (content/setup.yml).
+// The /setup diagram: the lifecycle as one line of steps with a dashed way back to the start,
+// stages bracketed over their steps, each step a node that opens a dialog with its write-up,
+// tools and sources (content/setup.yml).
 //
-// The track is a plain rectangle and every node's mark sits on one of its edges. From the
-// desktop breakpoint up, stages 1–2 run left to right along the top edge and 3–4 come back
-// right to left along the bottom, so the loop reads clockwise. Below it, every node sits on
-// the left edge going down and the other three edges are the way back. Square corners, like
-// every other surface here.
+// The track is a plain rectangle and every node's mark sits on one edge of it. From the desktop
+// breakpoint up, that edge is the top one: the steps run left to right along a solid line and
+// the other three edges, dashed, are the way back to the first step. Below it, the steps run
+// down the solid left edge and the way back goes round the right. One shape at both sizes, so
+// the drop's maths doesn't care which it is. Square corners, like every other surface here.
 //
 // Rest state first: the track, the numbered nodes and every dialog are in the HTML. The
 // buttons open their dialogs with invoker commands (commandfor / command="show-modal"), which
@@ -28,11 +29,13 @@ const short = COMMIT.slice(0, 7);
 
 <div class="loop" data-loop>
   <span class="track" aria-hidden="true" data-track></span>
+  <span class="head" aria-hidden="true"></span>
+  <span class="next label" aria-hidden="true">Next note</span>
   <span class="drop" aria-hidden="true" data-drop></span>
   <ol class="stages">
     {
       stages.map((stage, si) => (
-        <li class:list={["stage", si >= Math.ceil(stages.length / 2) && "back"]}>
+        <li class="stage" style={`--n: ${stage.steps.length}`}>
           <h2 class="stage-name label">
             <span class="stage-num">{pad(si + 1)}</span> {stage.name}
           </h2>
@@ -96,42 +99,47 @@ const short = COMMIT.slice(0, 7);
 <style>
   .loop {
     --m: 14px;      /* node mark */
-    --lab: 2.75rem; /* stage label band above the top edge and below the bottom one */
+    --head: 3.5rem; /* stage label and bracket, above the line */
+    --foot: 2.25rem; /* room under the way back for its label */
     position: relative;
-    padding-inline: clamp(.5rem, 2vw, 1.5rem);
+    padding-bottom: calc(var(--foot) + 2.25rem);
   }
+  /* The solid edge carries the steps; the dashed ones are the way back. */
   .track {
     position: absolute;
-    inset: calc(var(--lab) + var(--m) / 2) 0;
-    border: 1px solid var(--muted);
+    left: 0; right: 0; top: calc(var(--head) + var(--m) / 2 - .5px); bottom: var(--foot);
+    border: 1.5px dashed var(--muted);
+    border-top: 1px solid var(--ink);
     pointer-events: none;
   }
-  .stages {
-    list-style: none; margin: 0; padding: 0;
-    display: grid; grid-template-columns: 1fr 1fr; row-gap: clamp(3rem, 6vw, 5rem);
+  /* Where the way back rejoins the line: up the left edge, into the first step. */
+  .head {
+    position: absolute; width: 0; height: 0;
+    left: -4.25px; top: calc(var(--head) + var(--m) / 2 + 4px);
+    border-inline: 5px solid transparent; border-bottom: 7px solid var(--muted);
   }
-  /* Clockwise: 1 top-left, 2 top-right, 3 bottom-right, 4 bottom-left. */
-  .stage:nth-child(1) { grid-area: 1 / 1; }
-  .stage:nth-child(2) { grid-area: 1 / 2; }
-  .stage:nth-child(3) { grid-area: 2 / 2; }
-  .stage:nth-child(4) { grid-area: 2 / 1; }
-  .stage { display: flex; flex-direction: column; min-width: 0; }
-  .stage.back { flex-direction: column-reverse; }
+  .next { position: absolute; left: 50%; bottom: calc(var(--foot) - 1.75rem); transform: translateX(-50%); }
+
+  .stages { list-style: none; margin: 0; padding: 0 1.5rem; display: flex; gap: clamp(1rem, 2.5vw, 2rem); }
+  .stage { flex: var(--n) 1 0; min-width: 0; display: flex; flex-direction: column; }
   .stage-name {
-    height: var(--lab); margin: 0; display: flex; align-items: center; gap: .6rem;
-    padding-inline: .25rem; color: var(--ink);
+    position: relative; height: var(--head); margin: 0; padding-top: .2rem;
+    color: var(--ink); white-space: nowrap;
+  }
+  /* The bracket over a stage's steps. */
+  .stage-name::after {
+    content: ""; position: absolute; left: 0; right: 0; bottom: .65rem; height: .5rem;
+    border: 1px solid var(--muted); border-bottom: 0;
   }
   .stage-num { color: var(--accent); }
-  .steps { list-style: none; margin: 0; padding: 0; display: flex; justify-content: space-around; gap: .5rem; }
-  .stage.back .steps { flex-direction: row-reverse; }
+  .steps { list-style: none; margin: 0; padding: 0; display: flex; }
   .steps > li { flex: 1 1 0; display: flex; justify-content: center; min-width: 0; }
 
   .node {
     display: flex; flex-direction: column; align-items: center; gap: .75rem;
-    background: none; border: 0; padding: 0; margin: 0; color: inherit; font: inherit;
-    text-align: center; cursor: pointer; max-width: 11rem;
+    background: none; border: 0; padding: 0 .25rem; margin: 0; color: inherit; font: inherit;
+    text-align: center; cursor: pointer; max-width: 9rem;
   }
-  .stage.back .node { flex-direction: column-reverse; }
   .mark {
     width: var(--m); height: var(--m); flex: none;
     background: var(--paper); border: 1px solid var(--ink);
@@ -141,7 +149,7 @@ const short = COMMIT.slice(0, 7);
   .node[data-lit] .mark { background: var(--signal); border-color: var(--signal-edge); }
   .node-text { display: flex; flex-direction: column; gap: .2rem; }
   .node-num { font: 500 var(--step--1)/1 var(--mono); letter-spacing: .06em; color: var(--muted); }
-  .node-name { font: 800 var(--step-1)/.95 var(--display); text-transform: uppercase; }
+  .node-name { font: 800 clamp(1.1rem, .7rem + .8vw, 1.45rem)/.95 var(--display); text-transform: uppercase; }
   .node:hover .node-name, .node:focus-visible .node-name { color: var(--accent); }
 
   .drop {
@@ -151,19 +159,32 @@ const short = COMMIT.slice(0, 7);
   }
   .loop[data-running] .drop { display: block; }
 
-  /* Below the breakpoint: one column, every mark on the left edge, the loop closing round the
-     right. The track wraps the whole column, so its top and bottom edges clear the content. */
-  @media (max-width: 959px) {
-    .loop { padding-inline: 0; }
-    .track { inset: 0 0 0 calc(var(--m) / 2 - .5px); }
-    .stages { display: flex; flex-direction: column; gap: 2rem; padding: 1.75rem 1rem 1.75rem 0; }
-    .stage, .stage.back { flex-direction: column; gap: 1rem; }
-    .stage-name { height: auto; padding-left: calc(var(--m) + 1rem); }
-    .steps, .stage.back .steps { flex-direction: column; gap: 1.25rem; }
+  /* Below the breakpoint the line turns down the left edge and the way back goes round the
+     right; its label stands up along that edge, out of the step names' way. */
+  @media (max-width: 1099px) {
+    .loop { padding: 0; }
+    .track {
+      inset: 0 0 0 calc(var(--m) / 2 - .5px);
+      border: 1.5px dashed var(--muted);
+      border-left: 1px solid var(--ink);
+    }
+    .head {
+      left: calc(var(--m) / 2 + 4px); top: -4.25px;
+      border: 0; border-block: 5px solid transparent; border-right: 7px solid var(--muted);
+    }
+    .next { left: auto; right: .55rem; bottom: auto; top: 50%; transform: translateY(-50%) rotate(180deg); writing-mode: vertical-rl; }
+    .stages { flex-direction: column; gap: 2rem; padding: 1.75rem 2.75rem 1.75rem 0; }
+    .stage { flex: none; gap: 1rem; }
+    .stage-name { height: auto; padding: 0 0 0 calc(var(--m) + 1rem); display: flex; align-items: center; gap: .6rem; white-space: normal; }
+    .stage-num { font: 900 1.75rem/1 var(--display); }
+    /* On the line, a stage is a small filled square instead of a bracket. */
+    .stage-name::after { left: calc(var(--m) / 2 - 3.5px); right: auto; top: 50%; bottom: auto; width: 7px; height: 7px; border: 0; background: var(--ink); transform: translateY(-50%); }
+    .steps { flex-direction: column; gap: 1.25rem; }
     .steps > li { justify-content: flex-start; }
-    .node, .stage.back .node { flex-direction: row; gap: 1rem; text-align: left; max-width: none; }
+    .node { flex-direction: row; gap: 1rem; padding: 0; text-align: left; max-width: none; }
     /* Number and name on one line, so the mark centres on the name rather than between them. */
     .node-text { flex-direction: row; align-items: baseline; gap: .6rem; }
+    .node-name { font-size: var(--step-1); }
   }
 
   /* The dialog. A panel, like everything that carries its own content: square, hairline, no
@@ -217,10 +238,16 @@ const short = COMMIT.slice(0, 7);
   // lighting it. Positions are distances along the track's perimeter, measured clockwise from
   // its top-left corner; on phones the nodes run the other way round, so the direction comes
   // from the first two nodes rather than the breakpoint.
+  //
+  // On phones the way back is three dashed edges of a tall box, longer than the steps
+  // themselves; at step speed the drop would spend most of each loop on nothing. So from the
+  // last step to the first it runs RETURN times faster there: about a second to get home.
   const FRAME = 71;      // the shared 14 fps clock (src/scripts/signal.js, GLITCH.frameMs)
-  const SPEED = 120;     // px per second along the track
+  const SPEED = 120;     // px per second along the steps
+  const RETURN = 10;     // speed-up on the way back, phones only
   const DWELL = 6;       // frames held on a node, ~430 ms
   const LIT = 700;       // ms a node stays lit
+  const phone = window.matchMedia("(max-width: 1099px)");
 
   const loop = document.querySelector<HTMLElement>("[data-loop]");
   if (loop && !reduce) {
@@ -229,7 +256,7 @@ const short = COMMIT.slice(0, 7);
     const nodes = [...loop.querySelectorAll<HTMLElement>("[data-node]")];
     let w = 0, h = 0, P = 0, ox = 0, oy = 0, dir = 1;
     let at: number[] = [];
-    let t = 0, hold = 0, timer = 0;
+    let t = 0, hold = 0, timer = 0, back = false;
 
     const along = (x: number, y: number) => {
       const d = [Math.abs(y), Math.abs(x - w), Math.abs(y - h), Math.abs(x)];
@@ -252,7 +279,7 @@ const short = COMMIT.slice(0, 7);
         return along(b.left + b.width / 2 - r.left, b.top + b.height / 2 - r.top);
       });
       dir = ((at[1] - at[0] + P) % P) < P / 2 ? 1 : -1;
-      t = at[0]; hold = DWELL;
+      t = at[0]; hold = DWELL; back = false;
       light(0);
       draw();
     };
@@ -269,7 +296,7 @@ const short = COMMIT.slice(0, 7);
     const tick = () => {
       if (!P) return;
       if (hold > 0) { hold--; return; }
-      const step = (SPEED * FRAME) / 1000;
+      const step = (SPEED * (back && phone.matches ? RETURN : 1) * FRAME) / 1000;
       // The next node ahead in the direction of travel, and how far away it is.
       let next = -1, gap = Infinity;
       at.forEach((s, i) => {
@@ -278,6 +305,7 @@ const short = COMMIT.slice(0, 7);
       });
       if (next >= 0 && gap <= step) {
         t = at[next]; hold = DWELL; light(next);
+        back = next === nodes.length - 1;
       } else {
         t = (t + dir * step + P) % P;
       }
