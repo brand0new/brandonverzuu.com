@@ -1,0 +1,297 @@
+---
+// The /setup diagram: the lifecycle as one closed track, stages in order around it, each step a
+// node that opens a dialog with its write-up, tools and sources (content/setup.yml).
+//
+// The track is a plain rectangle and every node's mark sits on one of its edges. From the
+// desktop breakpoint up, stages 1–2 run left to right along the top edge and 3–4 come back
+// right to left along the bottom, so the loop reads clockwise. Below it, every node sits on
+// the left edge going down and the other three edges are the way back. Square corners, like
+// every other surface here.
+//
+// Rest state first: the track, the numbered nodes and every dialog are in the HTML. The
+// buttons open their dialogs with invoker commands (commandfor / command="show-modal"), which
+// need no script; the script only polyfills them and adds the signal drop. The drop moves on
+// the shared 14 fps clock, so it steps rather than glides, and it doesn't exist at all with
+// reduced motion.
+import { sourceUrl, COMMIT, REPO } from "../lib/setup";
+
+type Step = { name: string; tools: string[]; body: string[]; sources: { label: string; path: string }[] };
+interface Props {
+  stages: { name: string; steps: Step[] }[];
+}
+const { stages } = Astro.props;
+
+const pad = (n: number) => String(n).padStart(2, "0");
+const id = (si: number, ji: number) => `step-${si + 1}-${ji + 1}`;
+const short = COMMIT.slice(0, 7);
+---
+
+<div class="loop" data-loop>
+  <span class="track" aria-hidden="true" data-track></span>
+  <span class="drop" aria-hidden="true" data-drop></span>
+  <ol class="stages">
+    {
+      stages.map((stage, si) => (
+        <li class:list={["stage", si >= Math.ceil(stages.length / 2) && "back"]}>
+          <h2 class="stage-name label">
+            <span class="stage-num">{pad(si + 1)}</span> {stage.name}
+          </h2>
+          <ol class="steps">
+            {stage.steps.map((step, ji) => (
+              <li>
+                <button type="button" class="node" commandfor={id(si, ji)} command="show-modal" aria-haspopup="dialog" data-node>
+                  <span class="mark" aria-hidden="true" data-mark />
+                  <span class="node-text">
+                    <span class="node-num">{si + 1}.{ji + 1}</span>
+                    <span class="node-name">{step.name}</span>
+                  </span>
+                </button>
+              </li>
+            ))}
+          </ol>
+        </li>
+      ))
+    }
+  </ol>
+</div>
+
+{
+  stages.map((stage, si) =>
+    stage.steps.map((step, ji) => (
+      <dialog id={id(si, ji)} class="step" aria-labelledby={`${id(si, ji)}-title`} closedby="any">
+        <div class="step-body">
+          <p class="label">
+            {pad(si + 1)} · {stage.name}
+          </p>
+          <h2 id={`${id(si, ji)}-title`}>{step.name}</h2>
+          {step.body.map((p) => (
+            <p class="step-p">{p}</p>
+          ))}
+          <ul class="tags" aria-label="Tools">
+            {step.tools.map((t) => (
+              <li class="tag">{t}</li>
+            ))}
+          </ul>
+          <h3 class="label">Source</h3>
+          <ul class="sources">
+            {step.sources.map((s) => (
+              <li>
+                <a href={sourceUrl(s.path)}>
+                  <span class="src-label">{s.label}</span>
+                  <span class="src-path">{s.path} on GitHub</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+          <p class="label commit">
+            At commit <a href={`${REPO}/commit/${COMMIT}`}>{short}</a>, the one this page was built from.
+          </p>
+          <button type="button" class="btn close" commandfor={id(si, ji)} command="close">Close</button>
+        </div>
+      </dialog>
+    )),
+  )
+}
+
+<style>
+  .loop {
+    --m: 14px;      /* node mark */
+    --lab: 2.75rem; /* stage label band above the top edge and below the bottom one */
+    position: relative;
+    padding-inline: clamp(.5rem, 2vw, 1.5rem);
+  }
+  .track {
+    position: absolute;
+    inset: calc(var(--lab) + var(--m) / 2) 0;
+    border: 1px solid var(--muted);
+    pointer-events: none;
+  }
+  .stages {
+    list-style: none; margin: 0; padding: 0;
+    display: grid; grid-template-columns: 1fr 1fr; row-gap: clamp(3rem, 6vw, 5rem);
+  }
+  /* Clockwise: 1 top-left, 2 top-right, 3 bottom-right, 4 bottom-left. */
+  .stage:nth-child(1) { grid-area: 1 / 1; }
+  .stage:nth-child(2) { grid-area: 1 / 2; }
+  .stage:nth-child(3) { grid-area: 2 / 2; }
+  .stage:nth-child(4) { grid-area: 2 / 1; }
+  .stage { display: flex; flex-direction: column; min-width: 0; }
+  .stage.back { flex-direction: column-reverse; }
+  .stage-name {
+    height: var(--lab); margin: 0; display: flex; align-items: center; gap: .6rem;
+    padding-inline: .25rem; color: var(--ink);
+  }
+  .stage-num { color: var(--accent); }
+  .steps { list-style: none; margin: 0; padding: 0; display: flex; justify-content: space-around; gap: .5rem; }
+  .stage.back .steps { flex-direction: row-reverse; }
+  .steps > li { flex: 1 1 0; display: flex; justify-content: center; min-width: 0; }
+
+  .node {
+    display: flex; flex-direction: column; align-items: center; gap: .75rem;
+    background: none; border: 0; padding: 0; margin: 0; color: inherit; font: inherit;
+    text-align: center; cursor: pointer; max-width: 11rem;
+  }
+  .stage.back .node { flex-direction: column-reverse; }
+  .mark {
+    width: var(--m); height: var(--m); flex: none;
+    background: var(--paper); border: 1px solid var(--ink);
+    transition: background-color .2s, border-color .2s;
+  }
+  .node:hover .mark, .node:focus-visible .mark { background: var(--ink); }
+  .node[data-lit] .mark { background: var(--signal); border-color: var(--signal-edge); }
+  .node-text { display: flex; flex-direction: column; gap: .2rem; }
+  .node-num { font: 500 var(--step--1)/1 var(--mono); letter-spacing: .06em; color: var(--muted); }
+  .node-name { font: 800 var(--step-1)/.95 var(--display); text-transform: uppercase; }
+  .node:hover .node-name, .node:focus-visible .node-name { color: var(--accent); }
+
+  .drop {
+    position: absolute; left: 0; top: 0; width: 8px; height: 8px; margin: -4px 0 0 -4px;
+    background: var(--signal); outline: 1px solid var(--signal-edge);
+    pointer-events: none; display: none;
+  }
+  .loop[data-running] .drop { display: block; }
+
+  /* Below the breakpoint: one column, every mark on the left edge, the loop closing round the
+     right. The track wraps the whole column, so its top and bottom edges clear the content. */
+  @media (max-width: 959px) {
+    .loop { padding-inline: 0; }
+    .track { inset: 0 0 0 calc(var(--m) / 2 - .5px); }
+    .stages { display: flex; flex-direction: column; gap: 2rem; padding: 1.75rem 1rem 1.75rem 0; }
+    .stage, .stage.back { flex-direction: column; gap: 1rem; }
+    .stage-name { height: auto; padding-left: calc(var(--m) + 1rem); }
+    .steps, .stage.back .steps { flex-direction: column; gap: 1.25rem; }
+    .steps > li { justify-content: flex-start; }
+    .node, .stage.back .node { flex-direction: row; gap: 1rem; text-align: left; max-width: none; }
+    /* Number and name on one line, so the mark centres on the name rather than between them. */
+    .node-text { flex-direction: row; align-items: baseline; gap: .6rem; }
+  }
+
+  /* The dialog. A panel, like everything that carries its own content: square, hairline, no
+     shadow. The backdrop dims the page with the paper colour rather than a blur. */
+  .step {
+    width: min(40rem, calc(100vw - 32px)); max-height: min(44rem, calc(100dvh - 32px));
+    padding: 0; border: 1px solid var(--ink); background: var(--paper); color: var(--ink);
+  }
+  .step::backdrop { background: color-mix(in srgb, var(--paper) 82%, transparent); }
+  .step-body { padding: clamp(1.25rem, 4vw, 2.25rem); display: flex; flex-direction: column; gap: 1rem; }
+  .step-body > * { margin: 0; }
+  .step h2 { font-size: var(--step-2); line-height: .9; }
+  .step-p { line-height: 1.55; }
+  .step h3 { margin-top: .5rem; }
+  .sources { list-style: none; padding: 0; border-top: 2px solid var(--ink); }
+  .sources li { border-bottom: 1px solid var(--line); }
+  .sources a { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .25rem 1rem; padding: .7rem 0; text-decoration: none; color: inherit; }
+  .src-label { font-family: var(--display); font-weight: 800; font-size: var(--step-0); text-transform: uppercase; }
+  .src-path { font: var(--step--1)/1.4 var(--mono); color: var(--muted); overflow-wrap: anywhere; }
+  .sources a:hover .src-label, .sources a:focus-visible .src-label { color: var(--accent); }
+  .commit a { color: var(--accent); }
+  .close { align-self: flex-start; margin-top: .5rem; }
+  :global(html:has(dialog.step[open])) { overflow: hidden; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mark { transition: none; }
+  }
+</style>
+
+<script>
+  import { reduce } from "../scripts/signal.js";
+
+  // Invoker commands where the browser lacks them, and light dismiss where closedby="any"
+  // isn't supported: a click that lands on the dialog itself rather than its body is a click
+  // on the backdrop.
+  if (!("command" in HTMLButtonElement.prototype)) {
+    document.querySelectorAll<HTMLButtonElement>("button[commandfor]").forEach((b) =>
+      b.addEventListener("click", () => {
+        const d = document.getElementById(b.getAttribute("commandfor")!) as HTMLDialogElement | null;
+        if (!d) return;
+        if (b.getAttribute("command") === "show-modal") d.showModal();
+        else d.close();
+      }),
+    );
+  }
+  document.querySelectorAll<HTMLDialogElement>("dialog.step").forEach((d) =>
+    d.addEventListener("click", (e) => e.target === d && d.close()),
+  );
+
+  // The signal drop: one dot running round the track, pausing on each node it reaches and
+  // lighting it. Positions are distances along the track's perimeter, measured clockwise from
+  // its top-left corner; on phones the nodes run the other way round, so the direction comes
+  // from the first two nodes rather than the breakpoint.
+  const FRAME = 71;      // the shared 14 fps clock (src/scripts/signal.js, GLITCH.frameMs)
+  const SPEED = 120;     // px per second along the track
+  const DWELL = 6;       // frames held on a node, ~430 ms
+  const LIT = 700;       // ms a node stays lit
+
+  const loop = document.querySelector<HTMLElement>("[data-loop]");
+  if (loop && !reduce) {
+    const track = loop.querySelector<HTMLElement>("[data-track]")!;
+    const drop = loop.querySelector<HTMLElement>("[data-drop]")!;
+    const nodes = [...loop.querySelectorAll<HTMLElement>("[data-node]")];
+    let w = 0, h = 0, P = 0, ox = 0, oy = 0, dir = 1;
+    let at: number[] = [];
+    let t = 0, hold = 0, timer = 0;
+
+    const along = (x: number, y: number) => {
+      const d = [Math.abs(y), Math.abs(x - w), Math.abs(y - h), Math.abs(x)];
+      const e = d.indexOf(Math.min(...d));
+      return [x, w + y, w + h + (w - x), 2 * w + h + (h - y)][e];
+    };
+    const point = (s: number): [number, number] => {
+      s = ((s % P) + P) % P;
+      if (s < w) return [s, 0];
+      if (s < w + h) return [w, s - w];
+      if (s < 2 * w + h) return [w - (s - w - h), h];
+      return [0, h - (s - 2 * w - h)];
+    };
+    const measure = () => {
+      const r = track.getBoundingClientRect(), l = loop.getBoundingClientRect();
+      w = r.width; h = r.height; P = 2 * (w + h);
+      ox = r.left - l.left; oy = r.top - l.top;
+      at = nodes.map((n) => {
+        const b = n.querySelector("[data-mark]")!.getBoundingClientRect();
+        return along(b.left + b.width / 2 - r.left, b.top + b.height / 2 - r.top);
+      });
+      dir = ((at[1] - at[0] + P) % P) < P / 2 ? 1 : -1;
+      t = at[0]; hold = DWELL;
+      light(0);
+      draw();
+    };
+    const draw = () => {
+      const [x, y] = point(t);
+      drop.style.transform = `translate(${ox + x}px, ${oy + y}px)`;
+    };
+    const light = (i: number) => {
+      const n = nodes[i];
+      n.dataset.lit = "";
+      clearTimeout((n as any)._lit);
+      (n as any)._lit = setTimeout(() => delete n.dataset.lit, LIT);
+    };
+    const tick = () => {
+      if (!P) return;
+      if (hold > 0) { hold--; return; }
+      const step = (SPEED * FRAME) / 1000;
+      // The next node ahead in the direction of travel, and how far away it is.
+      let next = -1, gap = Infinity;
+      at.forEach((s, i) => {
+        const g = ((dir * (s - t)) % P + P) % P;
+        if (g > 0.5 && g < gap) { gap = g; next = i; }
+      });
+      if (next >= 0 && gap <= step) {
+        t = at[next]; hold = DWELL; light(next);
+      } else {
+        t = (t + dir * step + P) % P;
+      }
+      draw();
+    };
+    const run = (on: boolean) => {
+      clearInterval(timer);
+      if (on) timer = window.setInterval(tick, FRAME);
+      loop.toggleAttribute("data-running", on);
+    };
+
+    new ResizeObserver(measure).observe(loop);
+    let visible = false;
+    new IntersectionObserver(([e]) => { visible = e.isIntersecting; run(visible && !document.hidden); }).observe(loop);
+    document.addEventListener("visibilitychange", () => run(visible && !document.hidden));
+  }
+</script>

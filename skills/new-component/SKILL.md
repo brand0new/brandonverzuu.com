@@ -14,14 +14,14 @@ component to copy from.
 
 ```
 kind = classify(component):
-  "list"        renders several content items as links    → copy the rows in pages/reviews/index.astro,
+  "list"        renders several content items as links    → copy the rows in pages/bookmarks.astro,
                                                              or ArticleCards.astro when each item has a cover
   "panel"       one item with its own image or field       → copy ProjectPanels.astro
   "chapter"     a homepage chapter that reads content      → copy WhatIDo.astro
   "resolving"   an image that goes from noise to signal    → copy ResolvingCover.astro
   "decorative"  a texture with no content                  → use field() from src/scripts/signal.js
                                                              (see SayHello.astro)
-  "glyph"       a generated, decorative mark               → copy BinaryIcon.astro, ReviewRating.astro
+  "glyph"       a generated, decorative mark               → copy BinaryIcon.astro
   "chrome"      bar, footer, theme toggle                  → edit src/layouts/Base.astro
 
 file = apps/site/src/components/<PascalCaseNoun>.astro

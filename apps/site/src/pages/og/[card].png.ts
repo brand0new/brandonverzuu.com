@@ -1,4 +1,4 @@
-// Social cards for the pages that aren't an article or a review, rendered at build time into
+// Social cards for the pages that aren't an article, rendered at build time into
 // dist/og/<card>.png (scripts/lib/og-card.mjs). Base.astro points og:image at them.
 import type { APIRoute, GetStaticPaths } from "astro";
 import path from "node:path";
@@ -14,7 +14,7 @@ const cards = {
     panelTo: 700,
   },
   articles: { title: "Articles", kicker: "APIs, platforms & technology" },
-  reviews: { title: "Reviews", kicker: "Films, games & books" },
+  setup: { title: "Setup", kicker: "From idea to production" },
   projects: { title: "Projects", kicker: "Brandon Verzuu" },
   career: { title: "Career", kicker: "Head of Innovation & Product" },
   bookmarks: { title: "Bookmarks", kicker: "Brandon Verzuu" },

@@ -57,9 +57,6 @@ npm run cover:generate -- --file <path> --slug <slug>
 
 Exactly one of `--url` / `--file`. Options:
 
-- `--collection reviews` writes to `apps/site/public/reviews/<slug>/` for a review instead of
-  an article. The rest of this skill applies the same way, with `reviews` in place of
-  `articles`. `skills/new-review/` covers the review-specific parts.
 - `--dither zhou-fang` swaps the default Bayer 4×4 ordered dither
   (`apps/site/scripts/lib/bayer-dither.mjs`) for smoother error diffusion
   (`apps/site/scripts/lib/zhou-fang-dither.mjs`). Use it when Bayer turns a face or a gradient
@@ -84,6 +81,5 @@ Run `npm run dev`, then open the article and `/articles` in both themes. The cov
 should read as a shape, not as noise, and the credit line should show where one is
 needed.
 
-The social card is built from the same cover: open `/og/articles/<slug>.png` (or
-`/og/reviews/<slug>.png`). The title sits on the left panel and the cover shows on the
+The social card is built from the same cover: open `/og/articles/<slug>.png`. The title sits on the left panel and the cover shows on the
 right, so a cover whose subject is on its left edge loses it on the card.

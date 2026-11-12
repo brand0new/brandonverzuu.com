@@ -7,8 +7,8 @@ no step-by-step procedures. Those live in `skills/`.
 ## What this is
 
 `brandonverzuu.com` is Brandon Verzuu's personal site: articles on APIs, platforms
-and technology, plus reviews (films, games, books), projects, bookmarks and a uses
-page. It's built with Astro, used purely as a build tool: **statically generated**, with
+and technology, plus a setup page (how the site itself gets built and shipped), projects,
+career and bookmarks. It's built with Astro, used purely as a build tool: **statically generated**, with
 no UI framework in the browser. `npm run generate` prerenders every route, and the result
 is served as plain files by Cloudflare Pages. There's no server
 runtime in production, and that constraint shapes most technical decisions here: if a
@@ -68,12 +68,12 @@ These are facts the build and the pages rely on:
   `cover-light.png` sibling. The page background and the article cards find them by
   that path, not through frontmatter.
 - Social cards (`og:image`, 1200×630) are rendered at build time by
-  `apps/site/src/pages/og/` with `apps/site/scripts/lib/og-card.mjs`: each article and review
+  `apps/site/src/pages/og/` with `apps/site/scripts/lib/og-card.mjs`: each article
   gets `/og/<collection>/<slug>.png` from its cover and title, other pages a fixed card in
   `/og/`. Nothing is committed for them; a missing cover fails the build there too.
-- Reviews follow the same pattern in `apps/site/content/reviews/` (the `reviews` schema) and
-  `apps/site/public/reviews/<slug>/`. Brandon writes them by hand. Ratings, verdicts and
-  opinions are his alone, and agents never supply them.
+- The `/setup` diagram reads `apps/site/content/setup.yml` (the `setup` schema). Every
+  `source` path in it must exist in the repo, or the build fails; the page links each one
+  to GitHub at the commit being built.
 - Tags form a small, reused vocabulary. `apps/site/src/lib/topicClusters.ts` maps them to the
   topics used as filters on `/articles` (`/articles?topic=<slug>`).
 - Every URL the site has served is listed in `apps/site/scripts/url-baseline.txt`, and
@@ -127,11 +127,10 @@ baseline.
 | `ship-change` | take any change from branch to production (naming, build, PR, checks, merge) |
 | `workspace-cleanup` | remove build output, finished worktrees and merged branches |
 | `note-to-article` | turn a `draft-article` issue into a published article |
-| `new-review` | add a hand-written review to `/reviews` (content contract only) |
-| `article-cover` | generate the dithered cover for an article or review (`npm run cover:generate`) |
+| `article-cover` | generate the dithered cover for an article (`npm run cover:generate`) |
 | `fingerprint-scrub` | run the deterministic style scrub on a draft (`npm run scrub:fingerprint`) |
 | `article-explainer` | write and render an animated explainer (`npm run explainer:render`) |
-| `new-component` | add a Vue component that follows the conventions in its `conventions.md` |
+| `new-component` | add an Astro component that follows the conventions in its `conventions.md` |
 
 When and how an agent runs a skill (on demand, on a timer, from an external client)
 is the agent's own configuration. This repo doesn't ask any agent to schedule

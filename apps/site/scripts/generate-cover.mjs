@@ -11,8 +11,6 @@
 //   node scripts/generate-cover.mjs --file <local-path> --slug <article-slug>
 //   node scripts/generate-cover.mjs --file <local-path> --slug <article-slug> \
 //     --dither zhou-fang
-//   node scripts/generate-cover.mjs --url <art-url> --slug <review-slug> \
-//     --collection reviews --author "Studio" --source <press-kit-url>
 //
 // Exactly one of --url / --file is required. Writes
 // public/<collection>/<slug>/cover.png (collection defaults to "articles")
@@ -67,7 +65,7 @@ function hexToRgb(hex) {
 
 // Only collections whose detail pages derive their cover from the route
 // (see app.vue); any other value would write a cover nothing reads.
-const COLLECTIONS = ["articles", "reviews"];
+const COLLECTIONS = ["articles"];
 
 async function main() {
   const args = parseArgs(process.argv.slice(2));
@@ -81,7 +79,7 @@ async function main() {
   ) {
     console.error(
       "Usage: node scripts/generate-cover.mjs (--url <image-url> | --file <local-path>) --slug <slug> " +
-        "[--collection articles|reviews] [--author <name>] [--license <spdx-or-name>] [--source <page-url>] " +
+        "[--collection articles] [--author <name>] [--license <spdx-or-name>] [--source <page-url>] " +
         "[--width 1200] [--height 630] [--light #d97a4d] [--dark #1d2e34] [--light-bg #fbfbf8] [--seed <string>] " +
         "[--dither bayer|zhou-fang] [--bayer-size 4] [--pixel-size 3]",
     );

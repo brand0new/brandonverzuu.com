@@ -24,7 +24,7 @@
 /expert/privacy
 /expert/terms
 /projects
-/reviews
+/setup
 /topics
 /topics/ai-trust-and-ethics
 /topics/api-governance-integration

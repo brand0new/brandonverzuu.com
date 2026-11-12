@@ -1,7 +1,6 @@
 // JSON-LD builders. Each page passes the objects it needs to the Base layout, which writes
 // them into <head>. Kept in one file so the Person, the author and the breadcrumbs can't drift.
 import { SITE } from "./content";
-import { MAX_RATING, media, type ReviewMedium } from "./reviews";
 
 export type JsonLd = Record<string, unknown>;
 
@@ -53,26 +52,6 @@ export function articleSchema(a: { title: string; description: string; url: stri
     keywords: a.tags?.join(", "),
     author,
     publisher: author,
-  };
-}
-
-export function reviewSchema(r: { title: string; description: string; url: string; date: Date; image: string; medium: ReviewMedium; subject: { name: string; year?: number }; rating: number }): JsonLd {
-  return {
-    "@context": "https://schema.org",
-    "@type": "Review",
-    name: r.title,
-    description: r.description,
-    image: SITE + r.image,
-    datePublished: r.date.toISOString(),
-    url: r.url,
-    author,
-    publisher: author,
-    itemReviewed: {
-      "@type": media[r.medium].schemaType,
-      name: r.subject.name,
-      ...(r.subject.year && { dateCreated: String(r.subject.year) }),
-    },
-    reviewRating: { "@type": "Rating", ratingValue: r.rating, bestRating: MAX_RATING, worstRating: 0 },
   };
 }
 
