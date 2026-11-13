@@ -1,7 +1,8 @@
 # The /setups page: the workflows I use, each drawn as its own diagram under its own heading,
 # in the order listed under `flows`. In a flow, stages are the generic phases and steps are
-# how that workflow does them. Read by src/pages/setups.astro through the `setup` schema in
-# src/content.config.ts. A flow's `id` is its anchor (/setups#<id>) and must be unique.
+# how that workflow does them. A step's `kinds` say what does the work (manual, hook, skill,
+# script, agent; src/lib/setupKinds.ts) and are drawn as icons on its node. Read by
+# src/pages/setups.astro through the `setup` schema in src/content.config.ts. A flow's `id` is its anchor (/setups#<id>) and must be unique.
 #
 # Every `path` under `sources` is relative to the repo root and must exist, or the build
 # fails (src/lib/setup.ts). The page links each one to GitHub at the commit being built.
@@ -16,6 +17,7 @@ flows:
       - name: Plan & capture
         steps:
           - name: Capture a note
+            kinds: [manual]
             tools: [Apple Notes, Shortcuts, GitHub Issues]
             body:
               - Most articles start as a few lines typed with my thumb. A Shortcut on my iPhone sends the note to GitHub as an issue labelled draft-article.
@@ -25,6 +27,7 @@ flows:
                 path: docs/note-to-article.md
 
           - name: Claim the issue
+            kinds: [agent, skill]
             tools: [GitHub Issues, gh CLI]
             body:
               - An agent only picks up an issue that I opened and that carries the draft-article label. A label alone isn't enough, because anyone with triage access can add one.
@@ -39,6 +42,7 @@ flows:
       - name: Build & draft
         steps:
           - name: Shared context
+            kinds: [skill]
             tools: [AGENTS.md, Skills]
             body:
               - Every agent starts from the same two places. AGENTS.md says what the repo is and what it cares about. The skills folder holds the procedures.
@@ -50,6 +54,7 @@ flows:
                 path: skills
 
           - name: One worktree per task
+            kinds: [agent]
             tools: [Git worktrees, Claude Code]
             body:
               - Each task gets its own branch in its own git worktree. Parallel agents never share a checkout, so they can't step on each other's files.
@@ -59,6 +64,7 @@ flows:
                 path: skills/ship-change/SKILL.md
 
           - name: Draft and cover
+            kinds: [agent, skill, script]
             tools: [Style guide, sharp, Bayer dither]
             body:
               - The agent ghostwrites the full article from the note, measured against a style guide derived from everything I've published. Structure and analogies it may invent. Facts, numbers and anything I did, never.
@@ -74,6 +80,7 @@ flows:
       - name: Test & quality
         steps:
           - name: Fingerprint scrub
+            kinds: [script]
             tools: [Node.js]
             body:
               - A deterministic pass over every model-written draft. It measures sentence rhythm, punctuation and filler phrases against my own articles and reports what drifts.
@@ -85,6 +92,7 @@ flows:
                 path: skills/fingerprint-scrub/SKILL.md
 
           - name: Build-time checks
+            kinds: [script]
             tools: [Astro, Zod, WCAG AA]
             body:
               - The build is the test suite. Content must match its schema, every colour pair must pass WCAG AA in both themes, and every URL the site has served must still exist.
@@ -98,6 +106,7 @@ flows:
                 path: apps/site/scripts/check-urls.mjs
 
           - name: Required check
+            kinds: [hook]
             tools: [GitHub Actions]
             body:
               - Every pull request runs the same build on a clean Linux runner. Master requires it to pass, so a red build can't be merged.
@@ -109,6 +118,7 @@ flows:
       - name: Release & operate
         steps:
           - name: Preview
+            kinds: [hook]
             tools: [Cloudflare Pages]
             body:
               - Cloudflare builds every pushed branch and posts a preview link on the pull request. Anything visual gets looked at there before it merges.
@@ -119,6 +129,7 @@ flows:
                 path: wrangler.toml
 
           - name: Merge is publish
+            kinds: [agent]
             tools: [GitHub, Cloudflare Pages]
             body:
               - Master is production. Squash-merging a pull request is the only publish step, and Cloudflare deploys it within a minute or two.
@@ -130,6 +141,7 @@ flows:
                 path: docs/deployment.md
 
           - name: Clean up
+            kinds: [skill]
             tools: [Git]
             body:
               - After a merge the agent removes its worktree, its local branch and the build output. An idle clone holds the source and nothing else.
