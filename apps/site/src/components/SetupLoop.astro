@@ -13,8 +13,10 @@
 // the shared 14 fps clock, so it steps rather than glides, and it doesn't exist at all with
 // reduced motion.
 import { sourceUrl, COMMIT, REPO } from "../lib/setup";
+import { KINDS, sortKinds, type Kind } from "../lib/setupKinds";
+import Icon from "./Icon.astro";
 
-type Step = { name: string; tools: string[]; body: string[]; sources: { label: string; path: string }[] };
+type Step = { name: string; kinds: Kind[]; tools: string[]; body: string[]; sources: { label: string; path: string }[] };
 interface Props {
   id: string;
   stages: { name: string; steps: Step[] }[];
@@ -41,7 +43,11 @@ const short = COMMIT.slice(0, 7);
               <li>
                 <button type="button" class="node" commandfor={id(si, ji)} command="show-modal" aria-haspopup="dialog" data-node>
                   <span class="mark" aria-hidden="true" data-mark />
+                  <span class="kinds" aria-hidden="true">
+                    {sortKinds(step.kinds).map((k) => <Icon name={KINDS[k].icon} size={16} />)}
+                  </span>
                   <span class="node-name">{step.name}</span>
+                  <span class="sr-only">({sortKinds(step.kinds).map((k) => KINDS[k].label).join(", ")})</span>
                 </button>
               </li>
             ))}
@@ -64,6 +70,11 @@ const short = COMMIT.slice(0, 7);
           {step.body.map((p) => (
             <p class="step-p">{p}</p>
           ))}
+          <ul class="tags" aria-label="What does the work">
+            {sortKinds(step.kinds).map((k) => (
+              <li class="tag kind"><Icon name={KINDS[k].icon} size={14} /> {KINDS[k].label}</li>
+            ))}
+          </ul>
           <ul class="tags" aria-label="Tools">
             {step.tools.map((t) => (
               <li class="tag">{t}</li>
@@ -118,7 +129,7 @@ const short = COMMIT.slice(0, 7);
   .steps > li { flex: 1 1 0; display: flex; justify-content: center; min-width: 0; }
 
   .node {
-    display: flex; flex-direction: column; align-items: center; gap: .75rem;
+    position: relative; display: flex; flex-direction: column; align-items: center; gap: .75rem;
     background: none; border: 0; padding: 0 .25rem; margin: 0; color: inherit; font: inherit;
     text-align: center; cursor: pointer; max-width: 9rem;
   }
@@ -129,6 +140,11 @@ const short = COMMIT.slice(0, 7);
   }
   .node:hover .mark, .node:focus-visible .mark { background: var(--ink); }
   .node[data-lit] .mark { background: var(--signal); border-color: var(--signal-edge); }
+  /* What does the work, as small icons between the mark and the name. Muted, so the name and
+     the signal drop stay the loudest things on the line. */
+  .kinds { display: flex; gap: .3rem; color: var(--muted); }
+  .kinds :global(svg) { display: block; }
+  .kind { display: inline-flex; align-items: center; gap: .35rem; color: var(--ink); border-color: var(--ink); }
   .node-name { font: 800 clamp(.95rem, .55rem + .6vw, 1.15rem)/.95 var(--display); text-transform: uppercase; transition: color .2s; }
   /* The step the drop is on takes the terracotta accent, the same as hover and focus. */
   .node:hover .node-name, .node:focus-visible .node-name, .node[data-lit] .node-name { color: var(--accent); }
@@ -152,6 +168,8 @@ const short = COMMIT.slice(0, 7);
     .steps { flex-direction: column; gap: 1.25rem; }
     .steps > li { justify-content: flex-start; }
     .node { flex-direction: row; gap: 1rem; padding: 0; text-align: left; max-width: none; }
+    /* The name leads on phones; the icons follow it. */
+    .kinds { order: 1; }
     .node-name { font-size: var(--step-1); }
   }
 

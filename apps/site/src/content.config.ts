@@ -6,6 +6,7 @@ import { defineCollection } from "astro:content";
 import { file, glob } from "astro/loaders";
 import { z } from "astro/zod";
 import { parse as yamlParse } from "yaml";
+import { KIND_KEYS } from "./lib/setupKinds";
 
 const byFilename = ({ entry }: { entry: string }) => entry.replace(/\.(md|json)$/, "").replace(/^\d+\./, "");
 
@@ -108,6 +109,8 @@ const career = defineCollection({
 // against the repo at build time in src/lib/setup.ts, which the schema can't do on its own.
 const setupStep = z.object({
   name: z.string(),
+  // What does the work; one or more of the keys in src/lib/setupKinds.ts.
+  kinds: z.array(z.enum(KIND_KEYS)).min(1).refine((ks) => new Set(ks).size === ks.length, "a kind is listed twice"),
   tools: z.array(z.string()).min(1),
   body: z.array(z.string()).min(1),
   sources: z.array(
