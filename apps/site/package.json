@@ -13,9 +13,9 @@
     "explainer:render": "node scripts/explainers/render.mjs"
   },
   "devDependencies": {
-    "playwright": "1.64.1",
+    "playwright": "1.65.0",
     "sharp": "^0.35.5",
-    "wrangler": "^4.153.0"
+    "wrangler": "^4.160.0"
   },
   "dependencies": {
     "@astrojs/markdown-remark": "^7.3.6",
