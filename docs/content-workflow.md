@@ -90,7 +90,10 @@ doesn't trigger other workflows, so `build.yml` would never run on it and the re
 
 Run `claude setup-token` locally and store the result as the repository secret
 `CLAUDE_CODE_OAUTH_TOKEN` (Settings → Secrets and variables → Actions). Runs then use
-your Claude subscription. To bill the API instead, store a key as `ANTHROPIC_API_KEY`
+your Claude subscription. The token is a single line starting with `sk-ant-oat01-`.
+It wraps in the terminal, so check that the paste has no spaces or line breaks in it:
+a damaged value is accepted as a secret and only fails later, when a run reports
+`401 Invalid bearer token`. To bill the API instead, store a key as `ANTHROPIC_API_KEY`
 and change the workflow's `claude_code_oauth_token` line to
 `anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}`.
 
@@ -145,13 +148,28 @@ set to **Text** only. Then add these actions in order:
 
 5. **Get Dictionary Value** — Get **Value** for key `html_url` in *Contents of URL*.
 
-6. **Show Notification** — Title: `Note captured`, Body: *Dictionary Value*.
-   (Or use **Open URLs** if you'd rather jump straight to the issue.)
+6. **If** — *Dictionary Value* **has any value**. GitHub only returns `html_url` when
+   the issue was created, so this is the check that the note arrived.
+   - Inside **If**: **Show Notification** — Title: `Note captured`, Body:
+     *Dictionary Value*. (Or use **Open URLs** if you'd rather jump straight to the
+     issue.)
+   - Inside **Otherwise**: **Show Alert** — Title: `Not captured`, Message:
+     *Contents of URL*. That's GitHub's error, most often `Bad credentials` from an
+     expired token. The note is still in Notes; nothing was filed.
 
 **Save bookmark.** Duplicate the Shortcut. Set **Accepted Types** to **URLs** and
 **Text**, and change the label to `draft-bookmark`. Share a page from Safari and the
-link becomes the issue. To write the label yourself, put a line of text under the
-link in the issue body; without one the agent describes the page factually.
+link becomes the issue.
+
+A share from Safari carries only the link. To write the bookmark's label yourself,
+add two actions before **Get Contents of URL**:
+
+1. **Ask for Input** — Text, Prompt: `Label (optional)`. Leaving it empty is fine.
+2. **Text** — *Shortcut Input*, a new line, then *Provided Input*.
+
+Then set `body` in the request to that *Text*. The line under the link becomes the
+label. Without one the agent describes the page factually, in its own words, and says
+so on the issue.
 
 **Draft project.** Duplicate it again with the label `draft-project`. A project needs
 a name, a URL, a one-sentence description, a status, whether it's open source and a
@@ -185,8 +203,8 @@ Defined in `skills/note-to-article/SKILL.md`, with the voice rules in
   published articles. The fact-check traces every claim to your note, your reply or a
   source, and requests every link.
 - **The agent merges its own PR.** There is no manual review gate. Once
-  `npm run generate` passes locally and the required check passes on the PR, the agent
-  merges it. The PR body's "What I added" and "Sources" lists are what make the change
+  `npm run generate` passes where the agent runs (the Action's runner, or your machine
+  when run by hand) and the required check passes on the PR, the agent merges it. The PR body's "What I added" and "Sources" lists are what make the change
   auditable after the fact.
 - **Then it hands you the post.** A LinkedIn draft on the issue, in a code block. The
   agent never posts anywhere on your behalf.
@@ -203,6 +221,11 @@ pasted into a chat goes through `skills/note-to-article/` directly.
 - Each run uses GitHub Actions minutes and your Claude subscription (or API credit).
   An article is two runs; the second is the long one and is capped at 90 minutes.
 - Runs for one issue never overlap. A reply posted while a run is busy waits for it.
+- A run that dies says so on the issue: a comment with the last thing it reported
+  (a rejected credential, a usage limit) and a link to the run. Nothing is published
+  by a failed run. Once the cause is fixed, remove the inbox label and add it again
+  to start over. If the run died after claiming the issue, remove `in-progress` first,
+  or the new run is skipped.
 - The explainer needs ffmpeg and Chromium, which the workflow installs for the second
   article run. If that fails, the article ships without the explainer and the issue
   says so.
