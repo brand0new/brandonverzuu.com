@@ -140,4 +140,16 @@ const setup = defineCollection({
   }),
 });
 
-export const collections = { articles, projects, setup, career };
+// The /bookmarks page: one file, drawn in file order. The page derives each title from the
+// url's host, so a url has to parse and two entries can't point at the same place.
+const bookmarks = defineCollection({
+  loader: file("./content/bookmarks.yml", { parser: (text) => [{ id: "bookmarks", ...yamlParse(text) }] }),
+  schema: z.object({
+    bookmarks: z.array(z.object({ label: z.string().min(1), url: z.string().url() })).min(1).refine(
+      (bs) => new Set(bs.map((b) => b.url.replace(/\/+$/, ""))).size === bs.length,
+      "a bookmark url is listed twice",
+    ),
+  }),
+});
+
+export const collections = { articles, projects, setup, career, bookmarks };

@@ -1,0 +1,28 @@
+# The /bookmarks page, in the order listed: new ones go at the bottom. Read by
+# src/pages/bookmarks.astro through the `bookmarks` schema in src/content.config.ts.
+# `label` is one line saying what the thing is; the page shows the host from `url` as the
+# title. skills/new-bookmark/ is the procedure for adding one.
+
+bookmarks:
+  - label: An Open Source, Privacy first set of developer tools
+    url: https://devtoys.app
+  - label: A comprehensive view of all stakeholders creating the programmable economy
+    url: https://apilandscape.apiscene.io
+  - label: An online and interactive view of the bitcoin ecosystem
+    url: https://mempool.space/
+  - label: A self hosted network-wide ad blocker
+    url: https://pi-hole.net/
+  - label: Create and host your own cloud
+    url: https://umbrel.com
+  - label: A free fonts service launched by the Indian Type Foundry (ITF)
+    url: https://fontshare.com
+  - label: Industrial strength, enterprise grade, beautiful dev tools for code hackers.
+    url: https://pb33f.io
+  - label: A helpful tool to determine scale for your Typography
+    url: https://typescale.com
+  - label: Opensource solution for working with API descriptions
+    url: https://github.com/speclynx
+  - label: Agent solution of choice
+    url: https://hermes-agent.nousresearch.com/
+  - label: Opensource Digital Signage to display
+    url: https://anthias.screenly.io/

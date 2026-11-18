@@ -330,7 +330,7 @@ expansion has a hard boundary, and it is not the boundary between "short" and "l
 
 - **Statistics, percentages, or measured claims.** Every number in the corpus carries
   a real source (Postman's State of API, F5's State of Application Strategy, APIstic,
-  DNB). If the note gestures at a number, ask for it.
+  DNB). If the note gestures at a number, find its source or ask for it.
 - **Quotes attributed to real people**, and **citations or links.** The Arnaud Lauret
   quote is real and sourced to a real talk.
 - **Anything he did.** Engagements, customers, employers, conversations, what a tool
@@ -341,9 +341,16 @@ expansion has a hard boundary, and it is not the boundary between "short" and "l
 - **Verified behaviour of a specific tool or version.** Don't assert what a CLI
   outputs unless the note says so.
 
+### What research may supply
+
+"Never invent" is not "never look up". A statistic, a quote, a citation, a link or
+what a specification says may come from a source you opened yourself during the run
+and list in the PR; `skills/fact-check/` is the procedure. Research never supplies the
+other half of the list: what he did and what he thinks come from him alone.
+
 ### When the seed lacks a fact you need
 
-Ask. Specifically, and in a form answerable in one sentence from a phone. A
+First see whether it can be looked up. If it can't, ask. Specifically, and in a form answerable in one sentence from a phone. A
 ghostwriter who invents an engagement anecdote has produced something worse than no
 article, because it will be published under his name.
 

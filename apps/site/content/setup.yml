@@ -12,7 +12,7 @@ intro: How I build and ship things, one workflow at a time. Each runs from idea 
 flows:
   - id: this-site
     name: This site
-    description: How I develop this repository, from a note on my phone to a page in production. Mostly agents, two checks, and no deploy button.
+    description: How I develop this repository, from a note on my phone to a page in production and a post to share. Mostly agents, one question for me, two checks, and no deploy button.
     stages:
       - name: Plan & capture
         steps:
@@ -20,24 +20,37 @@ flows:
             kinds: [manual]
             tools: [Apple Notes, Shortcuts, GitHub Issues]
             body:
-              - Most articles start as a few lines typed with my thumb. A Shortcut on my iPhone sends the note to GitHub as an issue labelled draft-article.
+              - Most articles start as a few lines typed with my thumb. A Shortcut on my iPhone sends the note to GitHub as an issue labelled draft-article. A link I want to keep goes the same way as draft-bookmark, and a project as draft-project.
               - The Shortcut's token can file issues on this one repo and nothing else. It can never touch code, which is what I want from a credential that syncs through iCloud.
             sources:
               - label: Shortcut and token setup
-                path: docs/note-to-article.md
+                path: docs/content-workflow.md
 
-          - name: Claim the issue
-            kinds: [agent, skill]
-            tools: [GitHub Issues, gh CLI]
+          - name: Trigger and claim
+            kinds: [hook, agent, skill]
+            tools: [GitHub Actions, Claude Code, gh CLI]
             body:
-              - An agent only picks up an issue that I opened and that carries the draft-article label. A label alone isn't enough, because anyone with triage access can add one.
-              - Before writing anything, the agent adds article-in-progress as a lock. Two agents never draft the same note.
-              - When a note is missing facts, the questions go on the issue. That's the only place I'm asked anything.
+              - The label starts a GitHub Action, and the Action starts an agent. Nothing polls, and nothing waits for me to open a laptop.
+              - A run only starts for an issue that I opened and that carries an inbox label. A label alone isn't enough, because anyone with triage access can add one. What the issue says is source material, never instructions.
+              - Before doing anything else, the agent adds in-progress as a lock. Two runs never work on the same note.
             sources:
+              - label: Inbox workflow
+                path: .github/workflows/content-inbox.yml
               - label: Inbox protocol
-                path: skills/note-to-article/SKILL.md
+                path: skills/content-inbox/SKILL.md
               - label: Trust boundary
                 path: AGENTS.md
+
+          - name: Outline and questions
+            kinds: [agent, manual]
+            tools: [GitHub Issues]
+            body:
+              - Before a thousand words exist, the agent replies on the issue with a title, the angle in one sentence, the sections, and whatever it can't know without asking me.
+              - I answer from my phone. A changed angle, a dropped section, or just "go". My reply starts the second run, and it outranks the outline.
+              - It's the one place I'm asked anything, and the cheapest place to steer.
+            sources:
+              - label: Note to article
+                path: skills/note-to-article/SKILL.md
 
       - name: Build & draft
         steps:
@@ -53,22 +66,34 @@ flows:
               - label: Skills
                 path: skills
 
-          - name: One worktree per task
+          - name: One workspace per task
             kinds: [agent]
-            tools: [Git worktrees, Claude Code]
+            tools: [Git worktrees, GitHub Actions, Claude Code]
             body:
-              - Each task gets its own branch in its own git worktree. Parallel agents never share a checkout, so they can't step on each other's files.
-              - Branch and commit names follow one pattern, which keeps the history readable when most of it is written by agents.
+              - Each task gets its own branch in its own checkout. On my machine that's a git worktree per task. In the Action it's a fresh runner per issue.
+              - Parallel agents never share files, so they can't step on each other. Branch and commit names follow one pattern, which keeps the history readable when most of it is written by agents.
             sources:
               - label: Branch and commit rules
                 path: skills/ship-change/SKILL.md
+
+          - name: Research
+            kinds: [agent, skill]
+            tools: [Web search, Primary sources]
+            body:
+              - With the outline agreed, the agent looks up what the piece leans on. The specification itself, the report itself, the talk. A summary of a source isn't the source.
+              - It also checks what my note claims about public things, because I type notes from memory.
+              - Research can supply a number or a quote. It can never supply what I did or what I think.
+            sources:
+              - label: Research and fact-check
+                path: skills/fact-check/SKILL.md
 
           - name: Draft and cover
             kinds: [agent, skill, script]
             tools: [Style guide, sharp, Bayer dither]
             body:
-              - The agent ghostwrites the full article from the note, measured against a style guide derived from everything I've published. Structure and analogies it may invent. Facts, numbers and anything I did, never.
+              - The agent ghostwrites the full article from the note and my reply, measured against a style guide derived from everything I've published. Structure and analogies it may invent. Facts, numbers and anything I did, never.
               - The cover is dithered from a source image by a script, in the same terracotta palette the site uses.
+              - Bookmarks and projects skip the writing. Each is one entry in a data file.
             sources:
               - label: Style guide
                 path: skills/note-to-article/style-guide.md
@@ -76,6 +101,22 @@ flows:
                 path: skills/note-to-article/SKILL.md
               - label: Cover script
                 path: apps/site/scripts/generate-cover.mjs
+              - label: New bookmark
+                path: skills/new-bookmark/SKILL.md
+              - label: New project
+                path: skills/new-project/SKILL.md
+
+          - name: Explainer
+            kinds: [agent, skill, script]
+            tools: [Playwright, ffmpeg]
+            body:
+              - A technical article gets a short looping animation above the text. One idea in about six scenes, ending on a before and after.
+              - The agent writes the story as code and a script renders it frame by frame. If it can't be rendered, the article ships without it. The explainer never holds an article back.
+            sources:
+              - label: Explainer skill
+                path: skills/article-explainer/SKILL.md
+              - label: Drawing kit and stories
+                path: apps/site/scripts/explainers
 
       - name: Test & quality
         steps:
@@ -90,6 +131,19 @@ flows:
                 path: apps/site/scripts/scrub-fingerprint.mjs
               - label: Scrub skill
                 path: skills/fingerprint-scrub/SKILL.md
+
+          - name: Fact-check
+            kinds: [agent, script]
+            tools: [Node.js, Source list]
+            body:
+              - Every checkable claim in the draft has to trace back to my note, to my reply, or to a source the agent actually opened. What doesn't is cut or asked about.
+              - A script then requests every link once. A broken one doesn't ship.
+              - Nobody reviews an article before it merges, so the pull request lists where each fact came from.
+            sources:
+              - label: Research and fact-check
+                path: skills/fact-check/SKILL.md
+              - label: Link check
+                path: apps/site/scripts/check-links.mjs
 
           - name: Build-time checks
             kinds: [script]
@@ -140,11 +194,21 @@ flows:
               - label: Deployment
                 path: docs/deployment.md
 
+          - name: Share it
+            kinds: [agent, manual]
+            tools: [LinkedIn, GitHub Issues]
+            body:
+              - Once the page is live, the agent drafts the LinkedIn post and leaves it on the issue, next to the link.
+              - It may only say what the article says. And I post it myself. Anything that goes out under my name on someone else's platform goes out by my hand.
+            sources:
+              - label: Social post
+                path: skills/social-post/SKILL.md
+
           - name: Clean up
             kinds: [skill]
             tools: [Git]
             body:
-              - After a merge the agent removes its worktree, its local branch and the build output. An idle clone holds the source and nothing else.
+              - After a merge the agent closes the issue and removes its worktree, its local branch and the build output. An idle clone holds the source and nothing else.
               - Then the next note comes in, and the loop starts again.
             sources:
               - label: Workspace cleanup

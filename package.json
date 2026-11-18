@@ -13,7 +13,8 @@
     "preview": "npm run preview -w apps/site --",
     "cover:generate": "npm run cover:generate -w apps/site --",
     "scrub:fingerprint": "npm run scrub:fingerprint -w apps/site --",
-    "explainer:render": "npm run explainer:render -w apps/site --"
+    "explainer:render": "npm run explainer:render -w apps/site --",
+    "links:check": "npm run links:check -w apps/site --"
   },
   "devDependencies": {
     "prettier": "^3.9.10"

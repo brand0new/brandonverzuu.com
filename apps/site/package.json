@@ -10,7 +10,8 @@
     "preview": "astro preview",
     "cover:generate": "node scripts/generate-cover.mjs",
     "scrub:fingerprint": "node scripts/scrub-fingerprint.mjs",
-    "explainer:render": "node scripts/explainers/render.mjs"
+    "explainer:render": "node scripts/explainers/render.mjs",
+    "links:check": "node scripts/check-links.mjs"
   },
   "devDependencies": {
     "playwright": "1.65.0",
