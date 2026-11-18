@@ -117,13 +117,15 @@ This token can only file issues on one repo. It cannot push code, read other rep
 or touch your account, which is what you want for a credential living in a Shortcut
 that syncs through iCloud. Copy it now; GitHub won't show it again.
 
-**Draft article.** Shortcuts app → **+** → name it **Draft article**. Tap the
-shortcut's ⓘ (Details) and turn on **Show in Share Sheet**, with **Accepted Types**
-set to **Text** only. Then add these actions in order:
+**Draft article.** Shortcuts app → **+** → name it **Draft article**. In the editor,
+tap the Details icon, turn on **Show in Share Sheet** and tap **Done**. That adds a
+**Receive** action at the top of the shortcut, which is where the input is set: there
+is no separate "Accepted Types" setting any more. Then, in order:
 
-1. **Receive** — should already read *"Receive Text input from Share Sheet"*.
-   Set **"If there's no input"** to **Ask For Text**, so the shortcut also works when
-   run from the Home Screen or Siri.
+1. **Receive** — it starts as *"Receive Any input from Share Sheet"*. Tap **Any** and
+   leave only **Text** selected, so the shortcut is offered for a note and not for
+   every photo and file. Set **"If there's no input"** to **Ask For** → **Text**, so
+   the shortcut also works when run from the Home Screen or Siri.
 
 2. **Split Text** — Input: *Shortcut Input*, Separator: **New Lines**.
 
@@ -138,7 +140,11 @@ set to **Text** only. Then add these actions in order:
      | --- | --- |
      | `Authorization` | `Bearer YOUR_TOKEN_HERE` |
      | `Accept` | `application/vnd.github+json` |
-     | `X-GitHub-Api-Version` | `2022-11-28` |
+     | `X-GitHub-Api-Version` | `2026-03-10` |
+
+     That's the current REST API version. `2022-11-28`, which older guides use, is
+     only supported until March 2028. Creating an issue with a title, a body and
+     labels is the same in both.
    - **Request Body:** `JSON`
      | Key | Type | Value |
      | --- | --- | --- |
@@ -157,8 +163,8 @@ set to **Text** only. Then add these actions in order:
      *Contents of URL*. That's GitHub's error, most often `Bad credentials` from an
      expired token. The note is still in Notes; nothing was filed.
 
-**Save bookmark.** Duplicate the Shortcut. Set **Accepted Types** to **URLs** and
-**Text**, and change the label to `draft-bookmark`. Share a page from Safari and the
+**Save bookmark.** Duplicate the Shortcut. In its **Receive** action, select **URLs**
+and **Text**, and change the label to `draft-bookmark`. Share a page from Safari and the
 link becomes the issue.
 
 A share from Safari carries only the link. To write the bookmark's label yourself,
