@@ -17,7 +17,7 @@
     "links:check": "npm run links:check -w apps/site --"
   },
   "devDependencies": {
-    "prettier": "^3.9.10"
+    "prettier": "^3.10.1"
   },
   "allowScripts": {
     "better-sqlite3@12.11.1": true,

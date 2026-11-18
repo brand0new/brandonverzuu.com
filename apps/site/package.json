@@ -14,7 +14,7 @@
     "links:check": "node scripts/check-links.mjs"
   },
   "devDependencies": {
-    "playwright": "1.65.0",
+    "playwright": "1.65.1",
     "sharp": "^0.35.5",
     "wrangler": "^4.159.0"
   },
