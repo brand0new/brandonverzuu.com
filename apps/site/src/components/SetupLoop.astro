@@ -156,8 +156,9 @@ const short = COMMIT.slice(0, 7);
   }
   .loop[data-running] .drop { display: block; }
 
-  /* Below the breakpoint the line turns down the left edge. */
-  @media (max-width: 1099px) {
+  /* Below the breakpoint the line turns down the left edge. It sits where the longest flow
+     (sixteen steps) still has room for its step names side by side. */
+  @media (max-width: 1399px) {
     .track { left: calc(var(--m) / 2 - .5px); right: auto; top: 0; bottom: 0; width: 1px; height: auto; }
     .stages { flex-direction: column; gap: 2rem; padding: .5rem 0; }
     .stage { flex: none; gap: 1rem; }
