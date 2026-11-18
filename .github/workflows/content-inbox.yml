@@ -80,6 +80,7 @@ jobs:
       # A pull request opened with the default GITHUB_TOKEN wouldn't trigger build.yml, and
       # the required `generate` check would never report.
       - uses: anthropics/claude-code-action@v1
+        id: claude
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           include_comments_by_actor: "brand0new"
@@ -98,3 +99,36 @@ jobs:
             as a comment, as the skills describe.
           claude_args: |
             --allowedTools "Read,Edit,Write,Glob,Grep,WebSearch,WebFetch,Bash(git:*),Bash(gh:*),Bash(npm:*),Bash(npx:*),Bash(node:*)"
+
+      # A run that dies must not die silently: the issue is the only place Brandon looks.
+      # The action hides Claude's output, so the last message it recorded (for a run that
+      # never got going, that's the error: a bad credential, a usage limit) is pulled from
+      # the execution file. It travels through env, never through an expression, and the
+      # comment is made with the workflow's own token, which starts no other run.
+      - name: Report a failed run
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EXECUTION_FILE: ${{ steps.claude.outputs.execution_file }}
+          ISSUE: ${{ github.event.issue.number }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          reason=""
+          if [ -n "$EXECUTION_FILE" ] && [ -f "$EXECUTION_FILE" ]; then
+            reason=$(jq -rs 'flatten | map(select(.type == "result")) | last | (.result // "") | tostring' "$EXECUTION_FILE" 2>/dev/null | head -c 600 || true)
+          fi
+          echo "Last message recorded: ${reason:-none}"
+          {
+            echo "This run stopped before it finished, so nothing was published."
+            echo
+            if [ -n "$reason" ]; then
+              echo "Last thing it reported:"
+              echo
+              echo '```'
+              echo "$reason"
+              echo '```'
+              echo
+            fi
+            echo "$RUN_URL"
+          } > "$RUNNER_TEMP/failure.md"
+          gh issue comment "$ISSUE" --repo "$GITHUB_REPOSITORY" --body-file "$RUNNER_TEMP/failure.md"
