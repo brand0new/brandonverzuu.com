@@ -1,25 +1,15 @@
 ---
 // No favicons: they'd come from a third-party service at request time, and the list reads
 // fine as text.
+import { getEntry } from "astro:content";
 import Base from "../layouts/Base.astro";
 import PageHead from "../components/PageHead.astro";
 import { SITE } from "../lib/content";
 import { breadcrumbSchema, type Crumb } from "../lib/schema";
 
 const description = "Here's some interesting stuff I've found on the internet.";
-const bookmarks = [
-  { label: "An Open Source, Privacy first set of developer tools", url: "https://devtoys.app" },
-  { label: "A comprehensive view of all stakeholders creating the programmable economy", url: "https://apilandscape.apiscene.io" },
-  { label: "An online and interactive view of the bitcoin ecosystem", url: "https://mempool.space/" },
-  { label: "A self hosted network-wide ad blocker", url: "https://pi-hole.net/" },
-  { label: "Create and host your own cloud", url: "https://umbrel.com" },
-  { label: "A free fonts service launched by the Indian Type Foundry (ITF)", url: "https://fontshare.com" },
-  { label: "Industrial strength, enterprise grade, beautiful dev tools for code hackers.", url: "https://pb33f.io" },
-  { label: "A helpful tool to determine scale for your Typography", url: "https://typescale.com" },
-  { label: "Opensource solution for working with API descriptions", url: "https://github.com/speclynx" },
-  { label: "Agent solution of choice", url: "https://hermes-agent.nousresearch.com/" },
-  { label: "Opensource Digital Signage to display", url: "https://anthias.screenly.io/" },
-];
+// The list lives in content/bookmarks.yml, in the order it's drawn.
+const { bookmarks } = (await getEntry("bookmarks", "bookmarks"))!.data;
 const host = (u: string) => new URL(u).host.replace(/^www\./, "");
 const pad = (n: number) => String(n).padStart(2, "0");
 const crumbs: Crumb[] = [{ label: "Home", href: "/" }, { label: "Bookmarks" }];

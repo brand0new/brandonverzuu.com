@@ -16,7 +16,7 @@ npm run generate   # static build to apps/site/dist/
   fit together. The starting point for agents and humans alike.
 - [`docs/deployment.md`](docs/deployment.md): how GitHub and Cloudflare turn a merge
   into the live site.
-- [`docs/note-to-article.md`](docs/note-to-article.md): capturing article notes from
-  an iPhone.
+- [`docs/content-workflow.md`](docs/content-workflow.md): the content workflow, from a
+  note on an iPhone to a published article, and its one-time setup.
 - [`skills/`](skills/): agent-agnostic procedures for shipping changes, writing
   articles, generating covers and explainers, and cleaning up.

@@ -20,6 +20,7 @@ GitHub Actions       Cloudflare Pages        GitHub Actions          Cloudflare 
 | --- | --- | --- |
 | GitHub repo `brand0new/brandonverzuu.com` | GitHub | Source of truth. `master` is production. |
 | `.github/workflows/build.yml` | this repo | Runs `npm ci && npm run generate` on every PR to `master` and every push to it. Reports the `generate` check. |
+| `.github/workflows/content-inbox.yml` | this repo | Not part of deployment: it starts an agent on a content inbox issue. The PRs that agent opens go through the same two checks as any other. See `docs/content-workflow.md`. |
 | Branch protection on `master` | GitHub → Settings → Branches | Requires the `generate` check to pass before a PR can merge. No force pushes or deletions. Admins aren't included (`enforce_admins` off), so an admin can still override the check. |
 | Cloudflare Pages project `personal-site` | Cloudflare dashboard → Workers & Pages | Connected to the repo through the **Cloudflare Workers and Pages GitHub app**. Builds every pushed branch, deploys `master` to production and other branches as previews. Reports the `Cloudflare Pages` check. |
 | `wrangler.toml` | repo root | Pages project config that the Cloudflare build reads: project name, output directory (`apps/site/dist`) and compatibility date. It stays at the root because the Pages build runs from the root. |
