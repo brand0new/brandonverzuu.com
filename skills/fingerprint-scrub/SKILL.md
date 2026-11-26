@@ -6,7 +6,7 @@ description: Run the deterministic fingerprint scrub (apps/site/scripts/scrub-fi
 # Fingerprint scrub
 
 A non-LLM pass that measures a draft against the corpus norms in
-`skills/note-to-article/style-guide.md` §1 and the anti-pattern list in §9. It catches
+`VOICE.md` §1 and the anti-pattern list in §9. It catches
 what reading tends to miss (sentence rhythm, punctuation rate, filler phrases) and
 works the same whichever model or provider wrote the draft.
 

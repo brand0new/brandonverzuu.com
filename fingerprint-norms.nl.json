@@ -1,0 +1,33 @@
+{
+  "measuredFrom": [
+    "apps/site/content/articles/begrijp-jij-bitcoin.md",
+    "apps/site/content/articles/blockchain-in-afrika.md",
+    "apps/site/content/articles/de-waarde-van-een-blockchain.md"
+  ],
+  "totalWords": 3293,
+  "wordsPerSentenceMean": {
+    "target": 15.7,
+    "flagAbove": 20.4
+  },
+  "maxReasonableSentenceWords": 30,
+  "singleSentenceParagraphShare": {
+    "target": 0.33,
+    "flagBelow": 0.2
+  },
+  "shortPunchSentenceShare": {
+    "target": 0.12,
+    "flagBelow": 0.04
+  },
+  "emDashPer1000Words": {
+    "target": 0,
+    "flagAbove": 1
+  },
+  "emojiPer1000Words": {
+    "target": 0,
+    "flagAbove": 1
+  },
+  "boldSpansPer1000Words": {
+    "target": 18,
+    "flagAbove": 36
+  }
+}

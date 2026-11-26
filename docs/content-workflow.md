@@ -194,7 +194,7 @@ dictating one while driving. Dictation artifacts are fine; the skill cleans them
 ## What the agent does with a note
 
 Defined in `skills/note-to-article/SKILL.md`, with the voice rules in
-`skills/note-to-article/style-guide.md`. In short:
+`VOICE.md`. In short:
 
 - **Outline first.** You get a title, the angle in one sentence, the sections and at
   most five questions. Your reply is the brief: it outranks the outline.

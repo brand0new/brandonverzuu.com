@@ -11,7 +11,7 @@ an explainer where the piece is technical, a pull request the agent merges itsel
 the repo's checks pass, and a post for him to share. The site is a static Cloudflare
 Pages build off `master`, so a merged PR is the only publish step.
 
-**Read `skills/note-to-article/style-guide.md` before writing a single line of prose.**
+**Read `VOICE.md` before writing a single line of prose.**
 It is the whole point of this pipeline; the mechanical parts below are the easy half.
 
 This procedure is deliberately agent-agnostic: it assumes only git, a GitHub token
@@ -21,7 +21,7 @@ this repo the `content-inbox` GitHub Action starts a run when a note arrives and
 when Brandon replies; the same procedure works when an agent is pointed at it by hand.
 
 If the client running this procedure brings its own tone-of-voice or editorial
-instructions, those take precedence over `style-guide.md`. Everything about the
+instructions, those take precedence over `VOICE.md`. Everything about the
 content contract (frontmatter, file location, cover image, build) still applies.
 
 ## Editorial remit: Ghostwriter
@@ -31,7 +31,7 @@ produce a **finished, full-length article in Brandon's voice**. Expansion is the
 not a liberty. A 200-word note becoming a 1,300-word article is the expected outcome.
 
 The boundary is not length, it is **fact versus craft**. Section 10 of
-`skills/note-to-article/style-guide.md` is the full contract; in short:
+`VOICE.md` is the full contract; in short:
 
 **Invent freely:** structure, headings, the roadmap sentence, argument development,
 everyday analogies, explicitly hypothetical scenarios, generic technical illustrations.
@@ -71,7 +71,7 @@ not the fact-check, not the cover.
 
 1. **Read the note for what it wants to say.** Find the claim it's making, not just
    its topic, and decide whether the piece is reflective or technical. Read
-   `style-guide.md` §3 and §4 now, because the outline already commits to an opening
+   `VOICE.md` §3 and §4 now, because the outline already commits to an opening
    and a close.
 
    Then triage the facts. Under a ghostwriting remit a thin note is not a problem; a
@@ -111,7 +111,7 @@ not the fact-check, not the cover.
    about public things. Keep the source list; the PR needs it.
 
 5. **Write the article.**
-   - **Read `skills/note-to-article/style-guide.md` first, every time.** It carries
+   - **Read `VOICE.md` first, every time.** It carries
      measured targets — 17 words per sentence, ~29 per paragraph, half of them
      single-sentence, five `##` sections — plus the opening and closing moves and the
      anti-pattern list.
@@ -136,14 +136,14 @@ not the fact-check, not the cover.
    (sentence length, paragraph shape); this one catches feel, which numbers miss.
    - Re-read the full draft in one pass, asking: **"What makes this read as
      AI-generated rather than something Brandon actually wrote?"** Judge it against
-     the specific anti-pattern list in style-guide.md §9 — not a generic AI-writing
+     the specific anti-pattern list in VOICE.md §9 — not a generic AI-writing
      checklist, his list, since a draft can be free of generic AI tells and still
      read like nobody in particular.
    - Write down what you find, briefly (a few bullets is enough — this doesn't go in
      the PR body).
    - Revise the draft once against what you found, then stop. Don't iterate this pass
      more than once; diminishing returns past that tend to over-smooth the draft
-     into something blander than the corpus, which is its own tell (see style-guide.md
+     into something blander than the corpus, which is its own tell (see VOICE.md
      §2 on the self-deprecating, hedged-optimism register — polish that removes it is
      a regression, not an improvement).
 

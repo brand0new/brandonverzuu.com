@@ -37,7 +37,7 @@ details: what runs where, why the build runs twice, configuration and secrets.
 ## What the repo cares about
 
 - **The writing is the point.** Articles are long-form and in Brandon's voice. The
-  voice is measured and written down in `skills/note-to-article/style-guide.md`. A
+  voice is measured and written down in `VOICE.md`. A
   client that brings its own tone-of-voice instructions overrides that guide for how
   the prose reads, but never for the content contract below.
 - **Static first.** Nothing may depend on a request-time server, an image proxy or a

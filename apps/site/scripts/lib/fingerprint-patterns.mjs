@@ -9,7 +9,7 @@
 //              wrong clause could change meaning), so these are reported
 //              with line numbers but never auto-edited.
 //
-// Sources: style-guide.md §9 (Brandon's specific anti-pattern list, the
+// Sources: VOICE.md §9 (Brandon's specific anti-pattern list, the
 // primary reference) and the `humanizer` skill's generic AI-writing pattern
 // list (used only where it doesn't conflict with something the corpus
 // actually does — e.g. the corpus itself uses em dashes and question marks
@@ -51,7 +51,7 @@ export const FIXABLE_SENTENCE_PATTERNS = [
 ];
 
 // --- FLAGGED: regex patterns to report with line numbers, never auto-fix -
-// Grouped to match style-guide.md §9 categories.
+// Grouped to match VOICE.md §9 categories.
 export const FLAGGED_PATTERNS = [
   {
     name: "significance inflation",

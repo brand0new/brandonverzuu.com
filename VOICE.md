@@ -1,12 +1,23 @@
-# Writing style guide
+# Writing style guide: Brandon Verzuu
 
-Derived from all eleven articles in `apps/site/content/articles/` (~13,500 words, nine of them
-mature published pieces, English and Dutch). This is a **generative** guide: it exists
-so a ghostwriter can produce a draft that reads as Brandon's, not so a reviewer can
-tick boxes afterwards.
+Derived from the eleven articles that were in `apps/site/content/articles/` when it was
+first written (~13,500 words, nine of them mature published pieces, English and Dutch).
+This is a **generative** guide: it exists so a ghostwriter can produce a draft that reads
+as Brandon's, not so a reviewer can tick boxes afterwards.
 
 Where a rule below cites a number, it was measured across the corpus. Where it quotes,
-the quote is verbatim from a published article.
+the quote is verbatim from a published article. The machine-readable norms the
+fingerprint scrub checks against are re-measured over the current corpus and live next
+to this file: `fingerprint-norms.json` (English) and `fingerprint-norms.nl.json` (Dutch).
+
+Example pieces to read in full before drafting:
+- English, reflective: `apps/site/content/articles/trust-in-ai.md`
+- English, technical: `apps/site/content/articles/automate-api-governance.md`
+- Dutch: `apps/site/content/articles/begrijp-jij-bitcoin.md`,
+  `apps/site/content/articles/de-waarde-van-een-blockchain.md`
+
+This guide covers signed long-form writing (articles, posts). Interface copy follows the
+design system, not this guide.
 
 ---
 
@@ -246,7 +257,7 @@ He does use "## Closing Thoughts", "## In conclusion", "## Take-aways", "## Link
 
 ---
 
-## 7. Dutch articles
+## 7. Other languages: Dutch
 
 Three published articles are Dutch. **Always match the language of the source note —
 never translate.** `title` and `description` follow the article's language.

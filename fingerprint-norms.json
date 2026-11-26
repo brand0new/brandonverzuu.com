@@ -1,0 +1,42 @@
+{
+  "measuredFrom": [
+    "apps/site/content/articles/automate-api-governance.md",
+    "apps/site/content/articles/azure-native-service-bus-publishing-with-api-management.md",
+    "apps/site/content/articles/building-platforms-for-vendor-led-enterprises.md",
+    "apps/site/content/articles/capture-api-changes-with-overlay.md",
+    "apps/site/content/articles/everything-about-openapi-4.md",
+    "apps/site/content/articles/first-post.md",
+    "apps/site/content/articles/improving-dx-with-arazzo.md",
+    "apps/site/content/articles/maturity-models-and-tech.md",
+    "apps/site/content/articles/the-experience-you-leave-behind.md",
+    "apps/site/content/articles/the-serverless-site-my-customer-needed.md",
+    "apps/site/content/articles/the-siren-song-of-inference.md",
+    "apps/site/content/articles/trust-in-ai.md"
+  ],
+  "totalWords": 15934,
+  "wordsPerSentenceMean": {
+    "target": 16.5,
+    "flagAbove": 21.5
+  },
+  "maxReasonableSentenceWords": 38,
+  "singleSentenceParagraphShare": {
+    "target": 0.34,
+    "flagBelow": 0.21
+  },
+  "shortPunchSentenceShare": {
+    "target": 0.15,
+    "flagBelow": 0.05
+  },
+  "emDashPer1000Words": {
+    "target": 1.8,
+    "flagAbove": 6.6
+  },
+  "emojiPer1000Words": {
+    "target": 0.3,
+    "flagAbove": 2.4
+  },
+  "boldSpansPer1000Words": {
+    "target": 5.8,
+    "flagAbove": 14.7
+  }
+}

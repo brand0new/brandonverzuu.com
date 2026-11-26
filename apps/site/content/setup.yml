@@ -96,7 +96,7 @@ flows:
               - Bookmarks and projects skip the writing. Each is one entry in a data file.
             sources:
               - label: Style guide
-                path: skills/note-to-article/style-guide.md
+                path: VOICE.md
               - label: Note to article
                 path: skills/note-to-article/SKILL.md
               - label: Cover script

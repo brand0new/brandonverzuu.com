@@ -8,7 +8,7 @@ description: Research an article before it's drafted and verify it before it shi
 An article goes out under Brandon's name with no human review before the merge. This
 skill is what stands in for that review on the factual side. It has two halves:
 research before the draft, verification after it. The ghostwriter contract in
-`skills/note-to-article/style-guide.md` §10 says what may be invented. This says how
+`VOICE.md` §10 says what may be invented. This says how
 to make sure nothing else was.
 
 Research widens what you may write, but only in one direction. A number, a quote or a
