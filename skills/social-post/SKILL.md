@@ -19,7 +19,7 @@ the merge. A post that links to a 404 is worse than a late one.
 ## 2. Write it
 
 - **Language** matches the article: a Dutch article gets a Dutch post.
-- **Voice** is the article's voice, from `skills/note-to-article/style-guide.md` §2 and
+- **Voice** is the article's voice, from `VOICE.md` §2 and
   §5: first person, plain, a little self-deprecating. The anti-patterns in §9 apply
   here even more than in the article, because a feed is where they're most familiar.
 - **Nothing new.** The post may only say what the article says. No extra claim, number

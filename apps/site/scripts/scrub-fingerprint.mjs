@@ -2,7 +2,7 @@
 // Mechanical fingerprint scrub for note-to-article drafts.
 //
 // Deterministic, non-LLM pass over an article's prose body, checked against
-// the measured targets in skills/note-to-article/style-guide.md §1 and the
+// the measured targets in VOICE.md §1 and the
 // anti-pattern list in §9. Catches things prompting alone tends to miss
 // because they're below the level a system prompt operates at (sentence
 // rhythm, punctuation rate) or because a model can satisfy the letter of an
@@ -37,7 +37,7 @@ import {
   FLAGGED_PATTERNS,
 } from "./lib/fingerprint-patterns.mjs";
 
-// Corpus norms from style-guide.md §1. "target" is the measured mean;
+// Corpus norms from VOICE.md §1. "target" is the measured mean;
 // "flagAbove"/"flagBelow" are the thresholds this script actually alerts
 // on — set looser than the raw target so normal article-to-article
 // variance doesn't trigger false positives. These numbers came from
@@ -155,7 +155,7 @@ function analyze(body) {
   );
 
   // Last non-empty block is a bullet/numbered list -> likely a
-  // summary-bullet ending, the loudest closing tell per style-guide.md §4/§9.
+  // summary-bullet ending, the loudest closing tell per VOICE.md §4/§9.
   // Excluded: a "## Links" (or "More on this topic") section is an
   // explicitly sanctioned closing device (§4) — a sourced link list is not
   // the same tell as a bullet recap of the article's own points.
@@ -277,7 +277,7 @@ async function main() {
   }
   if (stats.singleSentenceShare < NORMS.singleSentenceParagraphShare.flagBelow) {
     smells.push(
-      `Only ${(stats.singleSentenceShare * 100).toFixed(0)}% of paragraphs are single-sentence (corpus target ~${NORMS.singleSentenceParagraphShare.target * 100}%). Uniform paragraph length is the loudest tell per style-guide.md §9.`,
+      `Only ${(stats.singleSentenceShare * 100).toFixed(0)}% of paragraphs are single-sentence (corpus target ~${NORMS.singleSentenceParagraphShare.target * 100}%). Uniform paragraph length is the loudest tell per VOICE.md §9.`,
     );
   }
   if (stats.shortPunchShare < NORMS.shortPunchSentenceShare.flagBelow) {
@@ -297,7 +297,7 @@ async function main() {
   }
   if (stats.boldSpansPer1000 > NORMS.boldSpansPer1000WordsEN.flagAbove) {
     smells.push(
-      `Bold span rate ${stats.boldSpansPer1000.toFixed(1)}/1000 words (EN corpus target ~${NORMS.boldSpansPer1000WordsEN.target}/1000, flag above ${NORMS.boldSpansPer1000WordsEN.flagAbove}). Note: Dutch articles run ~2.5x heavier per style-guide.md §7 — don't apply this threshold to a Dutch draft.`,
+      `Bold span rate ${stats.boldSpansPer1000.toFixed(1)}/1000 words (EN corpus target ~${NORMS.boldSpansPer1000WordsEN.target}/1000, flag above ${NORMS.boldSpansPer1000WordsEN.flagAbove}). Note: Dutch articles run ~2.5x heavier per VOICE.md §7 — don't apply this threshold to a Dutch draft.`,
     );
   }
   if (stats.genericHeadings.length > 0) {
